@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -45,7 +45,8 @@ static const ChCertSm2Data ChCertSm2DataTable[] = {
 
 
 /*********************** SM2 CONDITIONAL ***********************/
-CCError_t CC_ChCertSm2ConditionalTest(CCRndContext_t          *pRndContext,
+CCError_t CC_ChCertSm2ConditionalTest(CCRndGenerateVectWorkFunc_t f_rng,
+                                      void                        *p_rng,
                                       CCEcpkiUserPrivKey_t    *pUserPrivKey,
                                       CCEcpkiUserPublKey_t    *pUserPublKey,
                                       CCSm2KeyGenCHCertContext_t  *pCHCertCtx)
@@ -71,8 +72,8 @@ CCError_t CC_ChCertSm2ConditionalTest(CCRndContext_t          *pRndContext,
         goto End;
     }
 
-    error =  CC_Sm2Sign ( pRndContext->rndGenerateVectFunc,
-                          pRndContext->rndState,
+    error =  CC_Sm2Sign ( f_rng,
+                          p_rng,
                           pUserPrivKey,
                           msgDigest,
                           msgDigestSize,
@@ -103,7 +104,7 @@ End:
 /*********************** SM2 KAT ***********************/
 
 
-CCChCertError_t CC_ChCertSm2SignVerify(CCSm2FipsKatContext_t certSm2Ctx)
+CCChCertError_t CC_ChCertSm2SignVerify(CCSm2FipsKatContext_t *certSm2Ctx)
 {
     CCError_t error = CC_OK;
     ChCertSm2Data*  sm2Data = NULL;
@@ -131,15 +132,15 @@ CCChCertError_t CC_ChCertSm2SignVerify(CCSm2FipsKatContext_t certSm2Ctx)
             return sm2Data->error;
         }
         error = CC_Sm2ComputeMessageDigest(&publicKey, sm2Data->id, sm2Data->id_len, sm2Data->dataIn, sm2Data->dataInSize,
-                                           certSm2Ctx.workBuff,
+                                           certSm2Ctx->workBuff,
                                            workBufferSize,
                                            msgDigest, &msgDigestSize );
         if (error != CC_OK) {
             return sm2Data->error;
         }
 
-        error =  CC_Sm2Sign ( certSm2Ctx.f_rng,
-                              certSm2Ctx.p_rng,
+        error =  CC_Sm2Sign ( certSm2Ctx->f_rng,
+                              certSm2Ctx->p_rng,
                               &privateKey,
                               msgDigest,
                               msgDigestSize,
@@ -164,7 +165,7 @@ CCChCertError_t CC_ChCertSm2SignVerify(CCSm2FipsKatContext_t certSm2Ctx)
 
 CCChCertError_t CC_ChCertSm2RunTests(CCCertKatContext_t  *pCertCtx){
     CCError_t error = CC_OK;
-    error = CC_ChCertSm2SignVerify(pCertCtx->fipsSm2Ctx);
+    error = CC_ChCertSm2SignVerify(&(pCertCtx->fipsSm2Ctx));
     if (error != CC_OK) {
         return CC_TEE_CH_CERT_ERROR_SM2_SIGN_PUT;
     }

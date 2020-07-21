@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -26,7 +26,7 @@
 
 
 /*!
-  This macro puts the memory barrier after the write operation.
+  This function puts the memory barrier after the write operation.
 
   @return None
  */
@@ -34,7 +34,7 @@
 void CC_PalWmb(void);
 
 /*!
-  This macro puts the memory barrier before the read operation.
+  This function puts the memory barrier before the read operation.
 
   @return None
  */

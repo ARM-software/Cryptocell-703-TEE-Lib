@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -88,13 +88,14 @@ CCChCertError_t ChCertRunPowerUpTest(CCCertKatContext_t  *pCertCtx);
 CCChCertError_t CC_ChCertSm4RunTests(void);
 CCChCertError_t CC_ChCertSm3RunTests(void);
 CCChCertError_t CC_ChCertSm2RunTests(CCCertKatContext_t  *pCertCtx);
-CCError_t CC_ChCertSm2ConditionalTest(CCRndContext_t          *pRndContext,
+CCError_t CC_ChCertSm2ConditionalTest(CCRndGenerateVectWorkFunc_t f_rng,
+                                      void                        *p_rng,
                                       CCEcpkiUserPrivKey_t    *pUserPrivKey,
                                       CCEcpkiUserPublKey_t    *pUserPublKey,
                                       CCSm2KeyGenCHCertContext_t  *pFipsCtx);
 /* Validate generated key by conditional test in case of SM2 domain */
-#define CH_CERT_KEY_GEN_VALIDATE(pRndContext, pUserPrivKey, pUserPublKey, pCHCertCtx)  \
-        (pDomain == CC_EcpkiGetSm2Domain())? CC_ChCertSm2ConditionalTest(pRndContext, pUserPrivKey, pUserPublKey, pCHCertCtx) : (CC_OK)
+#define CH_CERT_KEY_GEN_VALIDATE(f_rng, p_rng, pUserPrivKey, pUserPublKey, pCHCertCtx)  \
+        (pDomain == CC_EcpkiGetSm2Domain())? CC_ChCertSm2ConditionalTest(f_rng, p_rng, pUserPrivKey, pUserPublKey, pCHCertCtx) : (CC_OK)
 
 
 #else  // CC_SUPPORT_CH_CERT
@@ -103,7 +104,7 @@ CCError_t CC_ChCertSm2ConditionalTest(CCRndContext_t          *pRndContext,
 #define CHECK_AND_RETURN_UPON_CH_CERT_ERROR()
 #define CHECK_AND_RETURN_UPON_CH_CERT_STATE()
 #define CHECK_CH_CERT_SUPPORTED(supported) {supported = false;}
-#define CH_CERT_KEY_GEN_VALIDATE(pRndContext, pUserPrivKey, pUserPublKey, pCHCertCtx)   (CC_UNUSED_PARAM(pRndContext),CC_OK)
+#define CH_CERT_KEY_GEN_VALIDATE(f_rng, p_rng, pUserPrivKey, pUserPublKey, pCHCertCtx)   (CC_UNUSED_PARAM(f_rng),CC_UNUSED_PARAM(p_rng),CC_OK)
 #endif  // CC_SUPPORT_CH_CERT
 #endif  // _CC_CH_CERT_DEFS_H
 

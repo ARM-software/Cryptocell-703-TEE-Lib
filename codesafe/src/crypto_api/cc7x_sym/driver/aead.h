@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -35,6 +35,8 @@ typedef enum SepAeadCcmMode {
     SEP_AEAD_MODE_CCM_A = 8,
     SEP_AEAD_MODE_CCM_PE = 9,
     SEP_AEAD_MODE_CCM_PD = 10,
+    SEP_AEAD_MODE_GCM_INIT = 20,
+    SEP_AEAD_MODE_GCM_START_TEXT_GHASH = 21,
     SEP_AEAD_MODE_RESERVE32B = INT32_MAX,
 } SepAeadCcmMode_e;
 

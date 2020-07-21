@@ -30,7 +30,7 @@ endif
 endif
 endif
 
-# for cc713 
+# for cc713
 ifneq ($(filter cc312,$(STRIPPED_PROJ_NAME)),cc312)
 TEST_PROJ_NAME = cc7x
 TEST_PROJ_SOURCES = test_proj.c

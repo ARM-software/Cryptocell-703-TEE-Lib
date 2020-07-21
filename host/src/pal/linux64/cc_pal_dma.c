@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -16,6 +16,7 @@
 #include "cc_registers.h"
 #include "dx_reg_base_host.h"
 #include "cc_lli_defs.h"
+#include "cc_lli_defs_int.h"
 #include "cc_address_defs.h"
 #include "cc_pal_linux_drv.h"
 #include <assert.h>

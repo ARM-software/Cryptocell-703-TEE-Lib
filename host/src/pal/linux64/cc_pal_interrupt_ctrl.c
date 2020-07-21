@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -9,7 +9,7 @@
 /************* Include Files *************************************************/
 
 #include "cc_pal_types.h"
-#include "cc_pal_interrupt_ctrl_plat.h"
+#include "cc_pal_interrupt_ctrl.h"
 #include "cc_regs.h"
 #include "cc_registers.h"
 #include "cc_hal.h"
@@ -25,10 +25,17 @@
 /************************ Enums **********************************************/
 
 /************************ Typedefs *******************************************/
+/*! PAL message definition, */
+typedef struct {
+    uint32_t param; /*!< Parameter. */
+    uint32_t error; /*!< Error. */
+} CCPalMsg_t;
+
 typedef struct CC_Completion_t {
     sem_t empty;
     sem_t full;
-    CCHalMsg_t msg;
+    CCPalMsg_t msg;
+    bool valid;
 } CC_Completion_t;
 
 /************************ Extern *********************************************/
@@ -42,7 +49,9 @@ bool        suspendIrqPolling = false;
 CCPalISR    pIsr = NULL;
 
 CC_Completion_t xCompletion[CC_HAL_IRQ_MAX];
+
 /************************ Private Functions **********************************/
+
 void *palIrqThread(void *params)
 {
     CC_UNUSED_PARAM(params);
@@ -61,27 +70,10 @@ void *palIrqThread(void *params)
 }
 
 /************************ Public Functions ***********************************/
-/**
- * @brief
- *
- * @param[in]
- *
- * @param[out]
- *
- * @return - CC_SUCCESS for success, CC_FAIL for failure.
- */
+#ifndef CC_CONFIG_INTERRUPT_POLLING
 CCError_t CC_PalInitIrq(CCPalISR pIsrFunction)
 {
     uint32_t rc;
-    uint32_t i = 0;
-
-    /* initialize the completion databases */
-    for (i = 0; i < CC_HAL_IRQ_MAX; i++) {
-        sem_init(&xCompletion[i].empty, 0, SEM_MAX_DEPTH);
-        sem_init(&xCompletion[i].full, 0, 0);
-        xCompletion[i].msg.param = 0;
-        xCompletion[i].msg.error = CC_OK;
-    }
 
     palThreadExit = false;
 
@@ -101,94 +93,180 @@ CCError_t CC_PalInitIrq(CCPalISR pIsrFunction)
     return CC_SUCCESS;
 }
 
-/**
- * @brief This function removes the interrupt handler for
- * cryptocell interrupts.
- *
- */
 void CC_PalFinishIrq(void)
 {
     void **threadRet = NULL;
-    uint32_t i = 0;
-
-    for (i = 0; i < CC_HAL_IRQ_MAX; i++) {
-        sem_destroy(&xCompletion[i].empty);
-        sem_destroy(&xCompletion[i].full);
-    }
 
     palThreadExit = true; // The fips thread checks this flag and act accordingly
     pthread_join(palThreadId, threadRet);
 }
 
-/*
- * When using Polling to test the interrupts.
- *
- */
-#if defined(CC_CONFIG_INTERRUPT_POLLING)
-CCError_t CC_PalInterruptRead(CCHalIrq_t irqType, CCHalMsg_t *pMsg)
+CCError_t CC_PalInitWaitInterruptComp(CCHalIrq_t irqType)
 {
-    CCError_t error = CC_OK;
-    uint32_t irrValue = 0;
-
-    CC_UNUSED_PARAM(pMsg);
-
-    do {
-        error = CC_HalInterruptSample(irqType, CC_HAL_CLEAR, &irrValue);
-    } while (error == CC_OK && irrValue == 0);
-
-    pMsg->param = irrValue;
-
-    if (error != CC_OK) {
-        pMsg->error = CC_FAIL;
+    if ((irqType < CC_HAL_IRQ_MAX) && (xCompletion[irqType].valid == false)) {
+        xCompletion[irqType].msg.param = 0;
+        xCompletion[irqType].msg.error = CC_OK;
+        xCompletion[irqType].valid = true;
+        sem_init(&xCompletion[irqType].empty, 0, SEM_MAX_DEPTH);
+        sem_init(&xCompletion[irqType].full, 0, 0);
+    } else {
         return CC_FAIL;
     }
 
     return CC_OK;
 }
 
-CCError_t CC_PalInterruptNotify(CCHalIrq_t irqType, CCHalMsg_t *pMsg)
+CCError_t CC_PalFinishWaitInterruptComp(CCHalIrq_t irqType)
 {
-    CC_UNUSED_PARAM(irqType);
-    CC_UNUSED_PARAM(pMsg);
+    if ((irqType < CC_HAL_IRQ_MAX) && (xCompletion[irqType].valid == true)) {
+        xCompletion[irqType].valid = false;
+        sem_destroy(&xCompletion[irqType].empty);
+        sem_destroy(&xCompletion[irqType].full);
+    } else {
+        return CC_FAIL;
+    }
 
     return CC_OK;
 }
 
-#elif defined(CC_CONFIG_INTERRUPT_POLLING_THREAD)
-CCError_t CC_PalInterruptRead(CCHalIrq_t irqType, CCHalMsg_t *pMsg)
+CCError_t CC_PalWaitInterruptComp(CCHalIrq_t irqType, uint32_t *irqData)
 {
-    if (irqType >= CC_HAL_IRQ_MAX) {
+    if ((irqType >= CC_HAL_IRQ_MAX) || (xCompletion[irqType].valid == false)) {
         return CC_FAIL;
     }
 
     sem_wait(&xCompletion[irqType].full);
-
-    *pMsg = xCompletion[irqType].msg;
-
     sem_post(&xCompletion[irqType].empty);
 
-    if (pMsg->error != CC_OK) {
+    if ( xCompletion[irqType].msg.error != CC_OK) {
         return CC_FAIL;
+    }
+
+    if (irqData != NULL) {
+        *irqData = xCompletion[irqType].msg.param;
     }
 
     return CC_OK;
 }
 
-CCError_t CC_PalInterruptNotify(CCHalIrq_t irqType, CCHalMsg_t *pMsg)
+CCError_t CC_PalInterruptNotify(CCHalIrq_t irqType, uint32_t irrData)
 {
-    if (irqType >= CC_HAL_IRQ_MAX) {
+    uint32_t error = CC_OK;
+
+    if ((irqType >= CC_HAL_IRQ_MAX) || (xCompletion[irqType].valid == false)) {
         return CC_FAIL;
     }
 
+    if ((irqType == CC_HAL_IRQ_AXIM_COMPLETE) &&
+            (CC_REG_FLD_GET(0, HOST_RGF_IRR, AXI_ERR_INT, irrData) == CC_TRUE)) {
+        error = CC_FAIL;
+    }
+
     sem_wait(&xCompletion[irqType].empty);
-
-    xCompletion[irqType].msg = *pMsg;
-
+    xCompletion[irqType].msg.error = error;
+    xCompletion[irqType].msg.param = irrData;
     sem_post(&xCompletion[irqType].full);
 
     return CC_OK;
 }
+
 #else
-#error "Interrupt method is not supported for this OS and product"
+
+static CCError_t CC_PalInterruptHandle(CCHalIrq_t irqType, uint32_t irrData, uint32_t *irqData)
+{
+    if (irqType >= CC_HAL_IRQ_MAX){
+        return CC_FAIL;
+    }
+
+    if (irqType == CC_HAL_IRQ_AXIM_COMPLETE) {
+        if (irqData != NULL) {
+            *irqData = irrData;
+        }
+
+        /* test for AXI error */
+        if (CC_REG_FLD_GET(0, HOST_RGF_IRR, AXI_ERR_INT, irrData) == CC_TRUE) {
+            /* clearing bus error */
+            CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_ICR),
+                                  CC_REG_BIT_MASK(HOST_RGF_ICR, AXI_ERR_CLEAR));
+            return CC_FAIL;
+        }
+
+        /* clear interrupts */
+        CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_ICR),
+                CC_REG_BIT_MASK(HOST_RGF, IRR_AXIM_COMP_INT));
+
+    }
+
+    if (irqType == CC_HAL_IRQ_RNG) {
+        /* clear interrupt value */
+        if (irqData != NULL) {
+            *irqData = CC_HAL_READ_REGISTER(CC_REG_OFFSET(RNG, RNG_ISR));
+        }
+
+        CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(RNG, RNG_ICR), CC_HAL_ALL_BITS);
+
+        /* clear interrupts */
+        CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_ICR),
+                CC_REG_BIT_MASK(HOST_RGF, IRR_RNG_INT));
+    }
+
+    return CC_OK;
+}
+
+CCError_t CC_PalInitIrq(CCPalISR pIsrFunction)
+{
+    CC_UNUSED_PARAM(pIsrFunction);
+
+
+    // join will be in the termination function
+    return CC_SUCCESS;
+}
+
+void CC_PalFinishIrq(void)
+{
+    return;
+}
+
+CCError_t CC_PalInitWaitInterruptComp(CCHalIrq_t irqType)
+{
+    CC_UNUSED_PARAM(irqType);
+
+    return CC_OK;
+}
+
+CCError_t CC_PalFinishWaitInterruptComp(CCHalIrq_t irqType)
+{
+    CC_UNUSED_PARAM(irqType);
+
+    return CC_OK;
+}
+
+CCError_t CC_PalWaitInterruptComp(CCHalIrq_t irqType, uint32_t *irqData)
+{
+    uint32_t irrData = 0;
+    uint32_t mask;
+
+    if (irqType == CC_HAL_IRQ_AXIM_COMPLETE) {
+        mask =  CC_REG_BIT_MASK(HOST_RGF, IRR_AXIM_COMP_INT);
+    } else if (irqType == CC_HAL_IRQ_RNG) {
+        mask =  CC_REG_BIT_MASK(HOST_RGF, IRR_RNG_INT);
+    } else {
+        return CC_FAIL;
+    }
+
+    do {
+        irrData = CC_HAL_READ_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_IRR));
+    } while ((irrData & mask) == 0);
+
+    return CC_PalInterruptHandle(irqType, irrData, irqData);;
+}
+
+CCError_t CC_PalInterruptNotify(CCHalIrq_t irqType, uint32_t irrData)
+{
+    CC_UNUSED_PARAM(irqType);
+    CC_UNUSED_PARAM(irrData);
+
+    return CC_OK;
+}
 #endif /* CC_CONFIG_INTERRUPT_POLLING */
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #include "cc_sm3.h"
@@ -74,7 +74,7 @@ static CCError_t Sm2CalcSignature(
         goto End;
     }
     /*  Init PKA for operations with EC order */
-    err = PkaInitAndMutexLock(ordSizeInBits , &pkaReqRegs); // RL Count regs to clean 9!
+    err = PkaInitAndMutexLock(ordSizeInBits , &pkaReqRegs);
     if (err != CC_OK) {
         goto End;
     }
@@ -556,7 +556,6 @@ CCError_t EcWrstSm2Sign(
         /* Set bytes MaxVect= EcOrder. */
         pMaxVect[ordSizeInWords-1] = 0; /*zero MSWord of maxVect*/
         CC_PalMemCopy(pMaxVect, pDomain->ecR, sizeof(uint32_t)*ordSizeInWords);
-        /* TBD! set properly LE bytes order for pTempBuff, when BE PC is used */
         pEphemKeyBuf[ordSizeInWords-1] = 0; /*zero MSWord*/
         err = CC_RndGenerateVectorInRange(
                 f_rng, p_rng, ordSizeInBits, (uint8_t*)pMaxVect/* maxVect*/, (uint8_t*)pEphemKeyBuf);

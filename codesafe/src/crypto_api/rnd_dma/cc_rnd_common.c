@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -23,6 +23,7 @@
 #include "cc_pal_mutex.h"
 #include "cc_fips_defs.h"
 #include "cc_util_pm.h"
+#include "cc_util_int_defs.h"
 #ifdef CC_IOT
 #include "ctr_drbg.h"
 #include "entropy.h"
@@ -88,7 +89,6 @@ static uint8_t AddInt8ValueToUin8Vector(uint8_t  *vect, /*! [in]  vect - the buf
 
 #ifndef _INTERNAL_CC_ONE_SEED
 
-
 /**********************************************************************************************************/
 /**
   @brief The function generates a random vector Rand in range  1 < RandVect < MaxVect
@@ -142,6 +142,7 @@ CEXPORT_C CCError_t CC_RndGenerateVectorInRange(
         uint32_t   rndSizeInBytes, checkingSizeBytes = 0;
         uint32_t   maxVectSizeBits;
         uint32_t   maxVectSizeBytes = 0;
+        uint32_t   regVal;
         CCCommonCmpCounter_t CompRes;
 
         /* FUNCTION LOGIC */
@@ -150,6 +151,18 @@ CEXPORT_C CCError_t CC_RndGenerateVectorInRange(
         /*  Check input parameters */
         if (rndVect_ptr == NULL)
                 return CC_RND_VECTOR_OUT_PTR_ERROR;
+
+        /* Verify Security disable isn't set */
+        CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+        if (regVal == CC_TRUE) {
+            return CC_RND_SECURE_DISABLE_ERROR;
+        }
+
+        /* check if fatal error bit is set to ON */
+        CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+        if (regVal == CC_TRUE) {
+            return CC_RND_FATAL_ERR_IS_LOCKED_ERROR;
+        }
 
 	/* verify that rndSizeInBits is not greater than 2^19 -1 */
 	if (rndSizeInBits > 0x7FFFF)
@@ -322,7 +335,8 @@ End:
  *         Note: RndVect and MaxVect arrayss are given as sequence of words, where LSWord is most left byte
  *               and MSWord - most right.
  *
- * @param rndContext_ptr [in/out]  - Pointer to the RND context buffer.
+ * @param f_rng [in]           - pointer to DRBG function
+ * @param p_rng [in/out]       - Pointer to the random context
  * @param rndSizeInBits [in]   - If maxVect_ptr is not given, then rndSizeInBits defining the exact size (in bits)
  *                        of generated random vector. If maxVect is given, then it defines the
  *	                  size (rounded up to words) of the maxVect_ptr buffer. The size must be not greate
@@ -335,8 +349,9 @@ End:
  * @return CCError_t  - On success CC_OK is returned, on failure - a value,
  *      		  defined in cc_rnd_error.h.
  */
-CCError_t RndGenerateWordsArrayInRange(  // TODO- use maxVect_ptr and temp_ptr as the same vector to save space
-                                            CCRndContext_t *rndContext_ptr,
+CCError_t RndGenerateWordsArrayInRange(
+                                            CCRndGenerateVectWorkFunc_t f_rng,
+                                            void *p_rng,
                                             uint32_t   rndSizeInBits,
                                             uint32_t  *maxVect_ptr,
                                             uint32_t  *rndVect_ptr,
@@ -365,7 +380,7 @@ CCError_t RndGenerateWordsArrayInRange(  // TODO- use maxVect_ptr and temp_ptr a
 #endif
         /* generate vector in range [1...MaxVect] as LE bytes array */
         rndVect_ptr[rndSizeInWords-1] = 0;
-        err = CC_RndGenerateVectorInRange(rndContext_ptr->rndGenerateVectFunc, rndContext_ptr->rndState, rndSizeInBits, (uint8_t*)tmp_ptr, (uint8_t*)rndVect_ptr);
+        err = CC_RndGenerateVectorInRange(f_rng, p_rng, rndSizeInBits, (uint8_t*)tmp_ptr, (uint8_t*)rndVect_ptr);
 
         if (err)
                 return err;

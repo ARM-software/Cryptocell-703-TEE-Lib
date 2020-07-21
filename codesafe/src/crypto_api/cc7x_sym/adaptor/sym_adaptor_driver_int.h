@@ -1,12 +1,14 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
 #ifndef  _SYM_ADAPTOR_DRIVER_INT_H
 #define  _SYM_ADAPTOR_DRIVER_INT_H
+
+#include "cc_crypto_ctx.h"
 
 /******************************************************************************
  *                        	DEFINITIONS

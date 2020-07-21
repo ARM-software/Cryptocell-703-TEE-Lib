@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -12,7 +12,7 @@
 
 /*!
 @file
-@brief This file contains definitions and APIs that are used in the CryptoCell Chinese Certification module.
+@brief This file contains definitions and APIs that are used in the CryptoCell Chinese certification module.
 */
 
 /*!
@@ -23,18 +23,18 @@
 
 /*! Definition of Chinese certification state. */
 typedef uint32_t CCChCertState_t;
-/*! State definition of Chinese certification - unsupported. */
+/*! Chinese certification is unsupported. */
 #define CC_CH_CERT_STATE_NOT_SUPPORTED     0x0
 /*! State definition of Chinese certification - error. */
 #define CC_CH_CERT_STATE_ERROR             0x1
-/*! State definition of Chinese certification - supported. */
+/*! Chinese certification is supported. */
 #define CC_CH_CERT_STATE_SUPPORTED         0x2
-/*! State definition of Chinese certification - approved. */
+/*! Chinese certification is approved. */
 #define CC_CH_CERT_STATE_CRYPTO_APPROVED   0x4
 
 
-
-typedef enum CCChCertError {
+ /*! Error messages for Chinese cipher tests */
+typedef enum {
 	/*! A success indication. */
         CC_TEE_CH_CERT_ERROR_OK = 0,
 	/*! A general error. */
@@ -53,21 +53,24 @@ typedef enum CCChCertError {
         CC_TEE_CH_CERT_ERROR_SM2_KEY_GEN_COND,
 	/*! Reserved error code. */
         CC_TEE_CH_CERT_ERROR_RESERVE32B = INT32_MAX
-} CCChCertError_t;
+}CCChCertError_t;
 
-typedef enum CCChCertCryptoUsageState {
+/*! Error messages for Chinese certification tests*/
+typedef enum {
 	/*! Identifies the system as failed the Chinese certifications tests.  */
         CC_TEE_CH_CERT_CRYPTO_USAGE_STATE_NON_APPROVED = 0,
 	/*! Identifies the system as passed the Chinese certifications tests.  */
         CC_TEE_CH_CERT_CRYPTO_USAGE_STATE_APPROVED,
 	/*! Reserved error code. */
         CC_TEE_CH_CERT_CRYPTO_USAGE_STATE_RESERVE32B = INT32_MAX
-} CCChCertCryptoUsageState_t;
+}CCChCertCryptoUsageState_t;
 
-/*! A macro to set the Chinese certification state to approved. */
+
+
+/*! Sets the Chinese certification state to approved. */
 #define CC_CH_CERT_CRYPTO_USAGE_SET_APPROVED() \
         CC_ChCertCryptoUsageStateSet(CC_TEE_CH_CERT_CRYPTO_USAGE_STATE_APPROVED)
-/*! A macro to set the Chinese certification state to not approved. */
+/*! Sets the Chinese certification state to not approved. */
 #define CC_CH_CERT_CRYPTO_USAGE_SET_NON_APPROVED() \
         CC_ChCertCryptoUsageStateSet(CC_TEE_CH_CERT_CRYPTO_USAGE_STATE_NON_APPROVED)
 

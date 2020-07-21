@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -36,7 +36,7 @@ extern "C"
 /* RND source buffer inner (entrpopy) offset       */
 /*! The definition of the internal offset in words. */
 #define CC_RND_TRNG_SRC_INNER_OFFSET_WORDS    2
-/*! The definition of the internal offset in Bytes. */
+/*! The definition of the internal offset in bytes. */
 #define CC_RND_TRNG_SRC_INNER_OFFSET_BYTES    (CC_RND_TRNG_SRC_INNER_OFFSET_WORDS*sizeof(uint32_t))
 
 /************************ Structs  *****************************/

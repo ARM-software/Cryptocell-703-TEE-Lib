@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -18,10 +18,7 @@
 #include "cc_sm2_int.h"
 #include "cc_ecpki_domain_sm2.h"
 #include "cc_ecpki_build.h"
-
-
-
-
+#include "cc_util_int_defs.h"
 
 /**************************************************************************
  *                    CC_Sm2KeyExchangeContext_init function
@@ -54,6 +51,8 @@ CEXPORT_C CCError_t CC_Sm2KeyExchangeContext_init(
 {
     CCError_t err = CC_OK;
     size_t idMaxLen = 0;
+    uint32_t regVal;
+
     if (NULL == pCtx) {
         err = CC_ECPKI_SM2_INVALID_KE_CONTEXT_PTR;
         goto End;
@@ -98,6 +97,18 @@ CEXPORT_C CCError_t CC_Sm2KeyExchangeContext_init(
     if ( NULL == pWorkingBuffer ) {
         err = CC_ECPKI_SM2_INVALID_IN_PARAM_PTR;
         goto End;
+    }
+
+    /* The function should refuse to operate if the secure disable bit is set */
+    CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+    if (regVal == SECURE_DISABLE_FLAG_SET) {
+        return CC_ECPKI_SM2_SD_ENABLED_ERR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+    if (regVal == FATAL_ERROR_FLAG_SET) {
+        return CC_ECPKI_SM2_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     idMaxLen = (idlen > remoteIdLen)? idlen : remoteIdLen;
@@ -192,7 +203,7 @@ CEXPORT_C CCError_t CC_Sm2Kdf (
     size_t blocks = 0;
     size_t bits_in_last_block = 0;
     size_t bytes_in_last_block = 0;
-
+    uint32_t regVal;
     uint32_t ct;
     size_t out_block_size = CC_SM3_RESULT_SIZE_IN_BYTES;
 
@@ -214,6 +225,18 @@ CEXPORT_C CCError_t CC_Sm2Kdf (
     if ( NULL == pKeyOut ) {
         err = CC_ECPKI_INVALID_OUT_HASH_PTR_ERROR;
         goto End;
+    }
+
+    /* The function should refuse to operate if the secure disable bit is set */
+    CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+    if (regVal == SECURE_DISABLE_FLAG_SET) {
+        return CC_ECPKI_SM2_SD_ENABLED_ERR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+    if (regVal == FATAL_ERROR_FLAG_SET) {
+        return CC_ECPKI_SM2_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /*calculate number of blocks/SM3 digests*/
@@ -259,12 +282,10 @@ CEXPORT_C CCError_t CC_Sm2CalculateECPoint (
 )
 {
 
-    /*TBD! Check input pointers and sizes*/
-
     CCError_t err = CC_OK;
     CCEcpkiBuildTempData_t  build_temp_data;
     uint8_t pub_key_buf[CC_SM2_ORDER_LENGTH_IN_BYTES*2+1];
-
+    uint32_t regVal;
 
     const CCEcpkiDomain_t *pDomain = CC_EcpkiGetSm2Domain(); /* Currently the standard specifies only one possible domain for SM2. */
     size_t ordSizeInBits, ordSizeInWords, modSizeInWords;
@@ -288,6 +309,18 @@ CEXPORT_C CCError_t CC_Sm2CalculateECPoint (
     if ( NULL == pRandomPoint) {
         err = CC_ECPKI_SM2_INVALID_EPHEMERAL_PUB_OUT_PTR;
         goto End;
+    }
+
+    /* The function should refuse to operate if the secure disable bit is set */
+    CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+    if (regVal == SECURE_DISABLE_FLAG_SET) {
+        return CC_ECPKI_SM2_SD_ENABLED_ERR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+    if (regVal == FATAL_ERROR_FLAG_SET) {
+        return CC_ECPKI_SM2_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* set EC domain parameters modulus and EC order sizes */
@@ -314,7 +347,6 @@ CEXPORT_C CCError_t CC_Sm2CalculateECPoint (
 
     pMaxVect[ordSizeInWords-1] = 0; /*zero MSWord of maxVect*/
     CC_PalMemCopy((uint8_t*)pMaxVect, (uint8_t*)pDomain->ecR, sizeof(uint32_t)*ordSizeInWords);
-    /* TBD! set properly LE bytes order for pTempBuff, when BE PC is used */
     pEphemKeyBuf[ordSizeInWords-1] = 0; /*zero MSWord*/
     err = CC_RndGenerateVectorInRange(
             f_rng, p_rng, ordSizeInBits, (uint8_t*)pMaxVect/* maxVect*/, (uint8_t*)pEphemKeyBuf);
@@ -387,7 +419,6 @@ CEXPORT_C CCError_t CC_Sm2CalculateSharedSecret (
         size_t                      *pConfirmationValueOutSize  /*!< [in/out]   - A pointer to the output confirmation value size in bytes */
 )
 {
-    /*TBD! Check input pointers and sizes*/
 
     CCError_t               err                   = CC_OK;
     CCEcpkiPublKey_t*       pRemotePubKey ;
@@ -396,7 +427,7 @@ CEXPORT_C CCError_t CC_Sm2CalculateSharedSecret (
     uint8_t                 conf_temp_buffer[CC_SM3_RESULT_SIZE_IN_BYTES];
     size_t                  conf_template_buffer_size = CC_SM3_RESULT_SIZE_IN_BYTES;
     CCEcpkiPublKey_t        *pEphPubKey = 0;
-
+    uint32_t regVal;
 
     /*domain related values*/
 
@@ -419,6 +450,18 @@ CEXPORT_C CCError_t CC_Sm2CalculateSharedSecret (
     if ( (pConfirmationValueOutSize == NULL) || (CC_SM3_RESULT_SIZE_IN_BYTES > *pConfirmationValueOutSize) ) {
         err = CC_ECPKI_SM2_INVALID_OUT_PARAM_SIZE;
         goto End;
+    }
+
+    /* The function should refuse to operate if the secure disable bit is set */
+    CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+    if (regVal == SECURE_DISABLE_FLAG_SET) {
+        return CC_ECPKI_SM2_SD_ENABLED_ERR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+    if (regVal == FATAL_ERROR_FLAG_SET) {
+        return CC_ECPKI_SM2_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     pRemotePubKey = (CCEcpkiPublKey_t *)&pCtx->remotePubKey.PublKeyDbBuff;

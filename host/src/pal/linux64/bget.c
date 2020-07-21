@@ -414,7 +414,7 @@
 
 #define BufValid    1		      /* Define this symbol to enable the
 					 bpoolv() function for validating
-					 a buffer pool. */ 
+					 a buffer pool. */
 
 #define DumpData    1		      /* Define this symbol to enable the
 					 bufdump() function which allows
@@ -570,7 +570,7 @@ void *bget(requested_size)
     int compactseq = 0;
 #endif
     /*This is a local patch */
-    /*we do have scnarios in which      				      * 
+    /*we do have scnarios in which      				      *
     * the requested_size is zero and it's valid 			      */
     if (requested_size == 0)
 	    return NULL;
@@ -593,11 +593,11 @@ void *bget(requested_size)
     /* If a compact function was provided in the call to bectl(), wrap
        a loop around the allocation process  to  allow	compaction  to
        intervene in case we don't find a suitable buffer in the chain. */
-    
+
     while (1) {
 #endif
 	b = freelist.ql.flink;
-		
+
 #ifdef BestFit
 	best = &freelist;
 #endif
@@ -791,7 +791,7 @@ void brel(buf)
 #ifdef BECtl
     if (b->bh.bsize == 0) {	      /* Directly-acquired buffer? */
 	struct bdhead *bdh;
-    
+
 	bdh = BDH(((char *) buf) - sizeof(struct bdhead));
 	assert(b->bh.prevfree == 0);
 #ifdef BufStats
@@ -928,17 +928,17 @@ void bpool(buf, len)
     struct bfhead *b = BFH(buf);
     struct bhead *bn;
 
-    /* FIXED original code - to allow setting memory pool for the second time - assuming 
+    /* FIXED original code - to allow setting memory pool for the second time - assuming
        we always set the entire memory at the beginning       		       */
     /* cleaning the memory before first use , and setting it to initial values */
     memset(b, 0, sizeof(struct bfhead));
-    
+
     freelist.bh.bsize=0;
     freelist.bh.prevfree=0;
     freelist.ql.flink = &freelist;
     freelist.ql.blink = &freelist;
 
-  
+
 #ifdef SizeQuant
     len &= ~(SizeQuant - 1);
 #endif
@@ -963,11 +963,11 @@ void bpool(buf, len)
     /* Clear  the  backpointer at  the start of the block to indicate that
        there  is  no  free  block  prior  to  this   one.    That   blocks
        recombination when the first block in memory is released. */
-        
+
     b->bh.prevfree = 0;
 
     /* Chain the new block to the free list. */
-    
+
     assert(freelist.ql.blink->ql.flink == &freelist);
     assert(freelist.ql.flink->ql.blink == &freelist);
     b->ql.flink = &freelist;

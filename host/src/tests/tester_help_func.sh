@@ -15,7 +15,6 @@ if [[ -z $CC_DRIVER_NAME ]]; then
 			dx_device=$(find /sys/devices/ -name *$drivername | awk -F"." '{print $2}')  # Remove /sys directory path prefix
 
 			if [ "$dx_device" == "$drivername" ]; then
-			    # TODO: device name in /sys/devices is taken from FPGA version!? change when it is updated.
 				export CC_DRIVER_NAME=ccree
 				export CC_DEV=cc7xree
 			else
@@ -44,6 +43,7 @@ fi
 if [[ -z $LOG_FNAME ]]; then LOG_FNAME=logs/`basename $0 .sh`.log; fi
 
 TEST_SUCCESS_CNT=0
+TEST_WARN_CNT=0
 TEST_FAIL_CNT=0
 TEST_DISABLED_CNT=0
 
@@ -191,6 +191,7 @@ exec_test() {
 	echo `date`: "$1" >> $LOG_FNAME
 	echo "$2" >> $LOG_FNAME
 
+	start_seconds=$(date -u +%s)
 	if [[ "$progress_fname" == "" ]]; then # no progress indication
 		eval $2 >> $LOG_FNAME 2>&1
 		retval=$?
@@ -224,19 +225,100 @@ exec_test() {
 		wait $show_progress_pid
 	fi
 
+	finish_seconds=$(date -u +%s)
+	elapsed_seconds=$(( finish_seconds - start_seconds ))
+	elapsed_seconds=$(printf "%4ds" $elapsed_seconds)
+
 	if [[ $retval -ne 0 ]]; then
 		if [[ "$TERM" != "tester" ]]; then # Interactive terminal output
-			echo -e "${CSR_STAT_COLUMN}${COLOR_RED}[Failed]${COLOR_DEFAULT}${ERASE_TO_EOL}"
+			echo -e "${CSR_STAT_COLUMN}${elapsed_seconds} ${COLOR_RED}[Failed]${COLOR_DEFAULT}${ERASE_TO_EOL}"
 		else # tester
-			echo "[Failed]"
+			echo "${elapsed_seconds} [Failed]"
 		fi
 		echo XXX Test failed XXX >> $LOG_FNAME
 		TEST_FAIL_CNT=$(( TEST_FAIL_CNT + 1 ))
 	else
 		if [[ "$TERM" != "tester" ]]; then # Interactive terminal output
-			echo -e "${CSR_STAT_COLUMN}${COLOR_GREEN}[OK]${COLOR_DEFAULT}${ERASE_TO_EOL}"
+			echo -e " ${CSR_STAT_COLUMN}${elapsed_seconds} ${COLOR_GREEN}[OK]${COLOR_DEFAULT}${ERASE_TO_EOL}"
 		else
-			echo "[OK]"
+			echo " ${elapsed_seconds} [OK]"
+		fi
+		echo VVV Test passed VVV >> $LOG_FNAME
+		TEST_SUCCESS_CNT=$(( TEST_SUCCESS_CNT + 1 ))
+	fi
+	sync # Assure test results and log file are visible to "viewer" on PC (BuildBot)
+	if [[ "$TEST_TRACE" == "1" ]]; then read -p "Press <Enter> to continue..."; fi
+	return $retval
+}
+
+# Execute given test and log results to stdout
+# if error code returned from test is 2, log as warning
+# \param $1 Test name (to display)
+# \param $2 Test command
+# \param $3 (optional) test progress file name
+exec_warn_test() {
+	progress_fname=$3
+	if [[ "$TERM" != "tester" ]]; then # Interactive terminal output
+		echo -n -e "$1${CSR_STAT_COLUMN}[running...]"
+	else
+		pad_string "$1" ${STAT_COL}
+		echo -n "[running...]"
+	fi
+	echo ---------------------------- >> $LOG_FNAME
+	echo `date`: "$1" >> $LOG_FNAME
+	echo "$2" >> $LOG_FNAME
+
+	start_seconds=$(date -u +%s)
+	if [[ "$progress_fname" == "" ]]; then # no progress indication
+		eval $2 >> $LOG_FNAME 2>&1
+		retval=$?
+
+	else # With progress indication
+		rm -f $progress_fname # Remove old file
+		eval $2 >> $LOG_FNAME 2>&1 &
+		local bg_test_pid=$!
+		# Wait for progress file to be created
+		wait_retries=0
+		retry_limit=15
+		while [[ ! -f $progress_fname ]]; do
+			wait_retries=$(( wait_retries + 1 ))
+			if [[ $wait_retries -gt $retry_limit ]]; then
+				echo Progress indication file $progress_fname is missing. Aborting.
+				exit 1
+			fi
+			sleep 1
+		done
+		show_progress $progress_fname &
+		show_progress_pid=$!
+		wait $bg_test_pid
+		test_rc=$?
+		if [[ $test_rc -eq 0 ]]; then
+			retval=0
+		else
+			retval=1
+		fi
+		# Stop progress display
+		rm -f $progress_fname # Signals show_progress to stop
+		wait $show_progress_pid
+	fi
+
+	finish_seconds=$(date -u +%s)
+	elapsed_seconds=$(( finish_seconds - start_seconds ))
+	elapsed_seconds=$(printf "%4ds" $elapsed_seconds)
+
+	if [[ $retval -ne 0 ]]; then
+		if [[ "$TERM" != "tester" ]]; then # Interactive terminal output
+			echo -e "${CSR_STAT_COLUMN}${elapsed_seconds} ${COLOR_RED}[Warning]${COLOR_DEFAULT}${ERASE_TO_EOL}"
+		else # tester
+			echo "${elapsed_seconds} [Warning]"
+		fi
+		echo XXX Test warning XXX >> $LOG_FNAME
+		TEST_WARN_CNT=$(( TEST_WARN_CNT + 1 ))
+	else
+		if [[ "$TERM" != "tester" ]]; then # Interactive terminal output
+			echo -e " ${CSR_STAT_COLUMN}${elapsed_seconds} ${COLOR_GREEN}[OK]${COLOR_DEFAULT}${ERASE_TO_EOL}"
+		else
+			echo " ${elapsed_seconds} [OK]"
 		fi
 		echo VVV Test passed VVV >> $LOG_FNAME
 		TEST_SUCCESS_CNT=$(( TEST_SUCCESS_CNT + 1 ))
@@ -371,14 +453,15 @@ gen_test_summary() {
 	echo ============================ >> $LOG_FNAME
 	echo_log "`date`: Completed tests in $TEST_TIME_FMT [hh:mm:ss]:"
 	echo_log "${TAB} ${TEST_SUCCESS_CNT} succeded"
+	echo_log "${TAB} ${TEST_WARN_CNT} warnins"
 	echo_log "${TAB} ${TEST_FAIL_CNT} failed"
 	echo_log "${TAB} ${TEST_DISABLED_CNT} temporary disabled"
-	echo_log "Total: $((TEST_SUCCESS_CNT + TEST_FAIL_CNT + TEST_DISABLED_CNT)) tests."
+	echo_log "Total: $((TEST_SUCCESS_CNT + TEST_WARN_CNT + TEST_FAIL_CNT + TEST_DISABLED_CNT)) tests."
 	sync
 }
 
 get_next_test_index() {
-	echo $((TEST_SUCCESS_CNT + TEST_FAIL_CNT + TEST_DISABLED_CNT))
+	echo $((TEST_SUCCESS_CNT + TEST_WARN_CNT + TEST_FAIL_CNT + TEST_DISABLED_CNT))
 }
 
 # Load FW+Driver
@@ -416,7 +499,7 @@ start_driver() {
 			fi
 		else # Components required for init_cc_app of the default applet are missing
 			echo "Cannot load default applet in this project!"
-			echo "If you think it should - check for missing SeP images or missing init_cc_app."
+			echo "check for missing SeP images or missing init_cc_app."
 			return 255
 		fi
 	fi # -z $DEFAULT_APPLET

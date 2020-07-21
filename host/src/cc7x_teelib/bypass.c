@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #define CC_PAL_LOG_CUR_COMPONENT CC_LOG_MASK_CC_SYM_DRIVER
@@ -82,7 +82,7 @@ static Bypass_t GetBypassType(DmaBufType_t dmaType)
  *
  * \return int One of DX_SYM_* error codes defined in cc_sym_error.h.
  */
-int ProcessBypass(uint32_t *reserved, uint32_t *pCtx_reserved, DmaBuffer_s *pDmaInputBuffer, DmaBuffer_s *pDmaOutputBuffer)
+int ProcessBypass(CCSramAddr_t *reserved, uint32_t *pCtx_reserved, DmaBuffer_s *pDmaInputBuffer, DmaBuffer_s *pDmaOutputBuffer)
 {
 	Bypass_t dmaTypeIn, dmaTypeOut;
 	int drvRc = CC_RET_OK;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 /************* Include Files ****************/
@@ -16,6 +16,14 @@
 #include "llf_rnd_hwdefs.h"
 #include "llf_rnd_error.h"
 
+#ifdef CMPU_UTIL
+#include "cc_hal_sb.h"
+
+extern unsigned long gCcRegBase;
+#else
+#include "cc_pal_interrupt_ctrl.h"
+#endif
+
 /****************************************************************************************/
 /***********************      Auxiliary Functions              **************************/
 /****************************************************************************************/
@@ -26,24 +34,28 @@
  * Busy wait upon RNG Interrupt signals.
  *
  * This function waits RNG interrupt and then disables RNG source.
- * It calls CC_HalWaitInterruptGetData function to get RNG ISR (status) register.
+ * It calls wait for interrupt completion function to get RNG ISR (status) register.
  *
  * \return uint32_t RNG Interrupt status.
  */
 CCError_t LLF_RND_WaitRngInterrupt(uint32_t *isr_ptr)
 {
-    uint32_t irqData = 0;
     CCError_t error = CC_OK;
 
+#ifndef CMPU_UTIL
+    uint32_t irqData = 0;
+
     /* wait for watermark signal */
-    error = CC_HalWaitInterrupt(CC_HAL_IRQ_RNG, &irqData);
+    error = CC_PalWaitInterruptComp(CC_HAL_IRQ_RNG, &irqData);
     if (error == CC_OK){
         *isr_ptr = irqData;
     }
+#else
+    *isr_ptr = SB_HalWaitRngInterrupt(gCcRegBase);
+#endif
 
     /* stop DMA and the RNG source */
     CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(RNG,RNG_DMA_ENABLE), 0);
-    /*!!TBD: DMA_ENABLE -> SOURCE_ENABLE */
     CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(RNG, RND_SOURCE_ENABLE), 0);
 
     return error;
@@ -81,12 +93,6 @@ CCError_t LLF_RND_GetRoscSampleCnt(uint32_t rosc, CCTrngParams_t *pTrngParams)
  * @param pTrngParams - a pointer to params structure.
  * @param rosc_ptr - a pointer to previous rosc /in/, and
  * 			to next rosc /out/.
- * @param isNext - defines is increment of rosc ID needed or not.
- *      	   if isNext = TRUE - the function shifts rosc by one bit; Then
- *      	   the function checks is this rosc allowed, if yes - updates
- *      	   the rosc, else repeats previous steps. If no roscs allowed -
- *      	   returns an error.
- *
  *
  * @return CCError_t
  */

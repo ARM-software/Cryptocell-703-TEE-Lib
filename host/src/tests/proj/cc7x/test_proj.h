@@ -1,14 +1,9 @@
-/****************************************************************************
- * The confidential and proprietary information contained in this file may    *
- * only be used by a person authorised under and to the extent permitted      *
- * by a subsisting licensing agreement from Arm Limited (or its affiliates).  *
- *   (C) COPYRIGHT [2001-2019] Arm Limited (or its affiliates).                    *
- *       ALL RIGHTS RESERVED                                                  *
- * This entire notice must be reproduced on all copies of this file           *
- * and copies of this file may only be made by a person if such person is     *
- * permitted to do so under the terms of a subsisting license agreement       *
- * from Arm Limited (or its affiliates).                                      *
-*****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 #ifndef _TEST_PROJ_H_
 #define _TEST_PROJ_H_
@@ -40,19 +35,22 @@ extern struct ProcessMappingArea_t processMap;
 #define TEST_READ_TEE_CC_REG(offset) \
         *(volatile uint32_t *)(processMap.processTeeHwRegBaseAddr + (offset))
 
+#define DELAY(number_of_loops)	{ \
+		volatile uint32_t ii1; \
+		for(ii1=0; ii1<number_of_loops; ii1++); \
+}
+
 #define TEST_WRITE_TEE_CC_REG(offset, val)  { \
-        volatile uint32_t ii1; \
         (*(volatile uint32_t *)(processMap.processTeeHwRegBaseAddr + (offset))) = (uint32_t)(val); \
-        for(ii1=0; ii1<500; ii1++); \
+        DELAY(500); \
 }
 
 #define TEST_READ_REE_REG(offset) \
         (*(volatile uint32_t *)(processMap.processReeHwRegBaseAddr  + (offset)));
 
 #define TEST_WRITE_REE_REG(offset, val)   { \
-    volatile uint32_t ii1; \
         (*(volatile uint32_t *)(processMap.processReeHwRegBaseAddr  + (offset))) = (uint32_t)(val); \
-        for(ii1=0; ii1<500; ii1++); \
+        DELAY(500); \
 }
 /****************************************************************************/
 /*   							External API  								*/

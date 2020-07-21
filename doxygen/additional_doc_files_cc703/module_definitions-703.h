@@ -2,7 +2,7 @@
 /*
 
 
- This file contains the module definitions
+ This file contains the module definitions for CC703
  */
 
 
@@ -26,9 +26,8 @@
  @brief Contains all PAL APIs and definitions.
  */
 
-
    /*!
-  @defgroup ch_crypto Chinese certification cryptographic APIs and definitions
+  @defgroup ch_crypto Chinese certification cryptographic APIs
   @brief Contains Chinese certification cryptographic APIs and definitions
   */
 
@@ -51,6 +50,7 @@
  /*!
   @defgroup rng_module Random number definitions
   @brief Contains all random number definitions
+   @ingroup trng_apis
  */
 
 
@@ -59,7 +59,10 @@
   @brief Contains TRNG APIs
  */
 
-
+/*!
+    @defgroup cc_axi_config AXI configuration definitions
+    @brief Contains AXI configuration definitions
+*/
 
 
   /*
@@ -152,7 +155,7 @@
  */
 
  /*!
-  @defgroup bit_field_apis bit-field operations macros
+  @defgroup bit_field_apis Bit-field operations macros
   @brief Contains bit-field operation macros
   @ingroup cc_gen_defs
   */
@@ -174,12 +177,6 @@
  @ingroup cc_gen_defs
 */
 
-  /*!
-   @defgroup cc_defs  CryptoCell library enums and definitions
-   @brief Cntains all the enums and definitions that are used for the
-        CryptoCell library initialization and terminate APIs, as well as the APIs themselves.
-   @ingroup cc_gen_defs
-   */
 
   /*!
   @defgroup cc_pka_defs PKA enums and definitions
@@ -250,7 +247,7 @@ need to be replaced according to the Platform and TEE_OS.
  */
 
  /*!
- @defgroup ssi_pal_dma CryptoCell PAL DMA related APIs
+ @defgroup cc_pal_dma CryptoCell PAL DMA related APIs
  @brief Contains definitions that are used for DMA-related APIs.
  @ingroup cc_pal
  */

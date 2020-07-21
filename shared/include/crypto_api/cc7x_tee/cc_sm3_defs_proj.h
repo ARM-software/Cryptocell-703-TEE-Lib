@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -33,7 +33,6 @@ CC_SM3_USER_CTX_SIZE_IN_WORDS = (2 * (<sizeof drv_ctx_hash in words> + <sizeof C
 * <sizeof CCSm3PrivCtx_t in words> = CC_SM3_BLOCK_SIZE_IN_WORDS(16) + <size of uint32_t in words>(1)
 */
 #define CC_SM3_USER_CTX_SIZE_IN_WORDS 165
-
 
 #ifdef __cplusplus
 }

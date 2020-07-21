@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -35,7 +35,7 @@ extern CC_PalMutex CCSymCryptoMutex;
 /****************************************************************************************/
 /**
  *
- * @brief The function retrievess the TRNG parameters, provided by the User trough PAL implementation,
+ * @brief The function retrieves the TRNG parameters, provided by the User trough PAL implementation,
  *        and sets them into structures given by pTrngParams.
  *
  * @param[out] pTrngParams - The pointer to structure, containing parameters
@@ -79,7 +79,7 @@ func_error:
 /****************************************************************************************/
 /**
  *
- * @brief The function retrievess the TRNG parameters, provided by the User trough NVM,
+ * @brief The function retrieves the TRNG parameters, provided by the User trough NVM,
  *        and sets them into structures given by pointers rndContext_ptr and trngParams_ptr.
  *
  * @author reuvenl (6/26/2012)
@@ -131,7 +131,7 @@ uint32_t LLF_RND_DescBypass(CCSramAddr_t  inSramAddr, uint32_t inSize, uint32_t 
         if (error != CC_SUCCESS) {
                 CC_PalAbort("Fail to acquire mutex\n");
         }
-        /* Allocate contigious buffer for DMA transfer */
+        /* Allocate contiguous buffer for DMA transfer */
         error = CC_PalDmaContigBufferAllocate(inSize,
                                                &tmpVirtAddr_ptr);
         if (error != 0) {
@@ -158,7 +158,7 @@ uint32_t LLF_RND_DescBypass(CCSramAddr_t  inSramAddr, uint32_t inSize, uint32_t 
         AddHWDescSequence(&desc);
 
         /* Wait */
-        WaitForSequenceCompletionPlat();
+        WaitForSequenceCompletionPlat(CC_TRUE);
         CC_PalDmaBufferUnmap(tmpVirtAddr_ptr,
                               inSize,
                               CC_PAL_DMA_DIR_FROM_DEVICE,
@@ -166,7 +166,7 @@ uint32_t LLF_RND_DescBypass(CCSramAddr_t  inSramAddr, uint32_t inSize, uint32_t 
                               &tmpBlockInfo,
                               dmaH);
 
-        /* Copy data from temp buffer into RAM output, usung virt. addresses */
+        /* Copy data from temp buffer into RAM output, using virt. addresses */
         CC_PalMemCopy((uint8_t*)outAddr_ptr, tmpVirtAddr_ptr, inSize);
 
         /* Release the temp buffer */

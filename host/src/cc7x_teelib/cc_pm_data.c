@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
-#include "cc_pmData.h"
+#include "cc_pm_data.h"
 #include "cc_regs.h"
 #include "cc_hal.h"
 

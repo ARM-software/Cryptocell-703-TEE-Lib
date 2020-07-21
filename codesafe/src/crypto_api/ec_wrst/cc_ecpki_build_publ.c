@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -16,6 +16,7 @@
 #include "cc_ecpki_local.h"
 #include "cc_fips_defs.h"
 #include "ec_wrst.h"
+#include "cc_util_int_defs.h"
 
 /************************ Defines ***************************************/
 
@@ -40,7 +41,7 @@ CEXPORT_C CCError_t CC_EcpkiPublKeyBuildAndCheck(
 
 {
         /* FUNCTION DECLARATIONS */
-
+        uint32_t regVal;
         /* the private key structure pointer */
         CCEcpkiPublKey_t *pPublKey;
         /* EC modulus size in bytes*/
@@ -53,6 +54,18 @@ CEXPORT_C CCError_t CC_EcpkiPublKeyBuildAndCheck(
 
         /* FUNCTION LOGIC */
         CHECK_AND_RETURN_ERR_UPON_FIPS_ERROR();
+
+        /* The function should refuse to operate if the secure disable bit is set */
+        CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+        if (regVal == SECURE_DISABLE_FLAG_SET) {
+            return CC_ECPKI_SD_ENABLED_ERR;
+        }
+
+        /* The function should refuse to operate if the Fatal Error bit is set */
+        CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+        if (regVal == FATAL_ERROR_FLAG_SET) {
+            return CC_ECPKI_FATAL_ERR_IS_LOCKED_ERR;
+        }
 
         /* ...... checking the validity of the User given pointers ......... */
         if (pUserPublKey == NULL)
@@ -102,7 +115,6 @@ CEXPORT_C CCError_t CC_EcpkiPublKeyBuildAndCheck(
         /* ...... copy the buffers to the key handle structure ................ */
         /* -------------------------------------------------------------------- */
 
-        /* RL ? clear the public key db */
         CC_PalMemSetZero((uint8_t*)pUserPublKey, sizeof(CCEcpkiUserPublKey_t));
 
         /* copy public key Xin to X, Yin to Y */
@@ -228,11 +240,24 @@ CEXPORT_C CCError_t CC_EcpkiPubKeyExport(
         uint32_t   modSizeInBytes, modSizeInWords;
         uint8_t    yBit;
 
+        uint32_t regVal;
         /* the err return code identifier */
         CCError_t err = CC_OK;
 
         /*............. Checking input parameters   ..............................*/
         CHECK_AND_RETURN_ERR_UPON_FIPS_ERROR();
+
+        /* The function should refuse to operate if the secure disable bit is set */
+        CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+        if (regVal == SECURE_DISABLE_FLAG_SET) {
+            return CC_ECPKI_SD_ENABLED_ERR;
+        }
+
+        /* The function should refuse to operate if the Fatal Error bit is set */
+        CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+        if (regVal == FATAL_ERROR_FLAG_SET) {
+            return CC_ECPKI_FATAL_ERR_IS_LOCKED_ERR;
+        }
 
         if (pUserPublKey == NULL)
                 return  CC_ECPKI_EXPORT_PUBL_KEY_INVALID_USER_PUBL_KEY_PTR_ERROR;

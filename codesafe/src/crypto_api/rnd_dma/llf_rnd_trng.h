@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #ifndef LLF_RND_TRNG_H
@@ -33,12 +33,12 @@ extern "C"
  * @brief The function starts the TRNG with given parameters and ROSCs lengths
  *
  *      NOTE: It is assumed, that before calling this function, the previously
- *            started TRNG processes were compleated and Interrupts cleared.
+ *            started TRNG processes were completed and Interrupts cleared.
  *
  *      Algorithm:
  *      1. If is continued mode, the function does:
  *              checks actual parameters, loaded in TRNG registers,
- *              vs. user given parameters; if any not matchs - returns Error.
+ *              vs. user given parameters; if any not matches - returns Error.
  *         Else /do restart/:
  *      	sets ROSCs to start: for "SWEE" - all allowed, for "FE" -
  *      	fastest from allowed; gets the user given parameters and sets

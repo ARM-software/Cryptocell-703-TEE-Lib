@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -60,7 +60,7 @@ so it can be used by other EC primitives.
 When operating the EC cryptographic algorithms with imported EC public
 key, this function should be called before using of the public key.
 
-\note The Incoming public key PublKeyIn structure is big endian bytes array, containing
+\note The Incoming public key PublKeyIn structure is big-endian bytes array, containing
 concatenation of PC||X||Y. \par
 \note PC - point control single byte, defining the type of point: 0x4 - uncompressed,
 06,07 - hybrid, 2,3 - compressed. \par
@@ -76,13 +76,13 @@ The Elliptic Curve Digital Signature Algorithm (ECDSA):
 
 \note Full check mode takes long time and should be used only when it is actually needed.
 
-@return CC_OK on success.
+@return \c CC_OK on success.
 @return A non-zero value on failure as defined cc_ecpki_error.h.
 */
 /*
 The function performs the following operations:
 - Checks validity of incoming variables and pointers;
-- Converts incoming key data from big endian into little endian;
+- Converts incoming key data from big-endian into little-endian;
 - If public key is given in compressed form (i.e. byte[0] = 2 or 3 and
   coordinate Y is omitted), then the function uncompress it;
 - Performs checking of input key according to CheckMode parameter.
@@ -93,7 +93,7 @@ CIMPORT_C CCError_t CC_EcpkiPublKeyBuildAndCheck(
 		    const CCEcpkiDomain_t       *pDomain,
 			/*! [in]  Pointer to the input public key data, in compressed or
 										   uncompressed or hybrid form:
-										   [PC||X||Y] Big-Endian representation, structured according to
+										   [PC||X||Y] big-endian representation, structured according to
 										   [IEEE1363], where:
 										   <ul><li>X and Y are the public key's EC point coordinates.
 										   In compressed form, Y is omitted.</li>
@@ -154,24 +154,24 @@ For a description of the parameters and return values, see ::CC_EcpkiPublKeyBuil
  *                     CC_EcpkiPubKeyExport function                           *
  ***********************************************************************************/
 /*!
-@brief Converts an existing public key from internal representation to Big-Endian export representation.
+@brief Converts an existing public key from internal representation to big-endian export representation.
 The function converts the X,Y coordinates of public key EC point to big endianness,
 and sets the public key as follows:
 <ul><li>In case "Uncompressed" point:  PubKey = PC||X||Y, PC = 0x4 - single byte;</li>
 <li>In case of "Hybrid" key PC = 0x6.</li>
 <li>In case of "Compressed" key PC = 0x2.</li></ul>
-\note Size of output X and Y coordinates is equal to ModSizeInBytes.
+\note Size of output X and Y coordinates is equal to the modulus size in bytes.
 @return \c CC_OK on success.
 @return A non-zero value on failure as defined cc_ecpki_error.h.
 */
 CIMPORT_C CCError_t CC_EcpkiPubKeyExport(
-					/*! [in]  Pointer to the input public key structure (in Little-Endian form). */
+					/*! [in]  Pointer to the input public key structure (in little-endian form). */
 			      CCEcpkiUserPublKey_t           *pUserPublKey,
 				  /*! [in]  Compression mode: Compressed, Uncompressed or Hybrid. */
 			      CCEcpkiPointCompression_t      compression,
 				  /*! [out] Pointer to the exported public key array, in compressed or uncompressed
 										       or hybrid form:
-											[PC||X||Y] Big-Endian representation, structured according to [IEEE1363].
+											[PC||X||Y] big-endian representation, structured according to [IEEE1363].
 											In compressed form, Y is omitted. */
 			      uint8_t                        *pExternPublKey,
 				   /*! [in/out] Pointer used for the input of the user public key buffer size
@@ -185,6 +185,6 @@ CIMPORT_C CCError_t CC_EcpkiPubKeyExport(
 }
 #endif
 /*!
-@}
+ @}
  */
 #endif

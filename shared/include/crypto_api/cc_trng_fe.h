@@ -42,7 +42,7 @@ extern "C"
 
 */
 CCError_t CC_TrngEntropyGet(
-			/*![in] - The required entropy size in bits.Size must be bigger than CC_TRNG_MIN_ENTROPY_SIZE, and smaller than CC_TRNG_MAX_ENTROPY_SIZE. */
+			/*![in] The required entropy size in bits.Size must be bigger than CC_TRNG_MIN_ENTROPY_SIZE, and smaller than CC_TRNG_MAX_ENTROPY_SIZE. */
 							size_t    entropySizeBits,
 							 /*! [out] Pointer to the entropy buffer. */
                             uint8_t   *pOutEntropy,

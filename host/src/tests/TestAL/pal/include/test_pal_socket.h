@@ -1,14 +1,9 @@
-/*******************************************************************************
-* The confidential and proprietary information contained in this file may      *
-* only be used by a person authorised under and to the extent permitted        *
-* by a subsisting licensing agreement from ARM Limited or its affiliates.      *
-*   (C) COPYRIGHT [2001-2017] ARM Limited or its affiliates.                   *
-*       ALL RIGHTS RESERVED                                                    *
-* This entire notice must be reproduced on all copies of this file             *
-* and copies of this file may only be made by a person if such person is       *
-* permitted to do so under the terms of a subsisting license agreement         *
-* from ARM Limited or its affiliates.                                          *
-*******************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ *
+ */
 
 #ifndef TP_SOCKET_H_
 #define TP_SOCKET_H_
@@ -71,13 +66,17 @@ enum tp_sock_protocol {
  * @return 0 on success.
  * @return 1 on failure.
  */
-uint32_t Test_PalSocket(tp_socket *s, /*<! Socket structure pointer.*/
- enum tp_sock_domain domain, /*<! Specifies a communication domain.*/
+uint32_t Test_PalSocket(
+ /*! Socket structure pointer.*/
+ tp_socket *s,
+ /*! Specifies a communication domain.*/
+ enum tp_sock_domain domain,
+ /*! Indicated type, which specifies the communication semantics.*/
  enum tp_sock_type type,
- /*<! Indicated type, which specifies the communication semantics.*/
+ /*! Specifies a particular protocol to be used with the socket.*/
  enum tp_sock_protocol protocol,
- /*<! Specifies a particular protocol to be used with the socket.*/
- const uint32_t recvTimeout_ms /*<! Specifies receive timeout in milliseconds.*/
+ /*! Specifies receive timeout in milliseconds.*/
+ const uint32_t recvTimeout_ms
 );
 
 /******************************************************************************/
@@ -88,7 +87,9 @@ uint32_t Test_PalSocket(tp_socket *s, /*<! Socket structure pointer.*/
  * @return 0 on success.
  * @return 1 on failure.
  */
-uint32_t Test_PalCloseSocket(tp_socket s /*<! Socket handler to be closed.*/
+uint32_t Test_PalCloseSocket(
+ /*! Socket handler to be closed.*/
+ tp_socket s
 );
 
 /******************************************************************************/
@@ -99,9 +100,13 @@ uint32_t Test_PalCloseSocket(tp_socket s /*<! Socket handler to be closed.*/
  * @return 0 on success.
  * @return 1 on failure.
  */
-uint32_t Test_PalConnect(tp_socket s, /*<! Socket handler.*/
- const uint8_t *addr, /*<! Destination IP address.*/
- uint32_t port /*<! Destination port number.*/
+uint32_t Test_PalConnect(
+ /*! Socket handler.*/
+ tp_socket s,
+ /*! Destination IP address.*/
+ const uint8_t *addr,
+ /*! Destination port number.*/
+ uint32_t port
 );
 
 /******************************************************************************/
@@ -112,8 +117,11 @@ uint32_t Test_PalConnect(tp_socket s, /*<! Socket handler.*/
  * @return 0 on success.
  * @return 1 on failure.
  */
-uint32_t Test_PalBind(tp_socket s, /*<! Socket handler.*/
- uint32_t port /*<! Socket local port number.*/
+uint32_t Test_PalBind(
+ /*! Socket handler.*/
+ tp_socket s,
+ /*! Socket local port number.*/
+ uint32_t port
 );
 
 /******************************************************************************/
@@ -124,9 +132,11 @@ uint32_t Test_PalBind(tp_socket s, /*<! Socket handler.*/
  * @return 0 on success.
  * @return 1 on failure.
  */
-uint32_t Test_PalListen(tp_socket s, /*<! Socket handler.*/
- uint32_t backlog /*<! Puts a limit on the number of simultaneously
- connected clients.*/
+uint32_t Test_PalListen(
+ /*! Socket handler.*/
+ tp_socket s,
+ /*! Puts a limit on the number of simultaneously connected clients.*/
+ uint32_t backlog
 );
 
 /******************************************************************************/
@@ -138,10 +148,14 @@ uint32_t Test_PalListen(tp_socket s, /*<! Socket handler.*/
  * @return 1 on failure.
  */
 uint32_t Test_PalAccept(
- tp_socket s, /*<! The listening socket on which new connections are to be accepted.*/
- tp_socket *acptS, /*<! Handle of the accepted socket created.*/
- uint8_t *addr, /*<! IP Addr of the socket from which a connection was accepted.*/
- uint32_t *port /*<! Port number of the socket from which a connection was accepted.*/
+ /*! The listening socket on which new connections are to be accepted.*/
+ tp_socket s,
+ /*! Handle of the accepted socket created.*/
+ tp_socket *acptS,
+ /*! IP Addr of the socket from which a connection was accepted.*/
+ uint8_t *addr,
+ /*! Port number of the socket from which a connection was accepted.*/
+ uint32_t *port
 );
 
 /******************************************************************************/
@@ -152,7 +166,9 @@ uint32_t Test_PalAccept(
  * @return 0 on success.
  * @return 1 on failure.
  */
-uint32_t Test_PalShutdown(tp_socket s /*<! Socket handler.*/
+uint32_t Test_PalShutdown(
+ /*! Socket handler.*/
+ tp_socket s
 );
 
 /******************************************************************************/
@@ -163,9 +179,13 @@ uint32_t Test_PalShutdown(tp_socket s /*<! Socket handler.*/
  * @return Number of bytes sent on success.
  * @return 0 on failure.
  */
-uint32_t Test_PalSend(tp_socket s, /*<! Active connected socket-descriptor.*/
- const uint8_t *buf, /*<! Pointer to data buffer prepared by user.*/
- size_t len /*<! Buffer size.*/
+uint32_t Test_PalSend(
+ /*! Active connected socket-descriptor.*/
+ tp_socket s,
+ /*! Pointer to data buffer prepared by user.*/
+ const uint8_t *buf,
+ /*! Buffer size.*/
+ size_t len
 );
 
 /******************************************************************************/
@@ -176,11 +196,17 @@ uint32_t Test_PalSend(tp_socket s, /*<! Active connected socket-descriptor.*/
  * @return Number of bytes sent on success.
  * @return 0 on failure.
  */
-uint32_t Test_PalSendTo(tp_socket s, /*!< Active connected socket-descriptor.*/
- const uint8_t *buf, /*!< Pointer to data buffer prepared by user.*/
- size_t len, /*!< Buffer size.*/
- const uint8_t *addr, /*!< IP address.*/
- uint32_t port /*!< Port number.*/
+uint32_t Test_PalSendTo(
+ /*! Active connected socket-descriptor.*/
+ tp_socket s,
+ /*! Pointer to data buffer prepared by user.*/
+ const uint8_t *buf,
+ /*! Buffer size.*/
+ size_t len,
+ /*! IP address.*/
+ const uint8_t *addr,
+ /*! Port number.*/
+ uint32_t port
 );
 
 /******************************************************************************/
@@ -191,11 +217,17 @@ uint32_t Test_PalSendTo(tp_socket s, /*!< Active connected socket-descriptor.*/
  * @return Number of bytes recv on success.
  * @return 0 on failure.
  */
-uint32_t Test_PalRecvFrom(tp_socket s, /*!< Active socket-descriptor.*/
- const uint8_t *buf, /*!< Pointer to data buffer prepared by user.*/
- size_t len, /*!< Buffer size.*/
- uint8_t *addr, /*!< Received IP address.*/
- uint32_t *port /*!< Received port number.*/
+uint32_t Test_PalRecvFrom(
+ /*! Active socket-descriptor.*/
+ tp_socket s,
+ /*! Pointer to data buffer prepared by user.*/
+ const uint8_t *buf,
+ /*! Buffer size.*/
+ size_t len,
+ /*! Received IP address.*/
+ uint8_t *addr,
+ /*! Received port number.*/
+ uint32_t *port
 );
 
 /******************************************************************************/
@@ -205,9 +237,13 @@ uint32_t Test_PalRecvFrom(tp_socket s, /*!< Active socket-descriptor.*/
  *
  * @return Number of bytes recv for success, 0 for failure.
  */
-uint32_t Test_PalRecv(tp_socket s, /*!< Active socket-descriptor.*/
- const uint8_t *buf, /*!< Pointer to data buffer prepared by user.*/
- size_t len /*!< Buffer size.*/
+uint32_t Test_PalRecv(
+ /*! Active socket-descriptor.*/
+ tp_socket s,
+ /*! Pointer to data buffer prepared by user.*/
+ const uint8_t *buf,
+ /*! Buffer size.*/
+ size_t len
 );
 
 /******************************************************************************/
@@ -218,7 +254,9 @@ uint32_t Test_PalRecv(tp_socket s, /*!< Active socket-descriptor.*/
  *
  * @return The converted value.
  */
-uint32_t Test_PalHtonl(uint32_t val /*!< Value to convert.*/
+uint32_t Test_PalHtonl(
+ /*! Value to convert.*/
+ uint32_t val
 );
 
 /******************************************************************************/
@@ -229,7 +267,9 @@ uint32_t Test_PalHtonl(uint32_t val /*!< Value to convert.*/
  *
  * @return The converted value.
  */
-uint16_t Test_PalHtons(uint16_t val /*!< Value to convert.*/
+uint16_t Test_PalHtons(
+ /*! Value to convert.*/
+ uint16_t val
 );
 
 /******************************************************************************/
@@ -240,7 +280,9 @@ uint16_t Test_PalHtons(uint16_t val /*!< Value to convert.*/
  *
  * @return The converted value.
  */
-uint32_t Test_PalNtohl(uint32_t val /*!< Value to convert.*/
+uint32_t Test_PalNtohl(
+ /*! Value to convert.*/
+ uint32_t val
 );
 
 /******************************************************************************/
@@ -251,7 +293,9 @@ uint32_t Test_PalNtohl(uint32_t val /*!< Value to convert.*/
  *
  * @return The converted value.
  */
-uint16_t Test_PalNtohs(uint16_t val /*!< Value to convert.*/
+uint16_t Test_PalNtohs(
+ /*! Value to convert.*/
+ uint16_t val
 );
 
 #ifdef __cplusplus

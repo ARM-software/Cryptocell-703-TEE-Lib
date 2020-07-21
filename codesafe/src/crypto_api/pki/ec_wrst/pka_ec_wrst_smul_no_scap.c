@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -22,7 +22,6 @@
 #include "pka_ec_wrst_glob_regs.h"
 
 
-//! RL Temporary for ECDSA Verify testing
 #include "pki_dbg.h"
 
 /* canceling the lint warning:
@@ -102,7 +101,6 @@ static void EcWrstDivideVectorBy2(uint32_t *pVecBuff, /*!< [in] Vector buffer. *
         PKA_ADD(LEN_ID_N_PKA_REG_BITS, ECC_REG_N12, ECC_REG_N8, ECC_REG_N4);
 
         PKA_SUB(LEN_ID_N_PKA_REG_BITS, tp, ECC_REG_N4, yp); // ry of -p
-        //! RL may be changed to return error
         PKA_ASSERT(*k == '+', "*k == '+'\n");
 
         PKA_COPY(LEN_ID_N_PKA_REG_BITS, xr, xp);
@@ -295,7 +293,6 @@ static CCError_t ScalarMultAff(
  End:
 
         /* zeroing of kt and naf buffers */
-        // RL NAF size according to NAF representation
         CC_PalMemSetZero(tmpBuff, (ordSizeInWords+1)*sizeof(uint32_t) + (ordSizeInWords+1)*32/*NAF buff size in bytes*/);
         return err;
 }

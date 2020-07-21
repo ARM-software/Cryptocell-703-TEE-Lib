@@ -132,6 +132,7 @@ ifeq ($(ARCH),arm64)
 	# aarch64-linux-gnu-
 	CROSS_COMPILE := $(if $(filter aarch64-%,$(CROSS_COMPILE)),$(CROSS_COMPILE),aarch64-linux-gnu-)
 	ARCH_ENDIAN = LITTLE
+	ARM_CPU = cortex-a72.cortex-a53
 endif
 
 ifneq ($(filter i686 x86 x86win x86_64,$(ARCH)),) # x86* Arch.
@@ -222,7 +223,7 @@ all: # default in case there is no proj.cfg and setconfig_ was not used
 setconfig_%: $(PROJ_CONFIGS_DIR)/proj-%.cfg
 	@$(info [CFG] $(CONFIGS_PATH)/proj-$*.cfg --> proj.cfg)
 	@cd $(HOST_PROJ_ROOT) && ln -s $(CONFIGS_PATH)/proj-$*.cfg $(PROJ_CFG_FNAME)
-	@$(if $(or $(findstring ree_,$<), $(findstring ree-,$<)), ,$(if $(or $(findstring devel,$<), $(findstring llhw,$<)), make -C tests copy_infra_suite,))
+	@$(if $(or $(findstring ree_,$<), $(findstring ree-,$<)), ,$(if $(or $(findstring devel,$<), $(findstring llhw,$<)), $(MAKE) -C tests copy_infra_suite,))
 
 
 $(PROJ_CONFIGS_DIR)/proj-%.cfg:
@@ -243,7 +244,7 @@ include $(PROJ_CFG_PATH)
 
 # default TEE_OS
 REE_OS ?= linux
-TEE_OS ?= cc_linux
+TEE_OS ?= linux64
 export REE_OS
 export TEE_OS
 #$(info REE_OS=$(REE_OS))

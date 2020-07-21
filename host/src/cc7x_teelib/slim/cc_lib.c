@@ -15,7 +15,7 @@
 #include "cc_hal_defs.h"
 #include "cc_pal_init.h"
 #include "cc_pal_mutex.h"
-#include "cc_pal_interrupt_ctrl_plat.h"
+#include "cc_pal_interrupt_ctrl.h"
 #include "hw_queue.h"
 #include "completion.h"
 #include "sym_adaptor_driver.h"
@@ -42,7 +42,6 @@
 /************************ Extern *********************************************/
 /* interrupthandler function */
 extern void CC_InterruptHandler(void);
-
 /************************ Global Data ****************************************/
 CC_PalMutex CCSymCryptoMutex;  /* for use by SM3/4  */
 CC_PalMutex CCAsymCryptoMutex;  /* for use by SM2 */
@@ -109,7 +108,7 @@ CClibRetCode_t CC_LibInit(bool isChCertSupport, CCCertKatContext_t  *pCertCtx, C
             CC_CID_3_VAL };
 
     if (pAxiFields == NULL) {
-        return SA_SILIB_RET_EINVAL;
+        return CC_LIB_RET_EINVAL;
     }
 
     rc = CC_PalInit();
@@ -175,23 +174,27 @@ CClibRetCode_t CC_LibInit(bool isChCertSupport, CCCertKatContext_t  *pCertCtx, C
 
     CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_IMR), imrValue & (~imrMask));
 
+    /* init PAL wait for interrupt completion */
+    CC_PalInitWaitInterruptComp(CC_HAL_IRQ_AXIM_COMPLETE);
+    CC_PalInitWaitInterruptComp(CC_HAL_IRQ_RNG);
+
     /* set axi parameters */
     rc = CC_HalSetCacheParams (pAxiFields);
     if (rc != CC_LIB_RET_OK) {
         rc = CC_LIB_RET_CACHE_PARAMS_ERROR;
-        goto InitErr2;
+        goto InitErr3;
     }
 
-    /* common initialisations */
+    /* common initializations */
     rc = CC_CommonInit();
     if (rc != CC_LIB_RET_OK) {
-        goto InitErr2;
+        goto InitErr3;
     }
 
     rc = SymDriverAdaptorModuleInit();
     if (rc != CC_LIB_RET_OK) {
-        rc = SA_SILIB_RET_COMPLETION;  // check
-        goto InitErr2;
+        rc = CC_LIB_RET_COMPLETION;  // check
+        goto InitErr3;
     }
 
     CC_PAL_PERF_INIT();
@@ -202,19 +205,19 @@ CClibRetCode_t CC_LibInit(bool isChCertSupport, CCCertKatContext_t  *pCertCtx, C
 #ifdef CC_SUPPORT_CH_CERT
     rc = ChCertSetState(isChCertSupport ? CC_CH_CERT_STATE_SUPPORTED : CC_CH_CERT_STATE_NOT_SUPPORTED);
     if (rc != CC_OK) {
-        rc = SA_SILIB_RET_ECHCERT;
-        goto InitErr2;
+        rc = CC_LIB_RET_ECHCERT;
+        goto InitErr3;
     }
     rc = ChCertRunPowerUpTest(pCertCtx);
     if (rc != CC_OK) {
-        rc = SA_SILIB_RET_ECHCERT;
+        rc = CC_LIB_RET_ECHCERT;
         goto InitErr;   /* do not terminate hal and pal, since CC API should work and return error */
     }
 
     rc = CC_CH_CERT_CRYPTO_USAGE_SET_APPROVED();
     if (rc != CC_OK) {
-        rc = SA_SILIB_RET_ECHCERT;
-        goto InitErr2;
+        rc = CC_LIB_RET_ECHCERT;
+        goto InitErr3;
     }
 
 #else
@@ -225,6 +228,9 @@ CClibRetCode_t CC_LibInit(bool isChCertSupport, CCCertKatContext_t  *pCertCtx, C
 
 
     return CC_LIB_RET_OK;
+
+InitErr3:
+    CC_PalFinishIrq();
 
 InitErr2:
     CC_HalTerminate();
@@ -265,6 +271,9 @@ void CC_LibFini(void)
     imrValue = CC_HAL_READ_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_IMR));
     CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_IMR),
                           imrValue | CC_CPP_INTERRUPT_ENABLE_MASK);
+
+    CC_PalFinishWaitInterruptComp(CC_HAL_IRQ_AXIM_COMPLETE);
+    CC_PalFinishWaitInterruptComp(CC_HAL_IRQ_RNG);
 
     CC_PalFinishIrq();
 

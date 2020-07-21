@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #ifndef _CC_PAL_PM_H
@@ -63,8 +63,8 @@ CCError_t CC_PalPowerSaveModeSelect(CCBool isPowerSaveMode /*!< [in] TRUE: Crypt
 /*!
  @brief This function powers down CryptoCell.
 
- Typically, it will call PMU to actually do power down.
- When is returns, the CryptoCell is considered to be powered down and it will
+ Typically, it calls PMU to actually power down.
+ When is returns, the CryptoCell is considered to be powered down and will
  not be accessed by the driver.
  */
 void CC_PalPowerDown(void);
@@ -73,7 +73,7 @@ void CC_PalPowerDown(void);
  @brief This function powers up CryptoCell.
 
  Typically, it will call PMU to actually do power up.
- When is returns, the CryptoCell is guaranteed to be powered up and it save to
+ When is returns, the CryptoCell is guaranteed to be powered up and it is saved to
  be accessed by the driver.
  */
 void CC_PalPowerUp(void);

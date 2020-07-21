@@ -1,14 +1,9 @@
-/*******************************************************************************
-* The confidential and proprietary information contained in this file may      *
-* only be used by a person authorised under and to the extent permitted        *
-* by a subsisting licensing agreement from ARM Limited or its affiliates.      *
-*   (C) COPYRIGHT [2001-2017] ARM Limited or its affiliates.                   *
-*       ALL RIGHTS RESERVED                                                    *
-* This entire notice must be reproduced on all copies of this file             *
-* and copies of this file may only be made by a person if such person is       *
-* permitted to do so under the terms of a subsisting license agreement         *
-* from ARM Limited or its affiliates.                                          *
-*******************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ *
+ */
 
 #ifndef TEST_PAL_TIME_H_
 #define TEST_PAL_TIME_H_
@@ -19,7 +14,7 @@
  */
 
 /*!
-  @addtogroup pal_time_test
+  @addtogroup pal_timer_test
   @{
  */
 
@@ -35,9 +30,11 @@ extern "C" {
  * for microsecond intervals.
  *
  *
- * @return void
+ * @return Void.
  */
-void Test_PalDelay(const uint32_t usec /*!< Time to suspend in microseconds.*/
+void Test_PalDelay(
+ /*! Time to suspend in microseconds. */
+ const uint32_t usec
 );
 
 /******************************************************************************/

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -51,6 +51,6 @@ uint32_t CC_PalOtpWordRead(uint32_t otpWordOffset);
 
   @return RTL OTP mask
 */
-uint32_t CC_PalGetRtlOtpMask(uint32_t wordOffsetInTable, uint32_t* rtlOtpMask);
+uint32_t CC_PalGetRtlOtpMask(uint32_t wordOffsetInTable, unsigned long* rtlOtpMask);
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -15,6 +15,7 @@
 #include "cc_ecpki_local.h"
 #include "cc_fips_defs.h"
 #include "ec_wrst.h"
+#include "cc_util_int_defs.h"
 
 /************************ Defines ***************************************/
 
@@ -60,7 +61,7 @@ CEXPORT_C CCError_t CC_EcpkiPrivKeyBuild(
                                              CCEcpkiUserPrivKey_t  *pUserPrivKey    /*out*/)
 {
         /* FUNCTION DECLARATIONS */
-
+        uint32_t regVal;
         /* the private key structure pointer */
         CCEcpkiPrivKey_t *pPrivKey;
         /*  EC domain info structure and parameters */
@@ -70,6 +71,18 @@ CEXPORT_C CCError_t CC_EcpkiPrivKeyBuild(
 
         /* FUNCTION LOGIC */
         CHECK_AND_RETURN_ERR_UPON_FIPS_ERROR();
+
+        /* The function should refuse to operate if the secure disable bit is set */
+        CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+        if (regVal == SECURE_DISABLE_FLAG_SET) {
+            return CC_ECPKI_SD_ENABLED_ERR;
+        }
+
+        /* The function should refuse to operate if the Fatal Error bit is set */
+        CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+        if (regVal == FATAL_ERROR_FLAG_SET) {
+            return CC_ECPKI_FATAL_ERR_IS_LOCKED_ERR;
+        }
 
         /* checking the validity of arguments */
         if (pPrivKeyIn == NULL)

@@ -1,14 +1,9 @@
-/****************************************************************************
-* The confidential and proprietary information contained in this file may   *
-* only be used by a person authorised under and to the extent permitted     *
-* by a subsisting licensing agreement from Arm Limited (or its affiliates). *
-*     (C) COPYRIGHT [2018-2019] Arm Limited (or its affiliates).                 *
-*         ALL RIGHTS RESERVED                                               *
-* This entire notice must be reproduced on all copies of this file          *
-* and copies of this file may only be made by a person if such person is    *
-* permitted to do so under the terms of a subsisting license agreement      *
-* from Arm Limited (or its affiliates).                                     *
-*****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 
 #include <stdint.h>
@@ -485,7 +480,6 @@ static Menu_rc_t MENU_menuExecute(MENU_MenuItem_t *pMenuItem, int argc, char **a
 
             TEST_PRINT("Enter arguments (/ separated)\n");
 
-            /* TODO EUGENE use stringify macro to replace the value 20 by define */
             if (scanf("%20s", buffIn) < 0) {
                 TEST_LOG_ERROR("Couldn't read input\n");
                 TEST_FREE(buffIn);
@@ -545,11 +539,11 @@ Menu_rc_t MENU_initLib(void)
 
     menuDB.isInitialised = true;
 
-    MENU_register(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    TEST_ASSERT(MENU_register(NULL, NULL, NULL, NULL, NULL, NULL, NULL) == MENU_RC_SUCCESS, MENU_RC_FAIL);
 
     /* CR because of pal printouts */
     TEST_PRINT("\n");
-    
+
 bail:
     return res;
 }
@@ -711,7 +705,6 @@ Menu_rc_t MENU_execute(int argc, char **argv)
         /* interactive mode */
         MENU_printMenuChildren(pCurrItem->path, currDepth + 1, pChildrenList, &numOfChildren);
 
-        /* TODO EUGENE use stringify macro to replace the value 20 by define */
         if (scanf("%20s", buffIn) < 0) {
             TEST_LOG_ERROR("Couldn't read from input\n");
             res = MENU_RC_FAIL;

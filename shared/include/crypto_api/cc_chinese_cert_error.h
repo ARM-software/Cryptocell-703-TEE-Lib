@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -11,7 +11,8 @@
 
 /*!
 @file
-@brief This file contains error codes definitions for CryptoCell Chinese certification module.
+@brief This file contains error codes definitions for CryptoCell Chinese
+certification module.
 */
 
 /*!
@@ -27,7 +28,7 @@ extern "C"
 #endif
 
 /************************ Defines ******************************/
-/*! Chinese Certification module error base address - 0x00F01800 */
+/*! Chinese Certification module error base address - 0x00F01800. */
 #define CC_CH_CERT_ERROR     (CC_CH_CERT_MODULE_ERROR_BASE + 0x00UL)
 
 /************************ Enums ********************************/

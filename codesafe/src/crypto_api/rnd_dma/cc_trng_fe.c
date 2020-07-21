@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -36,6 +36,7 @@ CCError_t CC_TrngEntropyGet(size_t    entropySizeBits,
     uint32_t    entropyByteSize = 0;
     uint32_t    actEhrByteSize = 0;
     uint8_t     lastValidNumBits = 0;
+    uint8_t     lastValidNumBytes = 0;
     uint32_t    *pBuff;
     uint32_t    outBuffSize;
 
@@ -60,10 +61,11 @@ CCError_t CC_TrngEntropyGet(size_t    entropySizeBits,
     loopsNum = CALC_FULL_TRNG_FE(entropySizeBits);
     entropyByteSize = CALC_FULL_BYTES(entropySizeBits);
     lastValidNumBits = entropySizeBits % CC_BITS_IN_BYTE; /* result range is 0 - 7 */
+    lastValidNumBytes = entropyByteSize % TRNG_FE_SOURCE_BYTE_SIZE;
 
     for (ehrLoops = 0; ehrLoops < loopsNum; ehrLoops++) {
-        if (ehrLoops == (loopsNum - 1)) {
-            actEhrByteSize = entropyByteSize % TRNG_FE_SOURCE_BYTE_SIZE;
+        if ((ehrLoops == (loopsNum - 1)) && (lastValidNumBytes != 0)) {
+            actEhrByteSize = lastValidNumBytes;
         }
         error = LLF_RND_GetTrngSource(
                 &trngState,
@@ -73,6 +75,7 @@ CCError_t CC_TrngEntropyGet(size_t    entropySizeBits,
                 ehrBuffer,
                 CC_FALSE);
         if (error != CC_OK) {
+            error = CC_TRNG_ERRORS_ERROR;
             goto End;
         }
         CC_PalMemCopy(&pOutEntropy[ehrLoops * TRNG_FE_SOURCE_BYTE_SIZE],

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -49,7 +49,7 @@
  * @return A non-zero value on failure.
  */
 CCError_t CC_PalTrngParamGet(CC_PalTrngParams_t *pTrngParams, /*!< [out] A pointer to the TRNG user parameters. */
-                             size_t *pParamsSize)     /*!< [in/out] A poiinter to size of the TRNG user parameters structure used.
+                             size_t *pParamsSize)     /*!< [in/out] A pointer to size of the TRNG user parameters structure used.
                                                            As input: the function needs to verify its size is the same as CC_PalTrngParams_t.
                                                            As output: return the size of CC_PalTrngParams_t for Library size verification */
 {

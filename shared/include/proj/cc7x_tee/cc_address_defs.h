@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -9,9 +9,14 @@
 #define _CC_ADDRESS_DEFS_H
 
 /*!
-@file
-@brief This file contains general definitions.
+ @file
+ @brief This file contains general CryptoCell address definitions.
 */
+
+/*!
+ @addtogroup cc_address_defs
+ @{
+     */
 
 #ifdef __cplusplus
 extern "C"
@@ -23,13 +28,13 @@ extern "C"
 /************************ Defines ******************************/
 
 /**
- * Address types within CC
+ * Address types within CryptoCell.
  */
-/*! Definition of DMA address type, can be 32 bits or 64 bits according to CryptoCell's HW. */
+/*! Definition of DMA address type. */
 typedef uint64_t  CCDmaAddr_t;
-/*! Definition of CryptoCell address type, can be 32 bits or 64 bits according to platform. */
+/*! Definition of CryptoCell address type. */
 typedef uint64_t  CCAddr_t;
-/*! Definition of CC SRAM address type, can be 32 bits according to CryptoCell's HW. */
+/*! Definition of CryptoCell SRAM address type, set according to CryptoCell hardware. */
 typedef uint32_t  CCSramAddr_t;
 
 /*

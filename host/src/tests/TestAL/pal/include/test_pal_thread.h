@@ -1,14 +1,9 @@
-/*******************************************************************************
-* The confidential and proprietary information contained in this file may      *
-* only be used by a person authorised under and to the extent permitted        *
-* by a subsisting licensing agreement from ARM Limited or its affiliates.      *
-*   (C) COPYRIGHT [2001-2017] ARM Limited or its affiliates.                   *
-*       ALL RIGHTS RESERVED                                                    *
-* This entire notice must be reproduced on all copies of this file             *
-* and copies of this file may only be made by a person if such person is       *
-* permitted to do so under the terms of a subsisting license agreement         *
-* from ARM Limited or its affiliates.                                          *
-*******************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ *
+ */
 
 #ifndef TEST_PAL_THREAD_H_
 #define TEST_PAL_THREAD_H_
@@ -29,7 +24,7 @@
 extern "C" {
 #endif
 
-typedef void *ThreadHandle; /*!< Thread handle*/
+typedef void *ThreadHandle; /*! Thread handle */
 
 /******************************************************************************/
 /*!
@@ -82,19 +77,26 @@ uint32_t Test_PalGetDefaultPriority(void);
  * @return NULL on failure.
  */
 ThreadHandle Test_PalThreadCreate(
- size_t stackSize, /*!< Thread stack size in bytes. The allocated stack size
- will be greater from stackSize and the minimal stack size.*/
- void *(*threadFunc)(void *), /*!< Thread function. The function shall return
- a pointer to the returned value or NULL. In case TZM is supported,
- this function must have the same security attribute as TestAL's (either secure
- or non-secure).*/
- int priority, /*!< Thread priority. Highest and lowest priorities can be
+ /*! Thread stack size in bytes. The allocated stack size
+ is greater from stackSize and the minimal stack size. */
+ size_t stackSize,
+ /*! Thread function. The function returns
+ a pointer to the returned value or NULL. If TZM is supported,
+ this function must have the same security attribute as TestAL (either Secure
+ or Non-secure). */
+ void *(*threadFunc)(void *),
+ /*! Thread priority. Highest and lowest priorities can be
  received by calling Test_PalGetLowestPriority() and
- Test_PalGetHighestPriority() accordingly.*/
- void *args, /*!< Function input arguments.*/
- const char *threadName, /*!< Thread name. Not in use for Linux.*/
- uint8_t nameLen,/*!< Thread name length. Not in use for Linux.*/
- uint8_t dmaAble /*!< Determines whether the stack should be DMA-able (true).*/
+ Test_PalGetHighestPriority() accordingly. */
+ int priority,
+ /*! Function input arguments. */
+ void *args,
+ /*! Thread name. Not in use for Linux. */
+ const char *threadName,
+ /*! Thread name length. Not in use for Linux. */
+ uint8_t nameLen,
+ /*! Determines whether the stack should be DMA-able (true). */
+ uint8_t dmaAble
 );
 
 /******************************************************************************/
@@ -103,7 +105,7 @@ ThreadHandle Test_PalThreadCreate(
  * If that thread has already terminated it returns immediately.
  *
  *
- * Note that threadRet is not changed, yet \c threadRet is changed and
+ * \note Note that threadRet is not changed, yet \c threadRet is changed and
  * can be NULL. Therefore, do not try to access \c threadRet without
  * checking that \c threadRet is not NULL.
  *
@@ -112,28 +114,33 @@ ThreadHandle Test_PalThreadCreate(
  * @return 1 on failure.
  */
 uint32_t Test_PalThreadJoin(
- ThreadHandle threadHandle, /*!< Thread structure.*/
- void **threadRet /*!< A pointer to the returned value of the target thread.*/
+ /*! Thread structure. */
+ ThreadHandle threadHandle,
+ /*! A pointer to the returned value of the target thread. */
+ void **threadRet
 );
 
 /******************************************************************************/
 /*!
- * @brief This function destroys a thread (if it's still running) and frees
+ * @brief This function destroys a thread (if it is still running) and frees
  * its resources.
  * In order to free thread resources only after thread's end this function
  * should be called after Test_PalThreadJoin().
  * In order to cancel the thread immediately and free its resources, this
  * function should be called alone (without Test_PalThreadJoin()), which
- *  must eventually be called in any case.
- * Note that this function does not deallocate the memory that the
- * thread itself allocates. This needs to be done by the thread itself.
+ * must eventually be called in any case.
  *
  *
- * @return 0 on success
+ * \note This function does not deallocate the memory that the
+ * thread itself allocates. This must be done by the thread itself.
+ *
+ *
+ * @return 0 on success.
  * @return 1 on failure.
  */
 uint32_t Test_PalThreadDestroy(
- ThreadHandle threadHandle /*!< Thread structure.*/
+ /*! Thread structure. */
+ ThreadHandle threadHandle
 );
 
 #ifdef __cplusplus

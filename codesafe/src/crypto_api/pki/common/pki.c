@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -76,7 +76,6 @@ CCError_t  PkiCalcNp(uint32_t *pNp,	/*!< [out] The pointer to the Barrett tag Np
         if (err != CC_SUCCESS) {
                 goto End;
         }
-        //!TBD  ceiling
         /* Output Np */
         PkaCopyDataFromPkaReg(pNp/*dst_ptr*/, wNp, rNp/*srcReg*/);
 End:

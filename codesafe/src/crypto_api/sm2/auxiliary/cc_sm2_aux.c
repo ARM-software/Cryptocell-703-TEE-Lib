@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -14,7 +14,7 @@
 #include "cc_ecpki_local.h"
 #include "cc_common.h"
 #include "cc_pal_mem.h"
-
+#include "cc_util_int_defs.h"
 
 /******************************************************************************
  *                CC_Sm2ComputeMessageDigest
@@ -57,6 +57,7 @@ CIMPORT_C CCError_t CC_Sm2ComputeMessageDigest (
 )
 {
     CCError_t err = CC_OK;
+    uint32_t    regVal;
     uint8_t idh[CC_SM3_RESULT_SIZE_IN_BYTES];
     size_t idhlen = CC_SM3_RESULT_SIZE_IN_BYTES ;
 
@@ -111,6 +112,17 @@ CIMPORT_C CCError_t CC_Sm2ComputeMessageDigest (
         goto End;
     }
 
+    /* The function should refuse to operate if the secure disable bit is set */
+    CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+    if (regVal == SECURE_DISABLE_FLAG_SET) {
+        return CC_ECPKI_SM2_SD_ENABLED_ERR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+    if (regVal == FATAL_ERROR_FLAG_SET) {
+        return CC_ECPKI_SM2_FATAL_ERR_IS_LOCKED_ERR;
+    }
 
     err = Sm2ComputeIdDigest (pUserPublKey, id, idlen, pWorkingBuffer, wblen, idh, &idhlen );
     if (CC_OK != err)

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -13,7 +13,7 @@
 /*!
  @file
  @brief This file contains definitions that are used for DMA-related APIs. The implementation of these functions
-need to be replaced according to the platform and OS.
+needs to be replaced according to the platform and OS.
 */
 
 
@@ -41,10 +41,10 @@ typedef struct {
 }CCPalDmaBlockInfo_t;
 
 #ifdef BIG__ENDIAN
-/*! Definition for big to little endian. */
+/*! This macro transforms a word from big-endian to little-endian. */
 #define  SET_WORD_LE(val) cpu_to_le32(val)
 #else
-/*! Definition for big to little endian. */
+/*! This macro transforms a word from big-endian to little-endian. */
 #define  SET_WORD_LE
 #endif
 
@@ -53,14 +53,14 @@ typedef struct {
  *      It maps a given data buffer (virtual address) for CryptoCell HW DMA use (physical address), and returns the list of
  *      one or more DMA-able (physical) blocks. Once it is called,
  *      only CryptoCell HW access to the buffer is allowed, until it is unmapped.
- *      \note If the data buffer was already mapped by the secure OS prior to calling the CryptoCell runtime library,
+ *      \note If the data buffer was already mapped by the Secure OS prior to calling the CryptoCell runtime library,
  *      this API does not have to perform any actual mapping operation, but only return the list of DMA-able blocks.
  *
  * @return A non-zero value in case of failure.
  */
 uint32_t CC_PalDmaBufferMap(
     /*! [in] The address of the buffer to map. */
-    uint8_t                  	 *pDataBuffer,
+    uint8_t                      *pDataBuffer,
     /*! [in] The buffer size in Bytes. */
     uint32_t                      buffSize,
     /*! [in] The copy direction of the buffer, according to ::CCPalDmaBufferDirection_t:
@@ -86,8 +86,8 @@ uint32_t CC_PalDmaBufferMap(
  *      It unmaps a given buffer and frees its associated resources, if needed. It may unlock the buffer and flush it for CPU use.
  *      Once it is called, CryptoCell HW does not require any further access to this buffer.
  *      \note If the data buffer was already unmapped by the secure OS prior to calling the CryptoCell runtime library,
- * 		this API does not have to perform any unmapping operation, and the actual unmapping can be done by the secure OS
- * 		outside the context of the CryptoCell runtime library.
+ *      this API does not have to perform any unmapping operation, and the actual unmapping can be done by the secure OS
+ *      outside the context of the CryptoCell runtime library.
  * @return A non-zero value in case of failure.
  */
 uint32_t CC_PalDmaBufferUnmap(
@@ -160,7 +160,7 @@ uint32_t CC_PalIsDmaBufferContiguous(
 }
 #endif
 /*!
-@}
+ @}
  */
 #endif
 

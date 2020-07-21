@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -13,8 +13,8 @@
 
  /*!
   @addtogroup cc_ecpki_types
-   @{
-	   */
+  @{
+	*/
 
 #ifndef _CC_ECPKI_TYPES_COMMON_H
 #define _CC_ECPKI_TYPES_COMMON_H
@@ -23,9 +23,8 @@
 #include "cc_pal_types_plat.h"
 #include "cc_hash_defs.h"
 #include "cc_pka_defs_hw.h"
-#ifdef USE_MBEDTLS_CRYPTOCELL
-#include "mbedtls/md.h"
-#endif
+
+
 
 #ifdef __cplusplus
 extern "C"
@@ -41,7 +40,7 @@ extern "C"
  ***************************************************************************************/
 
 /*------------------------------------------------------------------*/
-/*! @brief EC domain idetifiers.
+/*! @brief EC domain identifiers.
 
    For more information, see <em>Standards for Efficient Cryptography Group (SECG):
    SEC2 Recommended Elliptic Curve Domain Parameters, Version 1.0</em>.
@@ -238,17 +237,16 @@ typedef uint32_t CCEcdsaVerifyIntBuff_t[CC_PKA_ECDSA_VERIFY_BUFF_MAX_LENGTH_IN_W
 typedef  struct
 {
     CCEcpkiUserPublKey_t        ECDSA_SignerPublKey /*!< The data of the public key. */;
-
-
-#ifdef USE_MBEDTLS_CRYPTOCELL
-    mbedtls_md_context_t        hash_ctx /*!< The hash context. */;
-#else
-    CCHashUserContext_t         hashUserCtxBuff /*!< The hash context. */;
-#endif
-    CCHashResultBuf_t           hashResult /*!< The hash result. */;
-    uint32_t                    hashResultSizeWords /*!< The size of the hash result in words. */;
-    CCEcpkiHashOpMode_t         hashMode /*!< The hash mode. */;
-    CCEcdsaVerifyIntBuff_t      ccEcdsaVerIntBuff /*!< Internal buffer. */;
+	/*! The hash context. */
+    CCHashUserContext_t         hashUserCtxBuff ;
+	/*! The hash result. */
+    CCHashResultBuf_t           hashResult ;
+	/*! The size of the hash result in words. */
+    uint32_t                    hashResultSizeWords ;
+	 /*! The hash mode. */
+    CCEcpkiHashOpMode_t         hashMode;
+	/*! Internal buffer. */
+    CCEcdsaVerifyIntBuff_t      ccEcdsaVerIntBuff ;
 }EcdsaVerifyContext_t;
 
 /* --------------------------------------------------------------------- */
@@ -284,9 +282,8 @@ typedef struct CCEciesTempData_t {
     CCEcpkiUserPrivKey_t   PrivKey ;
 	/*! The data of the public key. */
     CCEcpkiUserPublKey_t   PublKey ;
-	/*! The public-key data used by convertion from Mbed TLS to CryptoCell. */
-    CCEcpkiUserPublKey_t   ConvPublKey ;
-    uint32_t  zz[3*CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1] /*!< Internal buffer. */;
+        /*! Internal buffer. */
+    uint32_t  zz[3*CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1];
     union {
         CCEcpkiBuildTempData_t buildTempbuff;
         CCEcpkiKgTempData_t    KgTempBuff;
@@ -299,8 +296,8 @@ typedef struct CCEciesTempData_t {
 #ifdef __cplusplus
 }
 #endif
-/*!
+
+ /*!
  @}
  */
-#endif
-
+ #endif

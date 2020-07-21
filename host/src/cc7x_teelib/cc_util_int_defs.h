@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -12,6 +12,30 @@
 #include "cc_regs.h"
 #include "cc_general_defs.h"
 
+#ifdef CC_SUPPORT_FULL_PROJECT
+#include "cc_otp_defs.h"
+
+/* read otp word at offset (in words) */
+#define CC_HAL_READ_OTP(otpOffset)                                                           \
+                CC_HAL_READ_REGISTER(CC_OTP_BASE_ADDR + ((otpOffset) * sizeof(uint32_t)))
+
+/* Check not in use flag in OTP */
+#define CC_UTIL_IS_OTP_KEY_NOT_IN_USE(val, reg, key)                                         \
+    do {                                                                                     \
+        val = CC_HAL_READ_OTP(CC_ ## reg ## _OFFSET);                                        \
+        val = CC_REG_FLD_GET(0, reg, key ## _NOT_IN_USE, val);                               \
+    }while(0)
+
+/* Check OTP TCI/PCI flag */
+#define CC_UTIL_IS_OTP_PCI_TCI_SET(val, reg, flag)                                           \
+    do {                                                                                     \
+        val = CC_HAL_READ_OTP(CC_ ## reg ## _OFFSET);                                        \
+        val = CC_REG_FLD_GET(0, reg, flag, val);                                             \
+    }while(0)
+
+
+
+#endif
 /*
  * since we are using RcInitUserCtxLocation to initialize the context offset for a new buffer
  * we must crate a working buffer that is at least 2 of the size of  drv_ctx_cipher.
@@ -22,13 +46,10 @@
 
 
 #define SECURE_DISABLE_FLAG_SET             1
+#define FATAL_ERROR_FLAG_SET                1
 
 /* session key definition */
 #define CC_UTIL_SESSION_KEY_IS_UNSET        0
-
-/* read otp word at offset (in words) */
-#define CC_HAL_READ_OTP(otpOffset)                                                           \
-                CC_HAL_READ_REGISTER(CC_OTP_BASE_ADDR + ((otpOffset) * sizeof(uint32_t)))
 
 
 #define CC_UTIL_IS_AO_FIELD(val, field)                                                      \
@@ -50,12 +71,6 @@
         val = CC_REG_FLD_GET(0, LCS_REG_ERR, key ## _ZERO_CNT, val);                         \
     }while(0)
 
-/* Check not in use flag in OTP */
-#define CC_UTIL_IS_OTP_KEY_NOT_IN_USE(val, reg, key)                                         \
-    do {                                                                                     \
-        val = CC_HAL_READ_OTP(CC_ ## reg ## _OFFSET);                                        \
-        val = CC_REG_FLD_GET(0, reg, key ## _NOT_IN_USE, val);                               \
-    }while(0)
 
 /* Check session key validity */
 #define CC_UTIL_IS_SESSION_KEY_VALID(val)                                                    \
@@ -86,6 +101,7 @@
         val = CC_REG_FLD_GET(HOST_RGF, AO_SECURITY_DISABLED_INDICATION, VALUE, val);         \
     } while (0)
 
+
 /* Get LCS register */                                                                       \
 #define CC_UTIL_GET_LCS(val)                                                                 \
     do {                                                                                     \
@@ -93,6 +109,16 @@
         val = CC_REG_FLD_GET(0, LCS_REG, LCS_REG, val);                                      \
     }while(0)
 
+
+/* Wait until the reset has ended. */
+#define CC_UTIL_WAIT_ON_NVM_IDLE_BIT()                                                      \
+    do {                                                                                    \
+        uint32_t regVal;                                                                    \
+        do {                                                                                \
+            regVal = CC_HAL_READ_REGISTER(CC_REG_OFFSET(HOST_RGF, NVM_IS_IDLE));            \
+            regVal = CC_REG_FLD_GET(0, NVM_IS_IDLE, VALUE, regVal);                         \
+        }while( !regVal );                                                                  \
+    }while(0)
 
 /* endorsement key definitions*/
 #define UTIL_EK_CMAC_COUNT                          0x03

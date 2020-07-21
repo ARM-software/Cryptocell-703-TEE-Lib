@@ -24,8 +24,8 @@ ifneq ($(PROJ_NAME),) # proj.cfg found
 
 ifneq ($(PLATFORM_IS_ANDROID),1)
 default: $(call DEPENDENCY_ON_EXISTENCE_OF,$(RELEASE_LIBDIR)) $(call DEPENDENCY_ON_EXISTENCE_OF,$(RELEASE_EXEDIR)) release
+	-$(shell find $(PROJ_ROOT) -name logerr.tmp -type f -delete)
 
-$(info PROJ_NAME=$(PROJ_NAME))
 release: $(foreach target,$(PROJ_TARGETS),release_$(target))
 
 # Generic release rules recipes
@@ -74,7 +74,7 @@ release_cclib: $(if $(filter $(PROJ_TARGETS),cc_driver/$(CC_TYPE)/$(REE_OS)),rel
 # Tests dependencies (depends on PROJ_TARGETS)
 ifneq ($(filter $(CROSS_COMPILE),arm-dsm- armcc),$(CROSS_COMPILE))
 release_tests: $(foreach target,$(filter-out tests,$(PROJ_TARGETS)),release_$(target)) release_libtom  $(if $(NO_PAL_COMPILATION), , release_pal)
-
+	@$(MAKE) -j --output-sync=recurse -C tests
 endif
 
 else #($(PLATFORM_IS_ANDROID),1)

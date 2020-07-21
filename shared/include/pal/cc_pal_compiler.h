@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -130,7 +130,7 @@
 /*! Mark symbol as used, that is, prevent garbage collector from dropping it. */
 #define CC_PAL_COMPILER_KEEP_SYMBOL __attribute__((used))
 
-/*! Make a given data item aligned (alignment in Bytes). */
+/*! Make a given data item aligned (alignment in bytes). */
 #define CC_PAL_COMPILER_ALIGN(alignement)  __attribute__((aligned(alignement)))
 
 /*! Mark a function that never returns. */

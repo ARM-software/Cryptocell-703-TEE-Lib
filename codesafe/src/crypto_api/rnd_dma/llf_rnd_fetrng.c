@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 /************* Include Files ****************/
@@ -117,9 +117,6 @@ static CCError_t LLF_RND_TRNG_ReadEhrData(uint32_t *pSourceOut, CCBool_t isFipsS
     }
 
     /* in case of AUTOCORR_ERR or RNG_WATCHDOG, keep the default error value. will try the next ROSC. */
-
-    CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(RNG, RNG_ICR), 0xFFFFFFFF);
-
     if (error == CC_OK) {
         for (i = 0; i < LLF_RND_HW_TRNG_EHR_WIDTH_IN_WORDS; i++)
         {
@@ -289,11 +286,10 @@ CCError_t LLF_RND_GetTrngSource(
     }
 
 
-
     /* Set source RAM address with offset 8 bytes from sourceOut address in
           order to remain empty bytes for CC operations */
     *sourceOut_ptr_ptr = pTrngWorkBuff;
-    ramAddr = *sourceOut_ptr_ptr + CC_RND_TRNG_SRC_INNER_OFFSET_WORDS; // IG - do we need this?
+    ramAddr = *sourceOut_ptr_ptr + CC_RND_TRNG_SRC_INNER_OFFSET_WORDS;
     /* init to 0 for FE mode */
     *sourceOutSize_ptr = 0;
         /* Full restart TRNG starting ROSC is  the fastest */
@@ -322,8 +318,7 @@ CCError_t LLF_RND_GetTrngSource(
     }
     *sourceOutSize_ptr = LLF_RND_HW_SAMPLES_NUM_ON_FE_MODE * LLF_RND_HW_TRNG_EHR_WIDTH_IN_BYTES;
 
-
-    End:
+End:
     if (error != CC_OK) {
         CC_PalMemSetZero((uint8_t *)ramAddr, LLF_RND_HW_SAMPLES_NUM_ON_FE_MODE * LLF_RND_HW_TRNG_EHR_WIDTH_IN_BYTES);
     }
@@ -334,13 +329,10 @@ CCError_t LLF_RND_GetTrngSource(
     /* release mutex and decrease CC counter */
     DECREASE_CC_COUNTER
 
-    EndUnlockMutex:
+EndUnlockMutex:
     MUTEX_UNLOCK(pCCRndCryptoMutex);
 
-
     return error;
-
-
 }/* END of LLF_RND_GetTrngSource */
 
 CCError_t LLF_RND_RunTrngStartupTest(

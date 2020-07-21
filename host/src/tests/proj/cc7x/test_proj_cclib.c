@@ -1,14 +1,9 @@
-/****************************************************************************
- * The confidential and proprietary information contained in this file may    *
- * only be used by a person authorised under and to the extent permitted      *
- * by a subsisting licensing agreement from Arm Limited (or its affiliates).  *
- *   (C) COPYRIGHT [2001-2019] Arm Limited (or its affiliates).               *
- *       ALL RIGHTS RESERVED                                                  *
- * This entire notice must be reproduced on all copies of this file           *
- * and copies of this file may only be made by a person if such person is     *
- * permitted to do so under the terms of a subsisting license agreement       *
- * from Arm Limited (or its affiliates).                                      *
- *****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 #include <string.h>
 #include <unistd.h>
@@ -36,6 +31,7 @@
 #include "test_pal_mem.h"
 //#include "ree_include/dx_host.h"
 #include "tee_include/dx_host.h"
+#include "test_proj_rnd.h"
 #endif
 
 #define NOT_INITIATED   0
@@ -45,11 +41,12 @@
 /* This potentially can save a lot of debugging time */
 static int init_ctr = 0;
 
-int CC_RndGenerateVectorKAT(void *rngState_vptr, uint8_t *out_ptr, /*out*/
+CCError_t CC_RndGenerateVectorKAT(void *rngState_vptr, uint8_t *out_ptr, /*out*/
                             size_t outSizeBytes); /*in*/
 
 #ifdef CC_SUPPORT_FULL_PROJECT
-CCRndContext_t *pRndContext_proj;
+CCRndState_t *pRndState_proj;
+CCRndGenerateVectWorkFunc_t pRndFunc_proj;
 CCTrngWorkBuff_t  *pTrngWorkBuff_proj;
 int Test_Proj_CC_LibInit_Wrap(void){
     CCAxiFields_t  axiFields;
@@ -79,26 +76,36 @@ int Test_Proj_CC_LibInit_Wrap(void){
     }
     init_ctr = INITIATED;
 
-    pRndContext_proj = (CCRndContext_t *)Test_PalDMAContigBufferAlloc(sizeof(CCRndContext_t));
     pTrngWorkBuff_proj = (CCTrngWorkBuff_t *)Test_PalDMAContigBufferAlloc(sizeof(CCTrngWorkBuff_t));
     certCtx = (CCCertKatContext_t *)Test_PalDMAContigBufferAlloc(sizeof(CCCertKatContext_t));
-    if ( (pRndContext_proj == NULL) || (pTrngWorkBuff_proj == NULL) || (certCtx == NULL)) {
+    if ( (pTrngWorkBuff_proj == NULL) || (certCtx == NULL)) {
         return 1;
     }
-    pRndContext_proj->rndState = (CCRndState_t *)Test_PalDMAContigBufferAlloc(sizeof(CCRndState_t));
-    if (pRndContext_proj->rndState == NULL) {
+    pRndState_proj = (CCRndState_t *)Test_PalDMAContigBufferAlloc(sizeof(CCRndState_t));
+    if (pRndState_proj == NULL) {
         return 1;
     }
 
     /* Assign drbg function to certification context */
 #ifdef CC_SUPPORT_CH_CERT
     certCtx->fipsSm2Ctx.f_rng = CC_RndGenerateVector;
-    certCtx->fipsSm2Ctx.p_rng = pRndContext_proj->rndState;
+    certCtx->fipsSm2Ctx.p_rng = pRndState_proj;
 #endif
     /* set REE error value to be REE ok, same value as CC_FIPS_SYNC_REE_STATUS|CC_FIPS_SYNC_MODULE_OK */
-    rc = CC_LibInit(pRndContext_proj, pTrngWorkBuff_proj, CC_LIB_CERT_TYPE_NONE, certCtx, &axiFields);
+    for (int i = 0; i < TEST_PROJ_RND_TRNG_FE_RETRY; i++) {
+        /* in case of CC_LibInit random failure enable more than 1 run */
+        rc = CC_LibInit(&pRndFunc_proj, pRndState_proj, pTrngWorkBuff_proj, CC_LIB_CERT_TYPE_NONE, certCtx, &axiFields);
+        if(rc != CC_LIB_RET_RND_INST_ERR) {
+            break;
+        }
+        TEST_LOG_ERROR("CC_LIB_RET_RND_INST_ERR CC_LibInit error, try to rerun");
+    }
     if (rc != 0) {
         TEST_LOG_ERROR("Failed to CC_LibInit 0x%x", rc);
+        init_ctr = NOT_INITIATED;
+        Test_PalDMAContigBufferFree(pRndState_proj);
+        Test_PalDMAContigBufferFree(pTrngWorkBuff_proj);
+        goto End;
     }
 
 #ifdef CC_SUPPORT_FIPS
@@ -112,6 +119,7 @@ int Test_Proj_CC_LibInit_Wrap(void){
     }
 #endif /* CC_SUPPORT_FIPS */
 
+End:
     Test_PalDMAContigBufferFree(certCtx);
     return rc;
 }
@@ -149,7 +157,7 @@ int Test_Proj_CC_LibInit_Wrap(void)
 
     axiFields.AXIM_CACHE_PARAMS.bitField.ARCACHE = 0x0;
     axiFields.AXIM_CACHE_PARAMS.bitField.AWCACHE = 0x0;
-    axiFields.AXIM_CACHE_PARAMS.bitField.ARCACHE = 0x0;
+    axiFields.AXIM_CACHE_PARAMS.bitField.AWCACHE_LAST = 0x0;
 
 #ifdef CC_SUPPORT_CH_CERT
     /* Assign drbg function to certification context */
@@ -178,9 +186,8 @@ void Test_Proj_CC_LibFini_Wrap(void)
     /* set REE error value to be REE ok, same value as CC_FIPS_SYNC_REE_STATUS|CC_FIPS_SYNC_MODULE_OK */
     Test_ProjReeUnmap();
 #endif /* CC_SUPPORT_FIPS */
-    CC_LibFini(pRndContext_proj);
-    Test_PalDMAContigBufferFree(pRndContext_proj->rndState);
-    Test_PalDMAContigBufferFree(pRndContext_proj);
+    CC_LibFini(&pRndFunc_proj, pRndState_proj);
+    Test_PalDMAContigBufferFree(pRndState_proj);
     Test_PalDMAContigBufferFree(pTrngWorkBuff_proj);
  }
 
@@ -223,7 +230,7 @@ void Test_Proj_CC_LibFini_Wrap(void)
 }
 #endif /* CC_SUPPORT_FIPS */
 
-int CC_RndGenerateVectorKAT(void *rngState_vptr, uint8_t *out_ptr, /*out*/
+CCError_t CC_RndGenerateVectorKAT(void *rngState_vptr, uint8_t *out_ptr, /*out*/
                             size_t outSizeBytes) /*in*/
 {
     TEST_UNUSED(rngState_vptr);

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -16,6 +16,7 @@
 #include "cc_sm2.h"
 #include "cc_sm2_int.h"
 #include "cc_ecpki_domain_sm2.h"
+#include "cc_util_int_defs.h"
 
 /**************************************************************************
 *                   CC_Sm2Verify
@@ -48,9 +49,7 @@ CIMPORT_C CCError_t CC_Sm2Verify (
     uint32_t pWorkingContext[CC_ECPKI_ORDER_MAX_LENGTH_IN_WORDS*3];
     const CCEcpkiDomain_t *pDomain = CC_EcpkiGetSm2Domain(); /* Currently the standard specifies only one possible domain for SM2. */
     CCEcpkiPublKey_t  *PublKey_ptr;
-
-
-
+    uint32_t regVal;
     uint32_t    *pMessRepres, *pSignatureR, *pSignatureS;
     size_t      orderSizeInBits, orderSizeInBytes, orderSizeInWords;
 
@@ -80,6 +79,18 @@ CIMPORT_C CCError_t CC_Sm2Verify (
     if (pSignatureIn == NULL){
         err = CC_ECDSA_VERIFY_INVALID_SIGNATURE_IN_PTR_ERROR;
         goto End;
+    }
+
+    /* The function should refuse to operate if the secure disable bit is set */
+    CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+    if (regVal == SECURE_DISABLE_FLAG_SET) {
+        return CC_ECPKI_SM2_SD_ENABLED_ERR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+    if (regVal == FATAL_ERROR_FLAG_SET) {
+        return CC_ECPKI_SM2_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* Currently there is only one possible domain. This assignment is constant.

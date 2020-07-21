@@ -3,7 +3,7 @@
 # TEE sources for both slim and full
 
 # TEE sources
-SOURCES_$(TARGET_LIBS) += cc_util_pm.c cc_pmData.c
+SOURCES_$(TARGET_LIBS) += cc_util_pm.c cc_pm_data.c
 
 # HAL, PAL
 SOURCES_$(TARGET_LIBS) += cc_hal.c completion_plat.c cc_pal.c cc_pal_dma.c
@@ -31,9 +31,10 @@ endif
 CFLAGS += -DCC_HW_VERSION=$(CC_HW_VERSION)
 
 PUBLIC_INCLUDES += $(HOST_SRCDIR)/hal/$(PROJ_PRD)/cc_hal_defs.h
+PUBLIC_INCLUDES += $(HOST_SRCDIR)/cc7x_teelib/cc_cpp.h
 
 # Symmetric HW driver sources
-SOURCES_$(TARGET_LIBS) +=  sym_adaptor_driver.c mlli.c sym_crypto_driver.c bypass.c
+SOURCES_$(TARGET_LIBS) +=  sym_adaptor_driver.c sym_adaptor_util.c mlli.c sym_crypto_driver.c bypass.c
 
 # Crypto alg
 #SM2
@@ -135,17 +136,6 @@ endif
 # define flag for non supported RND_DMA
 ifeq ($(CC_CONFIG_RND_TEST_MODE),CC_RND_TEST_MODE)
 CFLAGS_EXTRA += -DCC_RND_TEST_MODE
-endif
-
-#interrupt mode
-ifeq ($(CC_CONFIG_INTERRUPT_MODE),0)
-	CFLAGS_EXTRA += -DCC_CONFIG_INTERRUPT_POLLING
-else ifeq ($(CC_CONFIG_INTERRUPT_MODE),1)
-	CFLAGS_EXTRA += -DCC_CONFIG_INTERRUPT_IRQ
-else ifeq ($(CC_CONFIG_INTERRUPT_MODE),2)
-	CFLAGS_EXTRA += -DCC_CONFIG_INTERRUPT_POLLING_THREAD
-else
-    $(error illegal interrupt mode: CC_CONFIG_INTERRUPT_MODE=$(CC_CONFIG_INTERRUPT_MODE))
 endif
 
 # We should flatten the components source trees to avoid long search paths...

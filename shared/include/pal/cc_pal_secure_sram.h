@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -33,7 +33,7 @@
 
   @return None
 */
-void CC_PalCopyWordFromSecureSram(uint32_t srcRegAddr, unsigned long destRegAddr);
+void CC_PalCopyWordFromSecureSram(unsigned long srcRegAddr, unsigned long destRegAddr);
 
 /*!
   @brief   Reads a word from a specific address in the secure SRAM and checks whether it is all 0's or 1's.
@@ -44,8 +44,8 @@ void CC_PalCopyWordFromSecureSram(uint32_t srcRegAddr, unsigned long destRegAddr
 
   @return CC_OK
 */
-uint32_t CC_PalIsSramWordValid(uint32_t srcAddr, uint32_t cmpValue);
+uint32_t CC_PalIsSramWordValid(unsigned long srcAddr, uint32_t cmpValue);
 
-void CC_PalReadWordFromReg(uint32_t srcAddr);
+void CC_PalReadWordFromReg(unsigned long srcAddr);
 
 #endif

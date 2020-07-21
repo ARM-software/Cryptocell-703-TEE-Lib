@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -109,11 +109,14 @@ extern "C"
 #define CC_ECPKI_BUILD_DOMAIN_EC_PARAMETR_SIZE_ERROR                    (CC_ECPKI_MODULE_ERROR_BASE + 0x23UL)
 /*! Illegal domain cofactor parameters. */
 #define CC_ECPKI_BUILD_DOMAIN_COFACTOR_PARAMS_ERROR                     (CC_ECPKI_MODULE_ERROR_BASE + 0x24UL)
-/*! Insufficient strength. */
+/*! The order size is too small for the requested security strength. */
 #define CC_ECPKI_BUILD_DOMAIN_SECURITY_STRENGTH_ERROR                   (CC_ECPKI_MODULE_ERROR_BASE + 0x25UL)
 /*! SCA resistance error. */
 #define CC_ECPKI_BUILD_SCA_RESIST_ILLEGAL_MODE_ERROR                    (CC_ECPKI_MODULE_ERROR_BASE + 0x26UL)
-
+/*! Device is locked in fatal error state. */
+#define CC_ECPKI_FATAL_ERR_IS_LOCKED_ERR                                (CC_ECPKI_MODULE_ERROR_BASE + 0x27UL)
+/*! Secure Disable control is set. */
+#define CC_ECPKI_SD_ENABLED_ERR                                         (CC_ECPKI_MODULE_ERROR_BASE + 0x28UL)
 
 /*! Internal error */
 #define CC_ECPKI_INTERNAL_ERROR                                         (CC_ECPKI_MODULE_ERROR_BASE + 0x30UL)
@@ -121,9 +124,9 @@ extern "C"
  * CryptoCell EC DIFFIE-HELLMAN MODULE ERRORS
 *************************************************************************************************************/
 /* The CryptoCell EC SVDP_DH Function errors */
-/*! Illegal partner's public key pointer. */
+/*!Illegal partner public key pointer. */
 #define CC_ECDH_SVDP_DH_INVALID_PARTNER_PUBL_KEY_PTR_ERROR                  (CC_ECPKI_MODULE_ERROR_BASE + 0x31UL)
-/*! Partner's public key validation failed. */
+/*!Public key of partner validation failed. */
 #define CC_ECDH_SVDP_DH_PARTNER_PUBL_KEY_VALID_TAG_ERROR                    (CC_ECPKI_MODULE_ERROR_BASE + 0x32UL)
 /*! Illegal user private key pointer. */
 #define CC_ECDH_SVDP_DH_INVALID_USER_PRIV_KEY_PTR_ERROR                     (CC_ECPKI_MODULE_ERROR_BASE + 0x33UL)
@@ -141,7 +144,10 @@ extern "C"
 #define CC_ECDH_SVDP_DH_ILLEGAL_DOMAIN_ID_ERROR                             (CC_ECPKI_MODULE_ERROR_BASE + 0x39UL)
 /*! Illegal private and public domain ID are different. */
 #define CC_ECDH_SVDP_DH_NOT_CONCENT_PUBL_AND_PRIV_DOMAIN_ID_ERROR           (CC_ECPKI_MODULE_ERROR_BASE + 0x3AUL)
-
+/*! Device is locked in fatal error state. */
+#define CC_ECDH_FATAL_ERR_IS_LOCKED_ERR                                     (CC_ECPKI_MODULE_ERROR_BASE + 0x3BUL)
+/*! Secure Disable control is set. */
+#define CC_ECDH_SD_ENABLED_ERR                                              (CC_ECPKI_MODULE_ERROR_BASE + 0x3CUL)
 
 /************************************************************************************************************
  * CryptoCell ECDSA  MODULE ERRORS
@@ -161,7 +167,7 @@ extern "C"
 #define CC_ECDSA_SIGN_INVALID_MESSAGE_DATA_IN_SIZE_ERROR        (CC_ECPKI_MODULE_ERROR_BASE + 0x55UL)
 /*! Context validation failed. */
 #define CC_ECDSA_SIGN_USER_CONTEXT_VALIDATION_TAG_ERROR         (CC_ECPKI_MODULE_ERROR_BASE + 0x57UL)
-/*! User's private key validation failed. */
+/*! User private key validation failed. */
 #define CC_ECDSA_SIGN_USER_PRIV_KEY_VALIDATION_TAG_ERROR        (CC_ECPKI_MODULE_ERROR_BASE + 0x58UL)
 /*! Illegal signature pointer. */
 #define CC_ECDSA_SIGN_INVALID_SIGNATURE_OUT_PTR_ERROR           (CC_ECPKI_MODULE_ERROR_BASE + 0x60UL)
@@ -179,6 +185,10 @@ extern "C"
 #define CC_ECDSA_SIGN_INVALID_RND_FUNCTION_PTR_ERROR            (CC_ECPKI_MODULE_ERROR_BASE + 0x66UL)
 /*! Signature calculation failed. */
 #define CC_ECDSA_SIGN_SIGNING_ERROR                             (CC_ECPKI_MODULE_ERROR_BASE + 0x67UL)
+/*! Device is locked in fatal error state. */
+#define CC_ECDSA_SIGN_FATAL_ERR_IS_LOCKED_ERR                   (CC_ECPKI_MODULE_ERROR_BASE + 0x68UL)
+/*! Secure Disable control is set. */
+#define CC_ECDSA_SIGN_SD_ENABLED_ERR                            (CC_ECPKI_MODULE_ERROR_BASE + 0x69UL)
 
 /* The CryptoCell ECDSA Verifying  errors */
 /*! Illegal domain ID. */
@@ -199,16 +209,16 @@ extern "C"
 #define CC_ECDSA_VERIFY_INVALID_MESSAGE_DATA_IN_SIZE_ERROR      (CC_ECPKI_MODULE_ERROR_BASE + 0x81UL)
 /*! Context validation failed. */
 #define CC_ECDSA_VERIFY_USER_CONTEXT_VALIDATION_TAG_ERROR       (CC_ECPKI_MODULE_ERROR_BASE + 0x82UL)
-/*! public key validation failed. */
+/*! Public key validation failed. */
 #define CC_ECDSA_VERIFY_SIGNER_PUBL_KEY_VALIDATION_TAG_ERROR    (CC_ECPKI_MODULE_ERROR_BASE + 0x83UL)
 /*! Verification failed. */
 #define CC_ECDSA_VERIFY_INCONSISTENT_VERIFY_ERROR               (CC_ECPKI_MODULE_ERROR_BASE + 0x84UL)
-
-
-
 /*! Illegal hash mode. */
 #define CC_ECC_ILLEGAL_HASH_MODE_ERROR                          (CC_ECPKI_MODULE_ERROR_BASE + 0x85UL)
-
+/*! Device is locked in fatal error state. */
+#define CC_ECDSA_VERIFY_FATAL_ERR_IS_LOCKED_ERR                 (CC_ECPKI_MODULE_ERROR_BASE + 0x86UL)
+/*! Secure Disable control is set. */
+#define CC_ECDSA_VERIFY_SD_ENABLED_ERR                          (CC_ECPKI_MODULE_ERROR_BASE + 0x87UL)
 
 /************************************************************************************************************
  * CryptoCell ECPKI MODULE  COMMON ERRORS
@@ -239,19 +249,19 @@ extern "C"
 /************************************************************************************************************
  * CryptoCell SM2 ERRORS
 *************************************************************************************************************/
-/*! Illegal ke context pointer. */
+/*! Illegal key context pointer. */
 #define CC_ECPKI_SM2_INVALID_KE_CONTEXT_PTR                   (CC_ECPKI_MODULE_ERROR_BASE + 0xA0UL)
-/*! Illegal ke id pointer. */
+/*! Illegal key ID pointer. */
 #define CC_ECPKI_SM2_INVALID_ID_PTR                           (CC_ECPKI_MODULE_ERROR_BASE + 0xA1UL)
-/*! Illegal ke id size. */
+/*! Illegal key ID size. */
 #define CC_ECPKI_SM2_INVALID_ID_SIZE                          (CC_ECPKI_MODULE_ERROR_BASE + 0xA2UL)
-/*! Illegal ke in parameter size. */
+/*! Illegal key in parameter size. */
 #define CC_ECPKI_SM2_INVALID_IN_PARAM_SIZE                    (CC_ECPKI_MODULE_ERROR_BASE + 0xA3UL)
-/*! Illegal ke out parameter size. */
+/*! Illegal key out parameter size. */
 #define CC_ECPKI_SM2_INVALID_OUT_PARAM_SIZE                   (CC_ECPKI_MODULE_ERROR_BASE + 0xA4UL)
-/*! Illegal ke out parameter pointer. */
+/*! Illegal key out parameter pointer. */
 #define CC_ECPKI_SM2_INVALID_OUT_PARAM_PTR                    (CC_ECPKI_MODULE_ERROR_BASE + 0xA5UL)
-/*! Illegal ke context. */
+/*! Illegal key context. */
 #define CC_ECPKI_SM2_INVALID_CONTEXT                          (CC_ECPKI_MODULE_ERROR_BASE + 0xA6UL)
 /*! Illegal ephemeral public key input pointer. */
 #define CC_ECPKI_SM2_INVALID_EPHEMERAL_PUB_IN_PTR             (CC_ECPKI_MODULE_ERROR_BASE + 0xA7UL)
@@ -261,12 +271,16 @@ extern "C"
 #define CC_ECPKI_SM2_INVALID_SHARED_SECRET_OUT_PTR            (CC_ECPKI_MODULE_ERROR_BASE + 0xA9UL)
 /*! Illegal shared secret input pointer. */
 #define CC_ECPKI_SM2_INVALID_SHARED_SECRET_IN_PTR             (CC_ECPKI_MODULE_ERROR_BASE + 0xAAUL)
-/*! Illegal ke in parameter pointer. */
+/*! Illegal key in parameter pointer. */
 #define CC_ECPKI_SM2_INVALID_IN_PARAM_PTR                     (CC_ECPKI_MODULE_ERROR_BASE + 0xABUL)
-/*! Illegal ke in parameter pointer. */
+/*! Illegal key in parameter pointer. */
 #define CC_ECPKI_SM2_INVALID_EPHEMERAL_PRIV_IN_PTR            (CC_ECPKI_MODULE_ERROR_BASE + 0xACUL)
-/*!The sm2 confirmation failed. The other party's confirmation value is different than the confirmation value calculated. */
+/*!The SM2 confirmation failed. The other party's confirmation value is different than the confirmation value calculated. */
 #define CC_ECPKI_SM2_CONFIRMATION_FAILED                      (CC_ECPKI_MODULE_ERROR_BASE + 0xADUL)
+/*! Device is locked in fatal error state. */
+#define CC_ECPKI_SM2_FATAL_ERR_IS_LOCKED_ERR                  (CC_ECPKI_MODULE_ERROR_BASE + 0xAEUL)
+/*! Secure Disable control is set. */
+#define CC_ECPKI_SM2_SD_ENABLED_ERR                           (CC_ECPKI_MODULE_ERROR_BASE + 0xAFUL)
 
 /************************************************************************************************************
  * CryptoCell ECIES MODULE ERRORS
@@ -297,12 +311,16 @@ extern "C"
 #define CC_ECIES_INVALID_CIPHER_DATA_SIZE_ERROR                 (CC_ECPKI_MODULE_ERROR_BASE + 0xEBUL)
 /*! Illegal temporary buffer pointer. */
 #define CC_ECIES_INVALID_TEMP_DATA_PTR_ERROR                    (CC_ECPKI_MODULE_ERROR_BASE + 0xECUL)
-/*! Illegal temporary buffe size */
+/*! Illegal temporary buffer size */
 #define CC_ECIES_INVALID_TEMP_DATA_SIZE_ERROR                   (CC_ECPKI_MODULE_ERROR_BASE + 0xEDUL)
-/*! Illegal ephemeral key pointer */
+/*! Illegal ephemeral key pointer. */
 #define CC_ECIES_INVALID_EPHEM_KEY_PAIR_PTR_ERROR               (CC_ECPKI_MODULE_ERROR_BASE + 0xEEUL)
-/*! NULL ptr */
+/*! NULL pointer. */
 #define CC_ECIES_INVALID_PTR                                    (CC_ECPKI_MODULE_ERROR_BASE + 0xEFUL)
+/*! Device is locked in fatal error state. */
+#define CC_ECIES_FATAL_ERR_IS_LOCKED_ERR                        (CC_ECPKI_MODULE_ERROR_BASE + 0xF0UL)
+/*! Secure Disable control is set. */
+#define CC_ECIES_SD_ENABLED_ERR                                 (CC_ECPKI_MODULE_ERROR_BASE + 0xF1UL)
 
 /************************ Enums ********************************/
 

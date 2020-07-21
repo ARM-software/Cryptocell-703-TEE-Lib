@@ -1,14 +1,9 @@
-/****************************************************************************
-* The confidential and proprietary information contained in this file may   *
-* only be used by a person authorised under and to the extent permitted     *
-* by a subsisting licensing agreement from Arm Limited (or its affiliates). *
-*     (C) COPYRIGHT [2019] Arm Limited (or its affiliates).                 *
-*         ALL RIGHTS RESERVED                                               *
-* This entire notice must be reproduced on all copies of this file          *
-* and copies of this file may only be made by a person if such person is    *
-* permitted to do so under the terms of a subsisting license agreement      *
-* from Arm Limited (or its affiliates).                                     *
-*****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 #include <stdio.h>
 #include <stdint.h>
@@ -52,14 +47,14 @@ typedef struct Sm2SignVector_t{
     size_t      privateKeySize;
     size_t      pubKeySize;
     uint32_t    msgDigest[CC_SM3_RESULT_SIZE_IN_WORDS];
-    size_t      msgDigestSize;
+    size_t      msgDigestSizeW;
 
     /* Output */
     uint8_t     dataOut[2 * SM2_TV_DIGEST_SIZE];
     size_t      dataInSize;
     /* Reference */
     uint32_t    msgDigestRef[CC_SM3_RESULT_SIZE_IN_WORDS];
-    size_t      msgDigestRefSize;
+    size_t      msgDigestRefSizeW;
     uint8_t     dataRef[2 * SM2_TV_DIGEST_SIZE];
     size_t      dataRefSize;
 }Sm2SignVector_t;
@@ -74,59 +69,59 @@ typedef struct Sm2SignVector_t{
 
 static Sm2SignVector_t sm2_vector = {
     /* Input */
-    .id = "ALICE123@YAHOO.COM",
-    .idSize = 18,
-    .privateKeyInBytes = { /*128B2FA8 BD433C6C 068C8D80 3DFF7979 2A519A55 171B1B65 0C23661D 15897263 */
-            0x12, 0x8B, 0x2F, 0xA8, 0xBD, 0x43, 0x3C, 0x6C,
-            0x06, 0x8C, 0x8D, 0x80, 0x3D, 0xFF, 0x79, 0x79,
-            0x2A, 0x51, 0x9A, 0x55, 0x17, 0x1B, 0x1B, 0x65,
-            0x0C, 0x23, 0x66, 0x1D, 0x15, 0x89, 0x72, 0x63
+    .id = "1234567812345678",
+    .idSize = 16,
+    .privateKeyInBytes = { /*3945208F 7B2144B1 3F36E38A C6D39F95 88939369 2860B51A 42FB81EF 4DF7C5B8 */
+            0x39, 0x45, 0x20, 0x8F, 0x7B, 0x21, 0x44, 0xB1,
+            0x3F, 0x36, 0xE3, 0x8A, 0xC6, 0xD3, 0x9F, 0x95,
+            0x88, 0x93, 0x93, 0x69, 0x28, 0x60, 0xB5, 0x1A,
+            0x42, 0xFB, 0x81, 0xEF, 0x4D, 0xF7, 0xC5, 0xB8
     },
     .privateKeySize = 32,
-    .publicKeyInBytesX = { /*0AE4C779 8AA0F119 471BEE11 825BE462 02BB79E2 A5844495 E97C04FF 4DF2548A*/
-            0x0A, 0xE4, 0xC7, 0x79, 0x8A, 0xA0, 0xF1, 0x19,
-            0x47, 0x1B, 0xEE, 0x11, 0x82, 0x5B, 0xE4, 0x62,
-            0x02, 0xBB, 0x79, 0xE2, 0xA5, 0x84, 0x44, 0x95,
-            0xE9, 0x7C, 0x04, 0xFF, 0x4D, 0xF2, 0x54, 0x8A
+    .publicKeyInBytesX = { /*09F9DF31 1E5421A1 50DD7D16 1E4BC5C6 72179FAD 1833FC07 6BB08FF3 56F35020*/
+            0x09, 0xF9, 0xDF, 0x31, 0x1E, 0x54, 0x21, 0xA1,
+            0x50, 0xDD, 0x7D, 0x16, 0x1E, 0x4B, 0xC5, 0xC6,
+            0x72, 0x17, 0x9F, 0xAD, 0x18, 0x33, 0xFC, 0x07,
+            0x6B, 0xB0, 0x8F, 0xF3, 0x56, 0xF3, 0x50, 0x20
     },
-    .publicKeyInBytesY = { /*7C0240F8 8F1CD4E1 6352A73C 17B7F16F 07353E53 A176D684 A9FE0C6B B798E857*/
-            0x7C, 0x02, 0x40, 0xF8, 0x8F, 0x1C, 0xD4, 0xE1,
-            0x63, 0x52, 0xA7, 0x3C, 0x17, 0xB7, 0xF1, 0x6F,
-            0x07, 0x35, 0x3E, 0x53, 0xA1, 0x76, 0xD6, 0x84,
-            0xA9, 0xFE, 0x0C, 0x6B, 0xB7, 0x98, 0xE8, 0x57
+    .publicKeyInBytesY = { /*CCEA490C E26775A5 2DC6EA71 8CC1AA60 0AED05FB F35E084A 6632F607 2DA9AD13*/
+            0xCC, 0xEA, 0x49, 0x0C, 0xE2, 0x67, 0x75, 0xA5,
+            0x2D, 0xC6, 0xEA, 0x71, 0x8C, 0xC1, 0xAA, 0x60,
+            0x0A, 0xED, 0x05, 0xFB, 0xF3, 0x5E, 0x08, 0x4A,
+            0x66, 0x32, 0xF6, 0x07, 0x2D, 0xA9, 0xAD, 0x13
     },
     .pubKeySize = 65, /* 32 bytes for x, 32 bytes for y, 1 byte for compression flag */
-    .dataIn = {
+    .dataIn = { /*6D65737361676520646967657374*/
             0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x20,
             0x64, 0x69, 0x67, 0x65, 0x73, 0x74
     },
     .dataInSize = 14,
-    .msgDigestSize = CC_SM3_RESULT_SIZE_IN_WORDS,
-    .randomSeed ={
-            0x6C, 0xB2, 0x8D, 0x99, 0x38, 0x5C, 0x17, 0x5C,
-            0x94, 0xF9, 0x4E, 0x93, 0x48, 0x17, 0x66, 0x3F,
-            0xC1, 0x76, 0xD9, 0x25, 0xDD, 0x72, 0xB7, 0x27,
-            0x26, 0x0D, 0xBA, 0xAE, 0x1F, 0xB2, 0xF9, 0x6F
+    .msgDigestSizeW = CC_SM3_RESULT_SIZE_IN_WORDS,
+    .randomSeed ={ /*59276E27 D506861A 16680F3A D9C02DCC EF3CC1FA 3CDBE4CE 6D54B80D EAC1BC21*/
+            0x59, 0x27, 0x6E, 0x27, 0xD5, 0x06, 0x86, 0x1A,
+            0x16, 0x68, 0x0F, 0x3A, 0xD9, 0xC0, 0x2D, 0xCC,
+            0xEF, 0x3C, 0xC1, 0xFA, 0x3C, 0xDB, 0xE4, 0xCE,
+            0x6D, 0x54, 0xB8, 0x0D, 0xEA, 0xC1, 0xBC, 0x21
     },
 
     /* Expected intermediate results */
-    .msgDigestRef = {
-            0x52F524B5, 0xB0B882CD, 0x006E4728, 0xB17F375C,
-            0xFCE6879A, 0xBB482D68, 0xD9E3425D, 0x76FEEFB9
+    .msgDigestRef = { /*F0B43E94 BA45ACCA ACE692ED 534382EB 17E6AB5A 19CE7B31 F4486FDF C0D28640 - big endian*/
+            0x943EB4F0, 0xCAAC45BA, 0xED92E6AC, 0xEB824353,
+            0x5AABE617, 0x317BCE19, 0xDF6F48F4, 0x4086D2C0
     },
-    .msgDigestRefSize = CC_SM3_RESULT_SIZE_IN_WORDS,
+    .msgDigestRefSizeW = CC_SM3_RESULT_SIZE_IN_WORDS,
 
     /* Expected results */
-    .dataRef = { /* R */
-            0x40, 0xF1, 0xEC, 0x59, 0xF7, 0x93, 0xD9, 0xF4,
-            0x9E, 0x09, 0xDC, 0xEF, 0x49, 0x13, 0x0D, 0x41,
-            0x94, 0xF7, 0x9F, 0xB1, 0xEE, 0xD2, 0xCA, 0xA5,
-            0x5B, 0xAC, 0xDB, 0x49, 0xC4, 0xE7, 0x55, 0xD1,
-            /* S */
-            0x6F, 0xC6, 0xDA, 0xC3, 0x2C, 0x5D, 0x5C, 0xF1,
-            0x0C, 0x77, 0xDF, 0xB2, 0x0F, 0x7C, 0x2E, 0xB6,
-            0x67, 0xA4, 0x57, 0x87, 0x2F, 0xB0, 0x9E, 0xC5,
-            0x63, 0x27, 0xA6, 0x7E, 0xC7, 0xDE, 0xEB, 0xE7
+    .dataRef = { /* R - F5A03B06 48D2C463 0EEAC513 E1BB81A1 5944DA38 27D5B741 43AC7EAC EEE720B3*/
+            0xF5, 0xA0, 0x3B, 0x06, 0x48, 0xD2, 0xC4, 0x63,
+            0x0E, 0xEA, 0xC5, 0x13, 0xE1, 0xBB, 0x81, 0xA1,
+            0x59, 0x44, 0xDA, 0x38, 0x27, 0xD5, 0xB7, 0x41,
+            0x43, 0xAC, 0x7E, 0xAC, 0xEE, 0xE7, 0x20, 0xB3,
+            /* S - B1B6AA29 DF212FD8 763182BC 0D421CA1 BB9038FD 1F7F42D4 840B69C4 85BBC1AA*/
+            0xB1, 0xB6, 0xAA, 0x29, 0xDF, 0x21, 0x2F, 0xD8,
+            0x76, 0x31, 0x82, 0xBC, 0x0D, 0x42, 0x1C, 0xA1,
+            0xBB, 0x90, 0x38, 0xFD, 0x1F, 0x7F, 0x42, 0xD4,
+            0x84, 0x0B, 0x69, 0xC4, 0x85, 0xBB, 0xC1, 0xAA
     },
     .dataRefSize = 2 * SM2_TV_DIGEST_SIZE,
 };
@@ -142,7 +137,7 @@ static TE_rc_t sm2_clean(void *pContext);
 /******************************************************************
  * Static functions
  ******************************************************************/
-static int Tests_RndGenerateVectorConst( void           *rngState_vptr,    /*in*/
+static CCError_t Tests_RndGenerateVectorConst( void           *rngState_vptr,    /*in*/
                                       uint8_t        *out_ptr,          /*out*/
                                       size_t         outSizeBytes)      /*in*/
 {
@@ -210,14 +205,14 @@ static TE_rc_t sm2_execute_sign(void *pContext)
                                           sm2_vec->id, sm2_vec->idSize,
                                           sm2_vec->dataIn, sm2_vec->dataInSize,
                                           workBuff, workBuffSize,
-                                          sm2_vec->msgDigest, &(sm2_vec->msgDigestSize) ) , CC_OK);
+                                          sm2_vec->msgDigest, &(sm2_vec->msgDigestSizeW) ) , CC_OK);
 
 
     TE_ASSERT_PASS( CC_Sm2Sign ( Tests_RndGenerateVectorConst,
                             (void *)sm2_vec->randomSeed,
                             &sm2_vec->privKey,
                             sm2_vec->msgDigest,
-                            sm2_vec->msgDigestSize,
+                            sm2_vec->msgDigestSizeW,
                             sm2_vec->dataOut,
                             &sm2_vec->dataRefSize), CC_OK);
 
@@ -239,8 +234,8 @@ static TE_rc_t sm2_verify_sign(void *pContext)
     Sm2SignVector_t *sm2_vec = (Sm2SignVector_t *)pContext;
 
     /* Verify intermediate result */
-    TE_ASSERT( sm2_vec->msgDigestSize == sm2_vec->msgDigestRefSize);
-    TE_ASSERT( memcmp((uint8_t *)&(sm2_vec->msgDigest), (uint8_t *)&(sm2_vec->msgDigestRef), sm2_vec->msgDigestRefSize) == 0);
+    TE_ASSERT( sm2_vec->msgDigestSizeW == sm2_vec->msgDigestRefSizeW);
+    TE_ASSERT( memcmp((uint8_t *)&(sm2_vec->msgDigest), (uint8_t *)&(sm2_vec->msgDigestRef), sizeof(uint32_t)*sm2_vec->msgDigestRefSizeW) == 0);
 
     /* Verify result */
     TE_ASSERT( memcmp((uint8_t *)&(sm2_vec->dataOut), (uint8_t *)&(sm2_vec->dataRef), sm2_vec->dataRefSize) == 0);
@@ -271,14 +266,14 @@ static TE_rc_t sm2_execute_verify(void *pContext)
                                           sm2_vec->id, sm2_vec->idSize,
                                           sm2_vec->dataIn, sm2_vec->dataInSize,
                                           workBuff, workBuffSize,
-                                          sm2_vec->msgDigest /* output */, &(sm2_vec->msgDigestSize) ) , CC_OK);
+                                          sm2_vec->msgDigest /* output */, &(sm2_vec->msgDigestSizeW) ) , CC_OK);
 
 
     TE_ASSERT_PASS( CC_Sm2Verify(&sm2_vec->pubKey,
                                  sm2_vec->dataRef,
                                  sm2_vec->dataRefSize,
                                  sm2_vec->msgDigest,
-                                 sm2_vec->msgDigestRefSize), CC_OK);
+                                 sm2_vec->msgDigestRefSizeW), CC_OK);
 
     /* Finish performance measurement */
     TE_perfCloseEntry(cookie);

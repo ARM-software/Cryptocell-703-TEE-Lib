@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 /*!
@@ -36,17 +36,18 @@ extern "C"
 /* RND seed and additional input sizes */
 /*! The maximal size of the random seed in words. */
 #define CC_RND_SEED_MAX_SIZE_WORDS                  12
-#ifndef USE_MBEDTLS_CRYPTOCELL
+
 #ifndef CC_RND_ADDITINAL_INPUT_MAX_SIZE_WORDS
 /*! The maximal size of the additional input-data in words. */
 #define CC_RND_ADDITINAL_INPUT_MAX_SIZE_WORDS   CC_RND_SEED_MAX_SIZE_WORDS
 #endif
-#endif
-/* maximal requested size counter (12 bits active) - maximal count
+
+/* Maximal requested size counter (12 bits active) - maximal count
 of generated random 128 bit blocks allowed per one request of
 Generate function according NIST 800-90 it is (2^12 - 1) = 0x3FFFF */
-/* Max size for one RNG generation (in bits) =
+/* Maximal size for one RNG generation (in bits) =
   max_num_of_bits_per_request = 2^19 (FIPS 800-90 Tab.3) */
+
 /*! The maximal size of the generated vector in bits. */
 #define CC_RND_MAX_GEN_VECTOR_SIZE_BITS       0x7FFFF
 /*! The maximal size of the generated random vector in Bytes. */
@@ -63,7 +64,7 @@ Generate function according NIST 800-90 it is (2^12 - 1) = 0x3FFFF */
  */
 typedef  struct
 {
-#ifndef USE_MBEDTLS_CRYPTOCELL
+
     /* Seed buffer, consists from concatenated Key||V: max size 12 words */
 	 /*! The random-seed buffer. */
     uint32_t  Seed[CC_RND_SEED_MAX_SIZE_WORDS];
@@ -92,7 +93,7 @@ typedef  struct
     uint32_t StateFlag;
 	/*! The validation tag used internally in the code. */
     uint32_t ValidTag;
-#endif
+
 
      CCTrngState_t trngState; /*!< TRNG state */
 
@@ -101,32 +102,10 @@ typedef  struct
 
 
 /*! The RND vector-generation function pointer. */
-typedef int (*CCRndGenerateVectWorkFunc_t)(        \
+typedef CCError_t (*CCRndGenerateVectWorkFunc_t)(        \
                 void              *rndState_ptr, /*!< A pointer to the RND-state context. */   \
                 unsigned char     *out_ptr,         /*!< A pointer to the output buffer. */ \
                 size_t            outSizeBytes   /*!< The size of the output in Bytes. */  );
-
-
-/*! The definition of the RND context that includes the CryptoCell RND state structure,
-    and a function pointer for the RND-generation function. */
-typedef  struct
-{
-
-
-       void *   rndState; /*!< A pointer to the internal state of the RND.
-                               \note This pointer should be allocated in a physical and
-                               contiguous memory, accessible to the CryptoCell DMA.
-                               This pointer should be allocated and assigned before calling CC_LibInit().
-                               */
-       void *   entropyCtx; /*!< A pointer to the entropy context.
-                               \note This pointer should be allocated and assigned before
-                               calling CC_LibInit(). */
-       CCRndGenerateVectWorkFunc_t rndGenerateVectFunc; /*!< A pointer to the user-given
-                                                             function for generation of a random vector. */
-} CCRndContext_t;
-
-
-
 
 
 /*****************************************************************************/
@@ -137,7 +116,7 @@ typedef  struct
 /**********************************************************************************************************/
 /*!
 @brief Generates a random vector with specific limitations by testing candidates (described and used in FIPS Publication 186-4: Digital
-Signature Standard (DSS): B.1.2, B.4.2 etc.).
+Signature Standard (DSS): for example: B.1.2 or B.4.2).
 
 This function draws a random vector, compare it to the range limits, and if within range - return it in rndVect_ptr.
 If outside the range, the function continues retrying until a conforming vector is found, or the maximal retries limit is exceeded.
@@ -146,7 +125,7 @@ If maxVect_ptr is NULL, rndSizeInBits specifies the exact required vector size, 
 bit size (with its most significant bit = 1).
 \note The RND module must be instantiated prior to invocation of this API.
 
-@return CC_OK on success.
+@return \c CC_OK on success.
 @return A non-zero value from cc_rnd_error.h on failure.
 */
 CIMPORT_C CCError_t CC_RndGenerateVectorInRange(

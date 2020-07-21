@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -83,7 +83,6 @@ extern "C"
 #define PKA_OPCODE_ID_MODEXP    	0x13U	// @0x13 - ModExp
 #define PKA_OPCODE_ID_DIVISION    	0x14U	// @0x14 - Division
 #define PKA_OPCODE_ID_MODINV    	0x15U	// @0x15 - ModInv
-//#define PKA_OPCODE_ID_DIV    		0x16U	// @0x16 - RL the code not used
 #define PKA_OPCODE_ID_MULHIGH	     	0x17U	// 0x17 - MULHigh
 #define PKA_OPCODE_ID_MODMLAC     	0x18U	// 0x18 - ModMulAcc
 #define PKA_OPCODE_ID_MODMLACNR      	0x19U	// 0x19 - ModMulAccNR
@@ -102,7 +101,7 @@ extern "C"
 /* defining a macro for waiting to the PKA_PIPE_READY */
 #define PKA_WAIT_ON_PKA_PIPE_READY() \
 do { \
-   volatile uint32_t output_reg_val; \
+   uint32_t output_reg_val; \
    do \
    { \
       output_reg_val = CC_HAL_READ_REGISTER(CC_REG_OFFSET (CRY_KERNEL, PKA_PIPE_RDY) ); \
@@ -112,7 +111,7 @@ do { \
 /* defining a macro for waiting to the PKA_OP_DONE */
 #define PKA_WAIT_ON_PKA_DONE() \
 do { \
-   volatile uint32_t output_reg_val; \
+   uint32_t output_reg_val; \
    do \
    { \
       output_reg_val = CC_HAL_READ_REGISTER(CC_REG_OFFSET (CRY_KERNEL, PKA_DONE) ); \
@@ -254,7 +253,7 @@ do { \
 	}
 #else
 	#define WAIT_SRAM_DATA_READY { \
-		volatile uint32_t dummy; \
+		uint32_t dummy; \
 		do { \
 			dummy = CC_HAL_READ_REGISTER(CC_REG_OFFSET(HOST_RGF, SRAM_DATA_READY)); \
 		   }while(!(dummy & 0x1));\
@@ -308,7 +307,7 @@ do { \
 /* macro to read a value from the PKA data memory */
 #define PKA_HW_READ_VALUE_FROM_PKA_MEM(Addr, Val) \
 do { \
-   volatile uint32_t dummy; \
+   uint32_t dummy; \
    PKA_MUTEX_LOCK; \
    PKA_WAIT_ON_PKA_DONE();\
    CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(CRY_KERNEL, PKA_SRAM_RADDR), (Addr)); \
@@ -323,7 +322,7 @@ do { \
 #define PKA_HW_READ_BLOCK_FROM_PKA_MEM(Addr, ptr, SizeWords) \
 do { \
    uint32_t ii; \
-   volatile uint32_t dummy; \
+   uint32_t dummy; \
    PKA_MUTEX_LOCK; \
    PKA_WAIT_ON_PKA_DONE();\
    CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(CRY_KERNEL, PKA_SRAM_RADDR), (Addr)); \

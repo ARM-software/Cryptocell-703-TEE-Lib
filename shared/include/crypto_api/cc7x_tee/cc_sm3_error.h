@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -38,7 +38,7 @@ extern "C"
 #define CC_SM3_USER_CONTEXT_CORRUPTED_ERROR             (CC_SM3_MODULE_ERROR_BASE + 0x1UL)
 /*! Illegal data in pointer. */
 #define CC_SM3_DATA_IN_POINTER_INVALID_ERROR            (CC_SM3_MODULE_ERROR_BASE + 0x2UL)
-/*! Illegal data in size. */
+/*! Illegal data size. */
 #define CC_SM3_DATA_SIZE_ILLEGAL                        (CC_SM3_MODULE_ERROR_BASE + 0x3UL)
 /*! Illegal result buffer pointer. */
 #define CC_SM3_INVALID_RESULT_BUFFER_POINTER_ERROR      (CC_SM3_MODULE_ERROR_BASE + 0x4UL)
@@ -70,7 +70,7 @@ extern "C"
 #endif
 
 /*!
-@}
+ @}
  */
 #endif
 

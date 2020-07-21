@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -31,7 +31,7 @@
 #define CC_PKA_BARRETT_MOD_TAG_BUFF_SIZE_IN_WORDS 5
 /*! The size of the buffers for Barrett modulus tag NP, used in ECC. */
 #define CC_PKA_ECPKI_BARRETT_MOD_TAG_BUFF_SIZE_IN_WORDS  CC_PKA_BARRETT_MOD_TAG_BUFF_SIZE_IN_WORDS
-/*! Actual size of Barrett modulus tag NP in words for current HW platform */
+/*! Actual size of Barrett modulus tag NP in words for current HW platform. */
 #define CC_PKA_BARRETT_MOD_TAG_SIZE_IN_WORDS  \
     (((CC_PKA_WORD_SIZE_IN_BITS + PKA_EXTRA_BITS - 1) + (CC_BITS_IN_32BIT_WORD - 1)) / CC_BITS_IN_32BIT_WORD )
 /*! The maximal size of the PKA modulus. */
@@ -40,7 +40,7 @@
 #define CC_PKA_PUB_KEY_BUFF_SIZE_IN_WORDS (2*CC_PKA_BARRETT_MOD_TAG_BUFF_SIZE_IN_WORDS)
 /*! The maximal size of the PKA private-key in words. */
 #define CC_PKA_PRIV_KEY_BUFF_SIZE_IN_WORDS (2*CC_PKA_BARRETT_MOD_TAG_BUFF_SIZE_IN_WORDS)
-/*! The maximal size of the PKA KG buffer in words */
+/*! The maximal size of the PKA KG buffer in words. */
 #define CC_PKA_KGDATA_BUFF_SIZE_IN_WORDS   (3*CC_PKA_BARRETT_MOD_TAG_BUFF_SIZE_IN_WORDS + 3*CC_PKA_MAXIMUM_MOD_BUFFER_SIZE_IN_WORDS)
 
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -22,7 +22,7 @@
 /*!
  * This function sets the DIN field of a HW descriptors to DLLI mode.
  * The AXI and NS bits are set, hard coded to zero. this asiengment is
- * for TEE only. for PEE TBD to set the AXI and NS bits to 1.
+ * for TEE only.
  *
  *
  * \param pDesc pointer HW descriptor struct

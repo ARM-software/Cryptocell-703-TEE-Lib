@@ -1,14 +1,9 @@
-/*******************************************************************************
-* The confidential and proprietary information contained in this file may      *
-* only be used by a person authorised under and to the extent permitted        *
-* by a subsisting licensing agreement from ARM Limited or its affiliates.      *
-*   (C) COPYRIGHT [2001-2017] ARM Limited or its affiliates.                   *
-*       ALL RIGHTS RESERVED                                                    *
-* This entire notice must be reproduced on all copies of this file             *
-* and copies of this file may only be made by a person if such person is       *
-* permitted to do so under the terms of a subsisting license agreement         *
-* from ARM Limited or its affiliates.                                          *
-*******************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ *
+ */
 
 #ifndef TEST_PAL_LOG_H_
 #define TEST_PAL_LOG_H_
@@ -43,9 +38,12 @@ extern "C" {
  * @return void
  */
 void Test_PalPrintfError(
- const char *function, /*<! The name of the calling function (can be NULL).*/
- const char *format, /*<! The printed string.*/
- ... /*<! Arguments.*/
+ /* The name of the calling function (can be NULL).*/
+ const char *function,
+ /* The printed string.*/
+ const char *format,
+ /* Arguments.*/
+ ...
 );
 
 /******************************************************************************/
@@ -57,10 +55,15 @@ void Test_PalPrintfError(
  *
  * @return void
  */
-void Test_PalFprintfError(void *fd, /*<! File descriptor.*/
- const char *function, /*<! The name of the calling function (can be NULL).*/
- const char *format, /*<! The printed string.*/
- ... /*<! Arguments.*/
+void Test_PalFprintfError(
+ /*! File descriptor.*/
+ void *fd,
+ /*! The name of the calling function (can be NULL).*/
+ const char *function,
+ /*! The printed string.*/
+ const char *format,
+ /*! Arguments.*/
+ ...
 );
 
 /******************************************************************************/
@@ -70,8 +73,11 @@ void Test_PalFprintfError(void *fd, /*<! File descriptor.*/
  *
  * @return void
  */
-void Test_PalPrintfMessage(const char *format, /*<! The printed string.*/
- ... /*<! Arguments.*/
+void Test_PalPrintfMessage(
+ /*! The printed string.*/
+ const char *format,
+ /*! Arguments.*/
+ ...
 );
 
 /******************************************************************************/
@@ -84,9 +90,12 @@ void Test_PalPrintfMessage(const char *format, /*<! The printed string.*/
  * @return void
  */
 void Test_PalPrintf(
- const char *function, /*<! The name of the calling function (can be NULL).*/
- const char *format, /*<! The printed string.*/
- ... /*<! Arguments.*/
+ /*! The name of the calling function (can be NULL).*/
+ const char *function,
+ /*! The printed string.*/
+ const char *format,
+ /*! Arguments.*/
+ ...
 );
 
 /******************************************************************************/
@@ -98,10 +107,15 @@ void Test_PalPrintf(
  *
  * @return void
  */
-void Test_PalFprintf(void *fd, /*<! File descriptor.*/
- const char *function, /*<! The name of the calling function (can be NULL).*/
- const char *format, /*<! The printed string.*/
- ... /*<! Arguments.*/
+void Test_PalFprintf(
+ /*! File descriptor.*/
+ void *fd,
+ /*! The name of the calling function (can be NULL).*/
+ const char *function,
+ /*! The printed string.*/
+ const char *format,
+ /*! Arguments.*/
+ ...
 );
 
 /******************************************************************************/
@@ -114,10 +128,14 @@ void Test_PalFprintf(void *fd, /*<! File descriptor.*/
  * @return void
  */
 void Test_PalPrintByteBuff(
- const char *function, /*<! The name of the calling function (can be NULL).*/
- const char *buffName, /*<! The name of the buffer.*/
- uint8_t *buff, /*<! Buffer address.*/
- uint32_t size /*<! The size of the buffer.*/
+ /*! The name of the calling function (can be NULL).*/
+ const char *function,
+ /*! The name of the buffer.*/
+ const char *buffName,
+ /*! Buffer address.*/
+ uint8_t *buff,
+ /*! The size of the buffer.*/
+ uint32_t size
 );
 
 /******************************************************************************/
@@ -129,11 +147,17 @@ void Test_PalPrintByteBuff(
  *
  * @return void
  */
-void Test_PalFprintByteBuff(void *fd, /*<! File descriptor.*/
- const char *function, /*<! The name of the calling function (can be NULL).*/
- const char *buffName, /*<! The name of the buffer.*/
- uint8_t *buff, /*<! Buffer address.*/
- uint32_t size /*<! The size of the buffer.*/
+void Test_PalFprintByteBuff(
+ /*! File descriptor.*/
+ void *fd,
+ /*! The name of the calling function (can be NULL).*/
+ const char *function,
+ /*! The name of the buffer.*/
+ const char *buffName,
+ /*! Buffer address.*/
+ uint8_t *buff,
+ /*! The size of the buffer.*/
+ uint32_t size
 );
 
 /******************************************************************************/
@@ -145,12 +169,19 @@ void Test_PalFprintByteBuff(void *fd, /*<! File descriptor.*/
  *
  * @return void
  */
-void Test_PalFprintfByteBuffMax(void *fd, /*<! File descriptor.*/
- const char *function, /*<! The name of the calling function (can be NULL).*/
- const char *buffName, /*<! The name of the buffer.*/
- uint8_t *buff, /*<! Buffer address.*/
- uint32_t size, /*<! The size of the buffer.*/
- uint32_t maxSize /*<! Maximum size to print.*/
+void Test_PalFprintfByteBuffMax(
+ /*! File descriptor.*/
+ void *fd,
+ /*! The name of the calling function (can be NULL).*/
+ const char *function,
+ /*! The name of the buffer.*/
+ const char *buffName,
+ /*! Buffer address.*/
+ uint8_t *buff,
+ /*! The size of the buffer.*/
+ uint32_t size,
+ /*! Maximum size to print.*/
+ uint32_t maxSize
 );
 
 /******************************************************************************/
@@ -163,10 +194,14 @@ void Test_PalFprintfByteBuffMax(void *fd, /*<! File descriptor.*/
  * @return void
  */
 void Test_PalPrintWordBuff(
- const char *function, /*<! The name of the calling function.*/
- const char *buffName, /*<! The name of the buffer.*/
- uint32_t *buff, /*<! Buffer address.*/
- uint32_t size /*<! The size of the buffer.*/
+ /*! The name of the calling function.*/
+ const char *function,
+ /*! The name of the buffer.*/
+ const char *buffName,
+ /*! Buffer address.*/
+ uint32_t *buff,
+ /*! The size of the buffer.*/
+ uint32_t size
 );
 
 /******************************************************************************/
@@ -176,8 +211,8 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_PRINTF_ERROR(format, /*<! The printed string.*/ \
- ... /*<! Arguments.*/)  {\
+#define TEST_PRINTF_ERROR(format, /*! The printed string.*/ \
+ ... /*! Arguments.*/)  {\
  Test_PalPrintfError(__FUNCTION__, format, ##__VA_ARGS__);\
 }
 
@@ -188,9 +223,9 @@ void Test_PalPrintWordBuff(
  *
  * @return  void
  */
-#define TEST_FPRINTF_ERROR(fd, /*<! File descriptor.*/ \
- format, /*<! The printed string.*/ \
- ... /*<! Arguments.*/)  {\
+#define TEST_FPRINTF_ERROR(fd, /*! File descriptor.*/ \
+ format, /*! The printed string.*/ \
+ ... /*! Arguments.*/)  {\
     Test_PalFprintfError(fd, __FUNCTION__, format, ##__VA_ARGS__);\
 }
 
@@ -215,8 +250,8 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_PRINTF(format, /*<! The printed string.*/ \
- ... /*<! Arguments.*/)  {\
+#define TEST_PRINTF(format, /*! The printed string.*/ \
+ ... /*! Arguments.*/)  {\
  Test_PalPrintf(__FUNCTION__, format, ##__VA_ARGS__);\
  Test_PalPrintf(NULL, "\n");\
 }
@@ -229,9 +264,9 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_FPRINTF(fd, /*<! File descriptor.*/ \
- format, /*<! The printed string.*/ \
- ... /*<! Arguments.*/)  {\
+#define TEST_FPRINTF(fd, /*! File descriptor.*/ \
+ format, /*! The printed string.*/ \
+ ... /*! Arguments.*/)  {\
     Test_PalFprintf(fd, __FUNCTION__, format, ##__VA_ARGS__);\
     Test_PalFprintf(fd, NULL, "\n");\
 }
@@ -243,8 +278,8 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_PRINTF_NO_FUNC(format, /*<! The printed string.*/ \
- ... /*<! Arguments.*/)  {\
+#define TEST_PRINTF_NO_FUNC(format, /*! The printed string.*/ \
+ ... /*! Arguments.*/)  {\
     Test_PalPrintf(NULL, format, ##__VA_ARGS__);\
     Test_PalPrintf(NULL, "\n");\
 }
@@ -257,9 +292,9 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_FPRINTF_NO_FUNC(fd, /*<! File descriptor.*/ \
- format, /*<! The printed string.*/ \
- ... /*<! Arguments.*/)  {\
+#define TEST_FPRINTF_NO_FUNC(fd, /*! File descriptor.*/ \
+ format, /*! The printed string.*/ \
+ ... /*! Arguments.*/)  {\
     Test_PalFprintf(fd, NULL, format, ##__VA_ARGS__);\
     Test_PalFprintf(fd, NULL, "\n");\
 }
@@ -272,9 +307,9 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_PRINT_BYTE_BUFF(buffName, /*<! The name of the buffer.*/ \
- buff, /*<! Buffer address.*/ \
- size /*<! The size of the buffer.*/)  {\
+#define TEST_PRINT_BYTE_BUFF(buffName, /*! The name of the buffer.*/ \
+ buff, /*! Buffer address.*/ \
+ size /*! The size of the buffer.*/)  {\
     Test_PalPrintByteBuff(__FUNCTION__, buffName, buff, size);\
 }
 
@@ -286,10 +321,10 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_FPRINT_BYTE_BUFF(fd, /*<! File descriptor.*/ \
- buffName, /*<! The name of the buffer.*/ \
- buff, /*<! Buffer address.*/ \
- size /*<! The size of the buffer.*/)  {\
+#define TEST_FPRINT_BYTE_BUFF(fd, /*! File descriptor.*/ \
+ buffName, /*! The name of the buffer.*/ \
+ buff, /*! Buffer address.*/ \
+ size /*! The size of the buffer.*/)  {\
     Test_PalFprintByteBuff(fd, __FUNCTION__, buffName, buff, size);\
 }
 
@@ -301,11 +336,11 @@ void Test_PalPrintWordBuff(
  *
  * @return void
  */
-#define TEST_FPRINT_BYTE_BUFF_MAX(fd, /*<! File descriptor.*/ \
- buffName, /*<! The name of the buffer.*/ \
- buff, /*<! Buffer address.*/ \
- size, /*<! The size of the buffer.*/ \
- maxSize /*<! Maximum size to print.*/) {\
+#define TEST_FPRINT_BYTE_BUFF_MAX(fd, /*! File descriptor.*/ \
+ buffName, /*! The name of the buffer.*/ \
+ buff, /*! Buffer address.*/ \
+ size, /*! The size of the buffer.*/ \
+ maxSize /*! Maximum size to print.*/) {\
     Test_PalFprintfByteBuffMax(fd, __FUNCTION__, buffName, buff, size,\
                 maxSize);\
 }
@@ -318,9 +353,9 @@ void Test_PalPrintWordBuff(
  *
  * @return  void
  */
-#define TEST_PRINT_WORD_BUFF(buffName, /*<! The name of the buffer.*/ \
- buff, /*<! Buffer address.*/ \
- size /*<! The size of the buffer.*/) {\
+#define TEST_PRINT_WORD_BUFF(buffName, /*! The name of the buffer.*/ \
+ buff, /*! Buffer address.*/ \
+ size /*! The size of the buffer.*/) {\
     Test_PalPrintWordBuff(__FUNCTION__, buffName, buff, size);\
 }
 

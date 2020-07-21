@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -35,13 +35,13 @@ extern "C"
 /*! The size of the hash result in words. The maximal size for SHA-512 is 512 bits. */
 #define CC_HASH_RESULT_SIZE_IN_WORDS    16
 
-/*! The size of the MD5 digest result in Bytes. */
+/*! The size of the MD5 digest result in bytes. */
 #define CC_HASH_MD5_DIGEST_SIZE_IN_BYTES 16
 
 /*! The size of the MD5 digest result in words. */
 #define CC_HASH_MD5_DIGEST_SIZE_IN_WORDS 4
 
-/*! The size of the SHA-1 digest result in Bytes. */
+/*! The size of the SHA-1 digest result in bytes. */
 #define CC_HASH_SHA1_DIGEST_SIZE_IN_BYTES 20
 
 /*! The size of the SHA-1 digest result in words. */
@@ -59,28 +59,28 @@ extern "C"
 /*! The size of the SHA-512 digest result in words. */
 #define CC_HASH_SHA512_DIGEST_SIZE_IN_WORDS 16
 
-/*! The size of the SHA-256 digest result in Bytes. */
+/*! The size of the SHA-256 digest result in bytes. */
 #define CC_HASH_SHA224_DIGEST_SIZE_IN_BYTES 28
 
-/*! The size of the SHA-256 digest result in Bytes. */
+/*! The size of the SHA-256 digest result in bytes. */
 #define CC_HASH_SHA256_DIGEST_SIZE_IN_BYTES 32
 
-/*! The size of the SHA-384 digest result in Bytes. */
+/*! The size of the SHA-384 digest result in bytes. */
 #define CC_HASH_SHA384_DIGEST_SIZE_IN_BYTES 48
 
-/*! The size of the SHA-512 digest result in Bytes. */
+/*! The size of the SHA-512 digest result in bytes. */
 #define CC_HASH_SHA512_DIGEST_SIZE_IN_BYTES 64
 
 /*! The size of the SHA-1 hash block in words. */
 #define CC_HASH_BLOCK_SIZE_IN_WORDS 16
 
-/*! The size of the SHA-1 hash block in Bytes. */
+/*! The size of the SHA-1 hash block in bytes. */
 #define CC_HASH_BLOCK_SIZE_IN_BYTES 64
 
 /*! The size of the SHA-2 hash block in words. */
 #define CC_HASH_SHA512_BLOCK_SIZE_IN_WORDS  32
 
-/*! The size of the SHA-2 hash block in Bytes. */
+/*! The size of the SHA-2 hash block in bytes. */
 #define CC_HASH_SHA512_BLOCK_SIZE_IN_BYTES  128
 
 /*! The maximal data size for the update operation. */

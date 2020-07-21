@@ -1,14 +1,9 @@
-/****************************************************************************
- * The confidential and proprietary information contained in this file may    *
- * only be used by a person authorised under and to the extent permitted      *
- * by a subsisting licensing agreement from Arm Limited (or its affiliates).  *
- *   (C) COPYRIGHT [2018-2019] Arm Limited (or its affiliates).               *
- *       ALL RIGHTS RESERVED                                                  *
- * This entire notice must be reproduced on all copies of this file           *
- * and copies of this file may only be made by a person if such person is     *
- * permitted to do so under the terms of a subsisting license agreement       *
- * from Arm Limited (or its affiliates).                                      *
- *****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -72,7 +67,7 @@ unsigned int Test_ProjGetLcs(unsigned int  *lcs)
     return TEST_OK;
 }
 
-/* Global Reset of CC and AO and env regs */
+/* PoR - reset towards CryptoCell, the AO module and the ENV REGs (without the ROSC) */
 void Test_ProjPerformPowerOnReset(void)
 {
     uint32_t aceRegVal = 0;
@@ -133,6 +128,9 @@ void Test_ProjPerformColdReset(void)
     TEST_WRITE_ENV_REG(CC_REG_OFFSET(HOST_RGF, ENV_FPGA_CC_COLD_RST), 0x1UL);
     Test_PalDelay(1000);
 
+    /* poll NVM register to assure that the NVM boot is finished (and LCS and the keys are valid) */
+    WAIT_NVM_IDLE();
+
 #ifdef BIG__ENDIAN
     /* Set DMA endianess to big */
     TEST_WRITE_TEE_CC_REG(CC_REG_OFFSET(HOST_RGF, HOST_RGF_ENDIAN) , 0xCCUL);
@@ -158,6 +156,9 @@ void Test_ProjPerformWarmReset(void)
 
     TEST_WRITE_ENV_REG(CC_REG_OFFSET(HOST_RGF, ENV_FPGA_CC_RST_N) , 0x1UL);
     Test_PalDelay(1000);
+
+    /* poll NVM register to assure that the NVM boot is finished (and LCS and the keys are valid) */
+    WAIT_NVM_IDLE();
 
 #ifdef BIG__ENDIAN
     /* Set DMA endianess to big */

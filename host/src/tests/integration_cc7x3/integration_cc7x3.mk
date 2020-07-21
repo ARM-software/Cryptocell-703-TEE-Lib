@@ -34,6 +34,7 @@ SOURCES_$(TARGET_EXES) += menu_engine.c
 SOURCES_$(TARGET_EXES) += $(TEST_PUBLIC_SRC)
 SOURCES_$(TARGET_EXES) += $(PROJ_SOURCES)
 SOURCES_$(TARGET_EXES) += $(FLAVOUR_SOURCES)
+SOURCES_$(TARGET_EXES) += $(TESTS_HELPER_SOURCES)
 
 TEST_ALL = $(sort $(TEST_PUBLIC))
 
@@ -84,7 +85,6 @@ INCDIRS_EXTRA += $(TEST_DIR)
 VPATH = $(TEST_DIR)
 VPATH += $(PROJ_VPATH)
 VPATH += $(HOST_PROJ_ROOT)/src/tests/tests_helper/menu_engine
-
 
 PUBLIC_SCRIPTS += integration_test.sh
 PUBLIC_SCRIPTS += $(HOST_PROJ_ROOT)/src/tests/tester_help_func.sh

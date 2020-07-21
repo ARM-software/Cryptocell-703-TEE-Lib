@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #include "cc_pal_mem.h"
@@ -76,7 +76,6 @@ CCError_t PkaEcdsaVerify(void)
     /* 2.1. h = d^-1  mod r */
     PKA_MOD_INV_W_EXP(EC_VERIFY_REG_H, EC_VERIFY_REG_D, EC_VERIFY_REG_TMP);  //PPR(EC_VERIFY_REG_H);
 
-    // RL TBD Enough pka_reduce
     PKA_DIV(LEN_ID_N_PKA_REG_BITS, EC_VERIFY_REG_TMP, EC_VERIFY_REG_F/*rem*/, ECC_REG_N/*div*/);
     /* 2.2. h1 = f*h  mod r */
     PKA_MOD_MUL(LEN_ID_N_BITS, EC_VERIFY_REG_H1/*Res*/, EC_VERIFY_REG_F/*OpA*/, EC_VERIFY_REG_H/*OpB*/);

@@ -1,14 +1,9 @@
-/****************************************************************************
- * The confidential and proprietary information contained in this file may    *
- * only be used by a person authorised under and to the extent permitted      *
- * by a subsisting licensing agreement from Arm Limited (or its affiliates).    *
- * 	(C) COPYRIGHT [2001-2019] Arm Limited (or its affiliates).	     *
- *	    ALL RIGHTS RESERVED						     *
- * This entire notice must be reproduced on all copies of this file           *
- * and copies of this file may only be made by a person if such person is     *
- * permitted to do so under the terms of a subsisting license agreement       *
- * from Arm Limited (or its affiliates).					     *
- *****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 #ifndef _TEST_PROJ_OTP_PLAT_H__
 #define _TEST_PROJ_OTP_PLAT_H__
@@ -20,7 +15,8 @@
 /*!
   @file
   @brief This file contains definitions and APIs for the tests OTP interface.
-         the Apis here must have a specific implementation for the integrated platform.
+         The APIs here must have a specific implementation for the integrated
+         platform.
  */
 
 
@@ -33,21 +29,31 @@
  ******************************************************************/
 /*! Enumeration definition chip state indication. */
 typedef enum {
-    PROJ_OTP_CHIP_STATE_NOT_INITIALIZED = 0, /*!< Chip state not initialized. */
-    PROJ_OTP_CHIP_STATE_TEST = 1,           /*!< Chip state for test chip. */
-    PROJ_OTP_CHIP_STATE_PRODUCTION = 2,     /*!< Chip state for production chip. */
-    PROJ_OTP_CHIP_STATE_ERROR = 3,          /*!< Chip state error indication. */
-    PROJ_OTP_CHIP_STATE_RESERVED = CC_MAX_UINT32_VAL, /*!< Reserved value. */
+    /*! Chip state not initialized. */
+    PROJ_OTP_CHIP_STATE_NOT_INITIALIZED = 0,
+    /*! Chip state for test chip. */
+    PROJ_OTP_CHIP_STATE_TEST = 1,
+    /*! Chip state for production chip. */
+    PROJ_OTP_CHIP_STATE_PRODUCTION = 2,
+    /*! Chip state error indication. */
+    PROJ_OTP_CHIP_STATE_ERROR = 3,
+    /*! Reserved value. */
+    PROJ_OTP_CHIP_STATE_RESERVED = CC_MAX_UINT32_VAL,
 } ProjOtp_ChipState_t;
 
 
 /*! Enumeration definition chip state indication. */
 typedef enum {
-    PROJ_OTP_RMA_NO = 0,        /*!< No RMA mode. */
-    PROJ_OTP_RMA_ICV = 1,       /*!< Only ICV RMA bit is set. */
-    PROJ_OTP_RMA_OEM = 2,       /*!< Only OEM RMA bit is set. */
-    PROJ_OTP_RMA_FULL = 3,      /*!< Both OEM and ICV RMA bits are set. */
-    PROJ_OTP_RMA_RESERVED = CC_MAX_UINT32_VAL,  /*!< Reserved value. */
+    /*! No RMA mode. */
+    PROJ_OTP_RMA_NO = 0,
+    /*! Only ICV RMA bit is set. */
+    PROJ_OTP_RMA_ICV = 1,
+    /*! Only OEM RMA bit is set. */
+    PROJ_OTP_RMA_OEM = 2,
+    /*! Both OEM and ICV RMA bits are set. */
+    PROJ_OTP_RMA_FULL = 3,
+    /*! Reserved value. */
+    PROJ_OTP_RMA_RESERVED = CC_MAX_UINT32_VAL,
 } ProjOtp_Rma_t;
 
 
@@ -73,65 +79,102 @@ typedef enum {
  * Externs
  ******************************************************************/
 
-/*! The random OTP mask (a representation of the mask that is located in the RTL used for OTP masking).
+/*! The random OTP mask (a representation of the mask that is located in the RTL
+    used for OTP masking).
  * CryptoCell FPGA implementation includes two different values,
- * you can put the same value in both definitions. */
-/*!
- *   \note You must implement the OTP masking that is compatible with your system.
+ * you can put the same value in both definitions.
+ * This is the first of two arrays that hold values.
+
+ *   \note You must implement the OTP masking that is compatible with your
+           system.
  */
 extern uint32_t gTestOtpMaskV1[];
+
+/*! The random OTP mask (a representation of the mask that is located in the RTL
+    used for OTP masking).
+ * CryptoCell FPGA implementation includes two different values,
+ * you can put the same value in both definitions.
+ * This is the second of two arrays that hold values.
+
+ *   \note You must implement the OTP masking that is compatible with your
+           system.
+ */
 extern uint32_t gTestOtpMaskV2[];
 
 
-
 /******************************/
-/*   function declaration     */
+/*   Function declaration     */
 /*****************************/
 
 /*!
-@brief This function reads a word from the OTP using environment (test dedicated) registers.
-*  \note You must replace TEST_READ_OTP_BY_ENV() macro with implementation that is compatible with your system.
+@brief This function reads a word from the OTP using environment (test
+       dedicated) registers.
+*  \note You must replace TEST_READ_OTP_BY_ENV() macro with implementation that
+         is compatible with your system.
 
-@return \c The OTP read word
+@return The OTP read word
  */
-unsigned int Test_ProjReadOtpWord (uint32_t offsetInWords  /*!< [in] OTP word offset to be read. */
+unsigned int Test_ProjReadOtpWord (
+                            /*! [in] OTP word offset to be read. */
+                            uint32_t offsetInWords
 );
 
 
 /*!
 @brief This function burns the OTP buffer with the defined mask.
-        You must set chipIndication before calling this function explicitly by calling Test_ProjSetChipIndication()
-        or by calling Test_ProjBuildDefaultOtp().
-        \n Words with 0 value, are not being burned
-   \note You must replace TEST_WRITE_OTP_BY_ENV() and TEST_WRITE_ENV_REG() macros with implementation that is compatible with your system.
+       You must set chipIndication before calling this function explicitly by
+       calling Test_ProjSetChipIndication() or by calling
+       Test_ProjBuildDefaultOtp().
+
+   \note Words with 0 value are not being burned.
+   \note You must replace TEST_WRITE_OTP_BY_ENV() and TEST_WRITE_ENV_REG()
+         macros with implementation that is compatible with your system.
 
 @return \c TEST_OK on success.
 @return A non-zero value from test_proj_common.h on failure.
  */
-unsigned int Test_ProjBurnOtp(unsigned int  *otpBuff, /*!< [in] OTP buffer to be burned. */
-                                   unsigned int  nextLcs /*!< [in] The LCS expected after burning the OTP. */
+unsigned int Test_ProjBurnOtp(
+                                   /*! [in] OTP buffer to be burned. */
+                                   unsigned int  *otpBuff,
+                                   /*! [in] The LCS expected after burning the
+                                   OTP. */
+                                   unsigned int  nextLcs
 );
 
 /*!
-@brief This function sets the OTP buffer with mandatory fields (LCS changing fields): HUK and HBK#.
-       \n  Class keys should be set by the user out of this function scope by calling Test_ProjSetOtpField().
-        \n baseLcs valid values are CM/DM/SE only, if RMA is needed set rmaMode to PROJ_OTP_RMA_FULL.
-        \n baseLcs should be based on required fields in OTP to be filled
-   \note You must replace TEST_WRITE_OTP_BY_ENV() and TEST_WRITE_ENV_REG() macros with implementation that is compatible with your system.
+@brief This function sets the OTP buffer with mandatory fields (LCS changing
+fields): HUK and HBK.
+   \note Setting class keys is outside the scope of this function. You must set
+         class keys by calling Test_ProjSetOtpField().
+   \note baseLcs valid values are CM/DM/SE only. If RMA is needed, set rmaMode
+         to \c PROJ_OTP_RMA_FULL.
+   \note baseLcs should be based on required fields in OTP to be filled.
+   \note You must replace TEST_WRITE_OTP_BY_ENV() and TEST_WRITE_ENV_REG()
+         macros with implementation that is compatible with your system.
 
 @return \c TEST_OK on success.
 @return A non-zero value from test_proj_common.h on failure.
  */
-unsigned int Test_ProjBuildDefaultOtp(unsigned int  *otpBuff, /*!< [in] OTP buffer to be built. */
-                                      uint32_t  otpBuffWordSize, /*!< [in] The size in words of otpBuffer. */ /*is this the prevous param otpBuff?*/
-                                      unsigned int  baseLcs,    /*!< [in] The OTP buffer base CM/DM/SE. */
-                                      ProjOtp_ChipState_t chipIndication, /*!< [in] The OTP chip indication. */
-                                      ProjOtp_Rma_t rmaMode, /*!< [in] The OTP RMA mode. */
-                                      uint32_t  isSd,   /*!< [in] The OTP secure disable flag. */
-                                      uint32_t isHbkFull  /*!< [in] The OTP HBK full flag. */
+unsigned int Test_ProjBuildDefaultOtp(
+                                      /*! [in] OTP buffer to be built. */
+                                      unsigned int  *otpBuff,
+                                      /*! [in] The size in words of otpBuffer.
+                                      */
+                                      uint32_t  otpBuffWordSize,  /*is this the prevous param otpBuff?*/
+                                      /*! [in] The OTP buffer base CM/DM/SE. */
+                                      unsigned int  baseLcs,
+                                      /*! [in] The OTP chip indication. */
+                                      ProjOtp_ChipState_t chipIndication,
+                                      /*! [in] The OTP RMA mode. */
+                                      ProjOtp_Rma_t rmaMode,
+                                      /*! [in] The OTP Secure Disable flag. */
+                                      uint32_t  isSd,
+                                      /*! [in] The OTP HBK full flag. */
+                                      uint32_t isHbkFull
 );
 
 /*!
  @}
  */
+
 #endif //_TEST_PROJ_OTP_PLAT_H__

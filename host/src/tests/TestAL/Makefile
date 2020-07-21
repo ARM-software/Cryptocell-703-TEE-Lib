@@ -1,3 +1,4 @@
+
 # ************
 # Project Name
 # ************
@@ -19,6 +20,8 @@ MV		= mv
 PAL_DIR		= $(CURDIR)/pal
 HAL_DIR		= $(CURDIR)/hal
 CONFIGS_DIR	= $(CURDIR)/configs
+TESTAL_LITE_PAL_DIR := $(CURDIR)/TestAL-Lite/pal
+TESTS_DIR	= $(CURDIR)/tests
 
 # ****************
 # Config Files
@@ -90,8 +93,17 @@ endif
 # ****************
 # Project Definitions
 # ****************
-SRCS_PAL	= $(shell find $(PAL_DIR)/$(OS) -name '*.c' | grep -v malloc.c)
+SRCS_PAL	= $(shell find $(PAL_DIR)/$(OS) -name '*.c' | grep -v malloc.c | grep -v "TestAL/pal/linux/test_pal_mem.c")
 SRCS_HAL	= $(shell find $(HAL_DIR)/$(BOARD) -name '*.c')
+
+ifeq ($(OS),linux)
+ifeq ($(LITE),1)
+$(info Compiling Lite version)
+SRCS_PAL	+= $(TESTAL_LITE_PAL_DIR)/$(OS)/test_pal_mem.c
+else
+SRCS_PAL	+= $(PAL_DIR)/$(OS)/test_pal_mem.c
+endif
+endif
 
 OBJS_PAL	= $(SRCS_PAL:.c=.o)
 OBJS_HAL	= $(SRCS_HAL:.c=.o)
@@ -148,8 +160,7 @@ ARFLAGS		= -rcs
 
 else # aarch64-linux-gnu- , arm-xilinx-linux-gnueabi- , arm-none-eabi-, arm-buildroot-linux-gnueabi-,
 # aarch64-buildroot-linux-gnu- and native
-CFLAGS		+= $(if $(findstring target,$(DEVICE)), \
-		   $(if $(strip $(M_ARCH)),-march=$(M_ARCH),-mcpu=$(CORTEX)),)
+CFLAGS		+= $(if $(findstring target,$(DEVICE)), $(if $(strip $(M_ARCH)),-march=$(M_ARCH),-mcpu=$(CORTEX)),)
 CFLAGS		+= -DTEST_DEBUG  -DLITTLE__ENDIAN -DHASLONGLONG
 CFLAGS		+= -Wall -Wsign-compare -Wextra
 CFLAGS		+= -Wstrict-prototypes -Wwrite-strings
@@ -165,6 +176,7 @@ CFLAGS		+= $(if $(findstring freertos,$(OS)), -D$(CMSIS_DRIVER))
 
 CFLAGS		+= $(if $(findstring mbedos,$(OS)), -Wno-missing-field-initializers, -Wmissing-field-initializers)
 CFLAGS		+= $(if $(findstring mbedos,$(OS)), -Wno-unused-parameter)
+
 CFLAGS		+= $(if $(findstring mbedos,$(OS)), -DMBED_DEBUG -DMBED_TRAP_ERRORS_ENABLED=1)
 CFLAGS		+= $(if $(findstring mbedos,$(OS)), -std=gnu99 -c)
 CFLAGS		+= $(if $(findstring mbedos,$(OS)), -fmessage-length=0 -fno-exceptions -fno-builtin)
@@ -197,7 +209,7 @@ clrconfig:
 ############ Special rules for project configuration selection ##############
 else
 
-all : check_var print_var pal $(if $(findstring target,$(DEVICE)),hal) passed
+all : check_var print_var pal $(if $(findstring target,$(DEVICE)),hal) $(if $(findstring 1,$(TESTS)),tests) passed
 
 check_var: guard-OS guard-CORTEX\
 $(if $(findstring target,$(DEVICE)),guard-CROSS_COMPILE guard-BOARD) \
@@ -219,7 +231,7 @@ pal: $(OBJS_PAL)
 	$(AR) $(ARFLAGS) $(BIN_PAL) $(OBJS_PAL)
 
 hal: $(OBJS_HAL)
-	$(AR) $(ARFLAGS) $(BIN_HAL) $(OBJS_HAL) $(PAL_BIN)
+	$(AR) $(ARFLAGS) $(BIN_HAL) $(OBJS_HAL)
 
 passed:
 	@echo "\033[42m***************\033[0m"
@@ -228,7 +240,6 @@ passed:
 
 clrconfig:
 	$(RM) $(PROJ_CFG_PATH)
-
 
 
 endif
@@ -241,5 +252,11 @@ distclean: clrconfig clean
 	$(shell find . -name '*.a' -delete)
 	$(RMDIR) $(shell find $(HAL_DIR) -name 'includes*')
 	$(RMDIR) Release
+	$(if $(findstring 1,$(TESTS)),make clean -C $(TESTS_DIR))
+
+.PHONY: tests
+tests:
+	 @echo "\033[42m********Tests compilation*******\033[0m"
+	 make -C $(TESTS_DIR)
 
 # END PAL Makefile

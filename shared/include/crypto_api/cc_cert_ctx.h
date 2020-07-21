@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -11,7 +11,7 @@
 
 /*!
 @file
-@brief This file contains definitions that are required for CryptoCell's certification (FIPS or Chinese).
+@brief This file contains definitions that are required for CryptoCell certification (FIPS or Chinese).
 */
 
   /*!
@@ -20,9 +20,11 @@
   */
 
 
-/*@note Customer must add the required flag to the full compilation (CC_SUPPORT_FIPS if FIPS certification is required,
+/*!
+@note You must add the required flag to the full compilation (CC_SUPPORT_FIPS if FIPS certification is required,
  * or CC_SUPPORT_CH_CERT if chinese certification is required). */
-/*@note For Slim version FIPS certification mode is not supported. */
+/*!
+@note For Slim version FIPS certification mode is not supported. */
 
 #ifdef CC_SUPPORT_FIPS
 #include "cc_rsa_types.h"
@@ -48,7 +50,7 @@ typedef union {
     CCDhFipsKat_t           fipsDhCtx;
 	/*! Definition for ECDH certification context. */
     CCEcdhFipsKatContext_t  fipsEcdhCtx;
-	 /*!Definition for DRBG certification context. */
+	 /*! Definition for DRBG certification context. */
     CCPrngFipsKatCtx_t      fipsPrngCtx;
 #endif
 #ifdef CC_SUPPORT_CH_CERT
@@ -58,7 +60,7 @@ typedef union {
 }CCCertKatContext_t;
 
 #else
-typedef uint32_t   CCCertKatContext_t; /*!< If no certification is needed - this type is only used as NULL.*/
+typedef uint32_t   CCCertKatContext_t; /*!< If no certification is needed - this type is used only as NULL.*/
 
 
 #endif

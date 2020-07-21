@@ -35,6 +35,8 @@ extern "C"
 /*! TRNG module on the CryptoCell layer base address - 0x00F02F00 */
 /*! Illegal input parameters.*/
 #define CC_TRNG_INVALID_PARAMS_ERROR        	(CC_TRNG_MODULE_ERROR_BASE + 0x0UL)
+/*! TRNG errors. */
+#define CC_TRNG_ERRORS_ERROR                    (CC_TRNG_MODULE_ERROR_BASE + 0x1UL)
 
 #ifdef __cplusplus
 }

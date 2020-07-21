@@ -1,14 +1,9 @@
-/****************************************************************************
- * The confidential and proprietary information contained in this file may    *
- * only be used by a person authorised under and to the extent permitted      *
- * by a subsisting licensing agreement from Arm Limited (or its affiliates).    *
- * 	(C) COPYRIGHT [2001-2019] Arm Limited (or its affiliates).	     *
- *	    ALL RIGHTS RESERVED						     *
- * This entire notice must be reproduced on all copies of this file           *
- * and copies of this file may only be made by a person if such person is     *
- * permitted to do so under the terms of a subsisting license agreement       *
- * from Arm Limited (or its affiliates).					     *
- *****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 
 #ifndef _TEST_PROJ_OTP_H__
@@ -25,19 +20,19 @@
 #define TEST_OTP_SIZE_IN_BYTES      (TEST_OTP_SIZE_IN_WORDS*CC_32BIT_WORD_SIZE)
 #define MAX_OTP_SIZE_IN_WORDS       0x7FF
 #define TEST_OTP_LAST_WORD_IN_MASK  TEST_OTP_SIZE_IN_WORDS
-#define TEST_OTP_ZERO_COUNT_128BIT_KEY_NOT_IN_USE  0x0
+#define TEST_OTP_ZERO_COUNT_128BIT_KEY_NOT_IN_USE   0x0
 
 /* indication of FULL HBK or not */
 #define FULL_HBK        1
 #define NOT_FULL_HBK    0
 
 /* indication of SECURE DISABLE or not */
-#define SD_ENABLE        1
-#define NOT_SD_ENABLE    0
+#define SD_ENABLE       1
+#define NOT_SD_ENABLE   0
 
 /* indication of KEY USED or not */
-#define KEY_NOT_IN_USE        1
-#define KEY_IN_USE    0
+#define KEY_NOT_IN_USE  1
+#define KEY_IN_USE      0
 
 #define TEST_PROJ_NOT_PROVIDED      0xffffffff
 
@@ -265,7 +260,16 @@ unsigned int Test_ProjBuildAndBurnOtp(unsigned int  *otpBuff, /*!< [in] OTP buff
                                       uint32_t isHbkFull  /*!< [in] The OTP  hbk full flag. */
                                       );
 
+/*!
+@brief This function writes a key using shadow registers.
 
+
+@return \c TEST_OK on success.
+@return A non-zero value from test_proj_common.h on failure.
+ */
+unsigned int Test_ProjSetShadowKey(uint32_t *pKey, /*!< [in] The key to burn */
+                                   size_t keyLenWords, /*!< [in] key length in words */
+                                   ProjOtp_FieldsType_t fieldType /*!< [in] The OTP field type to burn */);
 #endif //_TEST_PROJ_OTP_H__
 
 

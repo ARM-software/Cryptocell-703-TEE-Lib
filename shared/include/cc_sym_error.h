@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -34,6 +34,14 @@ typedef enum CCSymRetCode {
 	CC_RET_BUSY, /* Resource busy */
 	CC_RET_NOMEM, /* Out of memory */
 	CC_RET_OSFAULT, /* Internal TEE_OS error */
+	CC_RET_KDR_INVALID_ERROR, /* KDR error - relevant to root key */
+	CC_RET_SESSION_KEY_ERROR, /* Session key validity error */
+	CC_RET_KCP_INVALID_ERROR, /* KCP key validity error */
+	CC_RET_KPICV_INVALID_ERROR, /* KPICV key validity error */
+	CC_RET_INVALID_USER_KEY_SIZE, /* User Key validity size error */
+	CC_RET_INVALID_KEY_TYPE, /* Invalid key type */
+	CC_RET_FATAL_ERR_IS_LOCKED_ERR, /* Device is locked in fatal error state. */
+	CC_RET_SECURE_DISABLE_ERROR, /* Device has security disable feature enabled. */
 	CCSYMCRYPTO_RET_RESERVE32 = INT32_MAX /* assure this enum is 32b */
 }CCSymRetCode_t;
 

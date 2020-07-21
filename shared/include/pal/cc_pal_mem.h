@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -48,12 +48,12 @@ extern "C"
  @param aSize Size of buffer expressed in bytes.
  @param aSource Source buffer.
  @param aTarget Target buffer.
-  @return The return values are according to operating-system return values.
+  @return The return values are according to operating system return values.
  */
 #define CC_PalMemCmp(aTarget, aSource, aSize) CC_PalMemCmpPlat(aTarget, aSource, aSize)
 
 /*!
-  @brief This function copies \p aSize Bytes from the source buffer to the destination buffer.
+  @brief This function copies \p aSize bytes from the source buffer to the destination buffer.
   @param aSize Size of buffer expressed in bytes.
   @param aSource Source buffer.
   @param aDestination Destination buffer.
@@ -62,7 +62,7 @@ extern "C"
 #define CC_PalMemCopy(aDestination, aSource, aSize) CC_PalMemCopyPlat(aDestination, aSource, aSize)
 
 /*!
-  @brief This function moves \p aSize Bytes from the source buffer to the destination buffer.
+  @brief This function moves \p aSize bytes from the source buffer to the destination buffer.
   This function supports overlapped buffers.
   @param aSize Size of buffer expressed in bytes.
   @param aSource Source buffer.
@@ -73,7 +73,7 @@ extern "C"
 
 
 /*!
-  @brief This function sets \p aSize Bytes of \p aChar in the given buffer.
+  @brief This function sets \p aSize bytes of \p aChar in the given buffer.
   @param aSize Size of buffer expressed in bytes.
   @param aChar Target character.
   @param aTarget Target buffer.
@@ -83,7 +83,7 @@ extern "C"
 
 
 /*!
-  @brief This function sets \p aSize Bytes in the given buffer with zeroes.
+  @brief This function sets \p aSize bytes in the given buffer with zeroes.
   @param aSize Size of buffer expressed in bytes.
   @param aTarget Target buffer
   @return void.

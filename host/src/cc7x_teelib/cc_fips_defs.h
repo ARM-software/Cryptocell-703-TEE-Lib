@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -32,6 +32,7 @@ typedef enum CCFipsTrace_t {
         CC_FIPS_TRACE_RSA_COND          = 0x400,
         CC_FIPS_TRACE_ECC_COND          = 0x800,
         CC_FIPS_TRACE_PRNG_CONT         = 0x1000,
+        CC_FIPS_TRACE_AESGCM_PUT        = 0x2000,
         CC_FIPS_TRACE_RESERVE32B        = INT32_MAX
 }CCFipsTrace_t;
 
@@ -89,11 +90,11 @@ typedef struct CC_FipsStateData {
 	supported = ((FipsGetRawState(&fipsState) != CC_OK) || (fipsState & CC_FIPS_STATE_SUPPORTED)); \
 }
 
-#define FIPS_RSA_VALIDATE(pRndContext,pCcUserPrivKey,pCcUserPubKey,pFipsCtx) \
-                        CC_FipsRsaConditionalTest(pRndContext,pCcUserPrivKey,pCcUserPubKey,pFipsCtx)
+#define FIPS_RSA_VALIDATE(f_rng,p_rng,pCcUserPrivKey,pCcUserPubKey,pFipsCtx) \
+                        CC_FipsRsaConditionalTest(f_rng,p_rng,pCcUserPrivKey,pCcUserPubKey,pFipsCtx)
 
-#define FIPS_ECC_VALIDATE(pRndContext, pUserPrivKey, pUserPublKey, pFipsCtx)  \
-			CC_FipsEccConditionalTest(pRndContext, pUserPrivKey, pUserPublKey, pFipsCtx)
+#define FIPS_ECC_VALIDATE(f_rng,p_rng, pUserPrivKey, pUserPublKey, pFipsCtx)  \
+			CC_FipsEccConditionalTest(f_rng,p_rng, pUserPrivKey, pUserPublKey, pFipsCtx)
 
 #define CC_FIPS_SET_RND_CONT_ERR() {\
         CCFipsState_t	fipsState; \
@@ -112,9 +113,10 @@ CCError_t FipsRevertState(CCFipsState_t fipsState);   /*!< [in] The fips State t
 CCFipsError_t FipsSetError(CCFipsError_t  fipsError);  /*!< [in] Sets the fips Error of the library. */
 CCFipsError_t FipsSetTrace(CCFipsTrace_t  fipsTrace);  /*!< [in] Sets the fips Trace of the library. */
 
-CCFipsError_t FipsRunPowerUpTest(CCRndContext_t *rndContext_ptr, CCCertKatContext_t  *pCertCtx);
+CCFipsError_t FipsRunPowerUpTest(CCRndGenerateVectWorkFunc_t *f_rng, void *p_rng, CCCertKatContext_t  *pCertCtx);
 CCFipsError_t CC_FipsAesRunTests(void);
 CCFipsError_t CC_FipsAesCcmRunTests(void);
+CCFipsError_t CC_FipsAesGcmRunTests(void);
 CCFipsError_t CC_FipsDesRunTests(void);
 CCFipsError_t CC_FipsHashRunTests(void);
 CCFipsError_t CC_FipsHmacRunTests(void);
@@ -125,8 +127,8 @@ CCFipsError_t CC_FipsHmacRunTests(void);
 #define CHECK_AND_RETURN_UPON_FIPS_ERROR()
 #define CHECK_AND_RETURN_UPON_FIPS_STATE()
 #define CHECK_FIPS_SUPPORTED(supported) {supported = false;}
-#define FIPS_RSA_VALIDATE(pRndContext,pCcUserPrivKey,pCcUserPubKey,pFipsCtx)  (CC_OK)
-#define FIPS_ECC_VALIDATE(pRndContext, pUserPrivKey, pUserPublKey, pFipsCtx)  (CC_UNUSED_PARAM(pRndContext),CC_OK)
+#define FIPS_RSA_VALIDATE(f_rng,p_rng,pCcUserPrivKey,pCcUserPubKey,pFipsCtx)  (CC_OK)
+#define FIPS_ECC_VALIDATE(f_rng,p_rng, pUserPrivKey, pUserPublKey, pFipsCtx)  (CC_UNUSED_PARAM(f_rng),CC_UNUSED_PARAM(p_rng),CC_OK)
 #define CC_FIPS_SET_RND_CONT_ERR()
 
 #endif  // CC_SUPPORT_FIPS

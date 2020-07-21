@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -17,14 +17,18 @@ extern "C"
 /*!
 @file
 @brief This file contains the AXI configuration control definitions.
-
 */
+
+/*!
+ @addtogroup cc_axi_config
+ @{
+     */
 
 #include "cc_pal_types.h"
 #include "cc_error.h"
 
 /************************ Defines ******************************/
-/*!< This error is returned when one of the function inputs is ilegall */
+/*! This error is returned when one of the function inputs is illegal */
 #define CC_AXI_CTRL_ILEGALL_INPUT_ERROR         (CC_AXI_CTRL_MODULE_ERROR_BASE + 0x01)
 
 /************************ Typedefs  *****************************/

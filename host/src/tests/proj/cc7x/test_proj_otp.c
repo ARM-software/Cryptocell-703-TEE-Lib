@@ -1,14 +1,9 @@
-/****************************************************************************
- * The confidential and proprietary information contained in this file may    *
- * only be used by a person authorised under and to the extent permitted      *
- * by a subsisting licensing agreement from Arm Limited (or its affiliates).    *
- * 	(C) COPYRIGHT [2001-2019] Arm Limited (or its affiliates).	     *
- *	    ALL RIGHTS RESERVED						     *
- * This entire notice must be reproduced on all copies of this file           *
- * and copies of this file may only be made by a person if such person is     *
- * permitted to do so under the terms of a subsisting license agreement       *
- * from Arm Limited (or its affiliates).					     *
- *****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 #include <stddef.h>
 #include <string.h>
@@ -486,7 +481,7 @@ unsigned int Test_ProjBuildDefaultOtp(unsigned int  *otpBuff,
         break;
     case TEST_PROJ_LCS_DM:
         error = Test_ProjSetOtpField(otpBuff, gHukBuff, PROJ_OTP_HUK_FIELD, KEY_IN_USE);
-        if (error != TEST_OK) {  // IG - proj with TEST_ASSET()
+        if (error != TEST_OK) {
             return error;
         }
         if (isHbkFull == 1) {
@@ -576,4 +571,69 @@ unsigned int Test_ProjBuildAndBurnOtp(unsigned int  *otpBuff,
         return rc;
     }
     return TEST_OK;
+}
+
+unsigned int Test_ProjSetShadowKey(uint32_t *pKey, size_t keyLenWords, ProjOtp_FieldsType_t fieldType) {
+    size_t i;
+    switch (fieldType) {
+        case PROJ_OTP_HUK_FIELD:
+            if (keyLenWords != CC_OTP_HUK_SIZE_IN_WORDS) {
+                TEST_LOG_ERROR("Wrong key len %zu!!\n", keyLenWords);;
+                return 1;
+            }
+            for (i = 0; i < keyLenWords; ++i) {
+                TEST_WRITE_TEE_CC_REG(CC_REG_OFFSET(HOST_RGF, HOST_SHADOW_HUK_REG), pKey[i]);
+            }
+            break;
+        case PROJ_OTP_KCP_FIELD:
+            if (keyLenWords != CC_OTP_KCP_SIZE_IN_WORDS) {
+                TEST_LOG_ERROR("Wrong key len %zu!!\n", keyLenWords);;
+                return 1;
+            }
+            for (i = 0; i < keyLenWords; ++i) {
+                TEST_WRITE_TEE_CC_REG(CC_REG_OFFSET(HOST_RGF, HOST_SHADOW_KCP_REG), pKey[i]);
+            }
+            break;
+        case PROJ_OTP_KCE_FIELD:
+            if (keyLenWords != CC_OTP_KCE_SIZE_IN_WORDS) {
+                TEST_LOG_ERROR("Wrong key len %zu!!\n", keyLenWords);;
+                return 1;
+            }
+            for (i = 0; i < keyLenWords; ++i) {
+                TEST_WRITE_TEE_CC_REG(CC_REG_OFFSET(HOST_RGF, HOST_SHADOW_KCE_REG), pKey[i]);
+            }
+            break;
+        case PROJ_OTP_KPICV_FIELD:
+            if (keyLenWords != CC_OTP_KPICV_SIZE_IN_WORDS) {
+                TEST_LOG_ERROR("Wrong key len %zu!!\n", keyLenWords);;
+                return 1;
+            }
+            for (i = 0; i < keyLenWords; ++i) {
+                TEST_WRITE_TEE_CC_REG(CC_REG_OFFSET(HOST_RGF, HOST_SHADOW_KPICV_REG), pKey[i]);
+            }
+            break;
+        case PROJ_OTP_KCEICV_FIELD:
+            if (keyLenWords != CC_OTP_KCEICV_SIZE_IN_WORDS) {
+                TEST_LOG_ERROR("Wrong key len %zu!!\n", keyLenWords);;
+                return 1;
+            }
+            for (i = 0; i < keyLenWords; ++i) {
+                TEST_WRITE_TEE_CC_REG(CC_REG_OFFSET(HOST_RGF, HOST_SHADOW_KCEICV_REG), pKey[i]);
+            }
+            break;
+        case PROJ_OTP_EKCST_FIELD:
+            if (keyLenWords != CC_OTP_EKCST_SIZE_IN_WORDS) {
+                TEST_LOG_ERROR("Wrong key len %zu!!\n", keyLenWords);;
+                return 1;
+            }
+            for (i = 0; i < keyLenWords; ++i) {
+                TEST_WRITE_TEE_CC_REG(CC_REG_OFFSET(HOST_RGF, HOST_SHADOW_EKCST_REG), pKey[i]);
+            }
+            break;
+        default:
+            TEST_LOG_ERROR("unsopprted field %u!!\n", fieldType);
+            return 1;
+    }
+
+    return 0;
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -10,35 +10,98 @@
 
 #include "cc_hal.h"
 
+/*!
+   @file
+   @brief This file contains APIs that are used to handle CryptoCell interrupts.
+  */
+
+ /*!
+   @ingroup pal_interrupt
+   @{
+   */
+
+/*! PAL interrupt service routine (ISR). */
+typedef void (*CCPalISR)(void);
+
 /**
- * @brief This function removes the interrupt handler for
- * cryptocell interrupts.
+ * @brief The function initializes the interrupt handler for
+ * CryptoCell interrupts.
+ *
+ * @param[in]
+ *      pIsrFunction - ISR handler function
+ *
+ *
+ * @return - \c CC_SUCCESS on success.
+ * @return - \c CC_FAIL on failure.
+ */
+CCError_t CC_PalInitIrq(CCPalISR pIsrFunction);
+
+/**
+ * @brief The function removes the interrupt handler for
+ * CryptoCell interrupts.
  *
  */
 void CC_PalFinishIrq(void);
 
-/*!
- * @brief       A function that is called to block on waiting interrupt. This is OS dependant.
+/**
+ * @brief This function initializes wait for interrupt completion for
+ * a specific interrupt type
  *
- * @param irqType       The irq to wait on
- * @param pMsg          Optional paramter to receive from the notifing context
+ * @param[in]
+ *      irqType       IRQ type
  *
- * @return              CC_OK for success, CC_FAIL for failure.
+ * @param[out]
+ *
+ * @return - \c CC_SUCCESS on success.
+ * @return - \c CC_FAIL on failure.
  */
-CCError_t CC_PalInterruptRead(CCHalIrq_t irqType, CCHalMsg_t *pMsg);
+CCError_t CC_PalInitWaitInterruptComp(CCHalIrq_t irqType);
+
+/**
+ * @brief This function stop wait for interrupt completion for
+ * a specific interrupt type
+ *
+ * @param[in]
+ *      irqType       IRQ type
+ *
+ * @param[out]
+ *
+ * @return - \c CC_SUCCESS on success.
+ * @return - \c CC_FAIL on failure.
+ */
+CCError_t CC_PalFinishWaitInterruptComp(CCHalIrq_t irqType);
 
 /*!
- * @brief       A function that notifies a blocking context that an interrupt was detected.
+ * @brief       A function that is called to block on waiting interrupt.
  *
- * @param irqType       The irq to notify about
- * @param pMsg          Optional paramter to pass to the waiting thread.
- *                      The msg should be passed by value, so it is op to pass messages from stack.
- *                      Must be NULL
- *                      pMsg should contain a field indicating whether an error was detected while expecting interrupt.
+ * @param[in]
+ *       irqType       The IRQ to wait on.
  *
- * @return              CC_OK for success, CC_FAIL for failure.
+ * @param[out]
+ *       irqData       Optional parameter to receive from the notifying context.
+ *
+ * @return - \c CC_OK on success.
+ * @return - \c CC_FAIL on failure.
  */
-CCError_t CC_PalInterruptNotify(CCHalIrq_t irqType, CCHalMsg_t *pMsg);
+CCError_t CC_PalWaitInterruptComp(CCHalIrq_t irqType, uint32_t *irqData);
 
-#endif /* _CC_PAL_INTERRUPTCTRL_H */
+/*!
+ * @brief       A function that is called to notify PAL on interrupts.
+ *
+ * @param[in]
+ *        irqType       The IRQ type.
+ *
+ * @param[in]
+ *        irrData       The interrupt data.
+ *
+ * @return - \c CC_OK on success.
+ * @return - \c CC_FAIL on failure.
+ */
+CCError_t CC_PalInterruptNotify(CCHalIrq_t irqType, uint32_t irrData);
+
+   /*!
+   @}
+   */
+#endif
+/* _CC_PAL_INTERRUPTCTRL_H */
 

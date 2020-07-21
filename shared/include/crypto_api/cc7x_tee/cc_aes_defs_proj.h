@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -27,13 +27,12 @@ extern "C"
 
 /************************ Defines ******************************/
 
-/*! The size of the user's context prototype (see CCAesUserContext_t) in words. */
-/* TODO EUGENE why 131? */
+/*! The size of your context prototype (see CCAesUserContext_t) expressed in words. */
 #define CC_AES_USER_CTX_SIZE_IN_WORDS 131		/*!< \internal In order to allow contiguous context the user context is doubled + 3 words for offset management */
 
-/*! The maximum size of the AES key in words. */
+/*! The maximum size of the AES key expressed in words. */
 #define CC_AES_KEY_MAX_SIZE_IN_WORDS 16
-/*! The maximum size of the AES key in bytes. */
+/*! The maximum size of the AES key expressed in bytes. */
 #define CC_AES_KEY_MAX_SIZE_IN_BYTES (CC_AES_KEY_MAX_SIZE_IN_WORDS * sizeof(uint32_t))
 
 

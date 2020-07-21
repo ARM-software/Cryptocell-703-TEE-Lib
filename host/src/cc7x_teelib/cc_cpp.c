@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #include "cc_cpp.h"
@@ -11,7 +11,7 @@
 #include "cc_error.h"
 #include "cc_util_int_defs.h"
 #include "cc_hw_queue_defs.h"
-#include "cc_lli_defs.h"
+#include "cc_lli_defs_int.h"
 
 #define CPP_WD_DISABLE_VALUE   UINT32_MAX
 #define CPP_WD_RELOAD_VALUE    0x1
@@ -31,7 +31,7 @@ CCCppEventFunction pCppEventFunc = NULL;
 static uint32_t readPubSram(
         uint32_t addr/*!< [in] sram data offset */)
 {
-    volatile uint32_t dummy = 0;
+    uint32_t dummy = 0;
 
     /* set address */
     CC_HAL_WRITE_REGISTER( CC_REG_OFFSET (HOST_RGF,PUB_SRAM_ADDR), (addr) );
@@ -101,11 +101,18 @@ CCError_t CC_CppStreamIdSet(uint16_t readStreamId,
 {
     uint32_t regVal = 0;
     uint32_t isSecureDisableSet = 0;
+    uint32_t isFatalErrorSet = 0;
 
     /* The function should refuse to operate if the secure disable bit is set */
     CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(isSecureDisableSet);
     if (isSecureDisableSet == SECURE_DISABLE_FLAG_SET) {
         return CC_CPP_SD_ENABLED_ERROR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(isFatalErrorSet);
+    if (isFatalErrorSet == FATAL_ERROR_FLAG_SET) {
+        return CC_CPP_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* set readStreamId to bits 31:16 */
@@ -124,6 +131,7 @@ CCError_t CC_CppStreamIdSet(uint16_t readStreamId,
 CCError_t CC_CppWatchdogSet(CCBool enable, uint32_t cycles)
 {
     uint32_t isSecureDisableSet = 0;
+    uint32_t isFatalErrorSet = 0;
 
     if ((enable != CC_TRUE) && (enable != CC_FALSE))
     {
@@ -133,6 +141,11 @@ CCError_t CC_CppWatchdogSet(CCBool enable, uint32_t cycles)
     CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(isSecureDisableSet);
     if (isSecureDisableSet == SECURE_DISABLE_FLAG_SET) {
         return CC_CPP_SD_ENABLED_ERROR;
+    }
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(isFatalErrorSet);
+    if (isFatalErrorSet == FATAL_ERROR_FLAG_SET) {
+        return CC_CPP_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* In case the watchdog is being disabled the watchdog expiry time will be
@@ -160,6 +173,7 @@ CCError_t CC_CppKeySet(
     uint32_t i = 0;
     uint32_t keyWord = 0;
     uint32_t isSecureDisableSet = 0;
+    uint32_t isFatalErrorSet = 0;
 
     if (pKey == NULL)
     {
@@ -170,6 +184,12 @@ CCError_t CC_CppKeySet(
     CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(isSecureDisableSet);
     if (isSecureDisableSet == SECURE_DISABLE_FLAG_SET) {
         return CC_CPP_SD_ENABLED_ERROR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(isFatalErrorSet);
+    if (isFatalErrorSet == FATAL_ERROR_FLAG_SET) {
+        return CC_CPP_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* parse enum type into words counter
@@ -235,6 +255,7 @@ CCError_t CC_CppBufInfoGet (CCCppBufInfo_t *bufInfoIn,
     uint32_t sramAddr = 0;
     uint32_t numberOfMlliEntries = 0;
     uint32_t isSecureDisableSet = 0;
+    uint32_t isFatalErrorSet = 0;
     CCError_t rc = CC_OK;
 
     /* init with zeros */
@@ -250,6 +271,12 @@ CCError_t CC_CppBufInfoGet (CCCppBufInfo_t *bufInfoIn,
     CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(isSecureDisableSet);
     if (isSecureDisableSet == SECURE_DISABLE_FLAG_SET) {
         return CC_CPP_SD_ENABLED_ERROR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(isFatalErrorSet);
+    if (isFatalErrorSet == FATAL_ERROR_FLAG_SET) {
+        return CC_CPP_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* read descriptor */
@@ -334,6 +361,7 @@ endOfFunction:
 CCError_t CC_CppHandleOp(CCBool accept)
 {
     uint32_t isSecureDisableSet = 0;
+    uint32_t isFatalErrorSet = 0;
 
     if ((accept != CC_TRUE) && (accept != CC_FALSE))
     {
@@ -345,6 +373,12 @@ CCError_t CC_CppHandleOp(CCBool accept)
     if (isSecureDisableSet == SECURE_DISABLE_FLAG_SET) {
         CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_ABORT_REE_KS_OPERATION), 1);
         return CC_CPP_SD_ENABLED_ERROR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(isFatalErrorSet);
+    if (isFatalErrorSet == FATAL_ERROR_FLAG_SET) {
+        return CC_CPP_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* the input parameter is used to choose between
@@ -369,6 +403,7 @@ CCError_t CC_CppRecvOp(CCCppOpParams_t *opParams)
     uint32_t reeParamsRegValue;
     uint32_t i = 0;
     uint32_t isSecureDisableSet = 0;
+    uint32_t isFatalErrorSet = 0;
 
     /* parameter sanity check */
     if (opParams == NULL)
@@ -380,6 +415,12 @@ CCError_t CC_CppRecvOp(CCCppOpParams_t *opParams)
     CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(isSecureDisableSet);
     if (isSecureDisableSet == SECURE_DISABLE_FLAG_SET) {
         return CC_CPP_SD_ENABLED_ERROR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(isFatalErrorSet);
+    if (isFatalErrorSet == FATAL_ERROR_FLAG_SET) {
+        return CC_CPP_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     /* Read the REE_params register, thereby stopping
@@ -487,16 +528,9 @@ CCError_t CC_CppRecvOp(CCCppOpParams_t *opParams)
 */
 void CC_CppEventHandler(void)
 {
-    uint32_t imrValue = 0;
-
     if (pCppEventFunc != NULL)
         pCppEventFunc(NULL);
 
-    /* unmasked interrupt */
-    imrValue = CC_HAL_READ_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_IMR));
-    CC_HAL_WRITE_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_RGF_IMR),
-            imrValue &
-            (~(1 << CC_HOST_RGF_IRR_REE_KS_OPERATION_INDICATION_BIT_SHIFT)));
     return;
 }
 

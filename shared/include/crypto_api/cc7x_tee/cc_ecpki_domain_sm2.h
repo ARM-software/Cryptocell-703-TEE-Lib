@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -16,7 +16,7 @@
 */
 
 /*!
- @addtogroup sm2_apis
+ @addtogroup cc_sm2
  @{
  */
 
@@ -28,8 +28,8 @@ extern "C"
 {
 #endif
 
-/**
- @brief    The function returns the domain pointer of SM2.
+/*!
+ @brief    Returns the domain pointer of SM2.
  @return   Domain pointer.
 
 */

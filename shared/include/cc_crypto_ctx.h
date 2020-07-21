@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -100,6 +100,9 @@
 #define CC_MULTI2_MIN_NUM_ROUNDS        8
 #define CC_MULTI2_MAX_NUM_ROUNDS        128
 
+/*! AES GCM 96 bits size IV. */
+#define CC_AESGCM_IV_96_BITS_SIZE_BYTES     12
+
 #define CC_DRV_ALG_MAX_BLOCK_SIZE       CC_HASH_BLOCK_SIZE_MAX
 
 enum drv_engine_type {
@@ -196,9 +199,11 @@ enum drv_crypto_key_type {
     DRV_USER_KEY = 0,           /* 0b0000 */
     DRV_ROOT_KEY = 1,           /* 0b0001 */
     DRV_SESSION_KEY = 3,        /* 0b0011 */
+    DRV_KCE_KEY = 4,            /* 0b0100 */ /* ==KCE */
     DRV_PLATFORM_KEY = 5,       /* 0b0101 */
     DRV_CUSTOMER_KEY = 6,       /* 0b0110 */
-    DRV_KPICV_KEY = 13,         /* 0b1110 */ /* ==KPICV */
+    DRV_KPICV_KEY = 13,         /* 0b1101 */ /* ==KPICV */
+    DRV_KCEICV_KEY = 14,        /* 0b1110 */ /* ==KCEICV */
     DRV_KCP_KEY = 15,           /* 0b1111 */ /* ==KCP */
     DRV_END_OF_KEYS = INT32_MAX,
 };
@@ -209,14 +214,15 @@ enum drv_crypto_padding_type {
     DRV_PADDING_RESERVE32B = INT32_MAX
 };
 
-typedef enum DrvAeadCcmFlow {
+typedef enum DrvAeadGcmCcmFlow {
     DRV_AEAD_FLOW_NULL = 0,
+    DRV_AEAD_FLOW_GCM_IV, /* relevant for GCM only */
     DRV_AEAD_FLOW_ADATA_INIT,
     DRV_AEAD_FLOW_ADATA_PROCESS,
     DRV_AEAD_FLOW_TEXT_DATA_INIT,
     DRV_AEAD_FLOW_TEXT_DATA_PROCESS,
     DRV_AEAD_FLOW_RESERVE32B = INT32_MAX,
-} DrvAeadCcmFlow_e;
+} DrvAeadGcmCcmFlow_e;
 
 typedef enum DataBlockType {
     FIRST_BLOCK,
@@ -293,7 +299,9 @@ struct drv_ctx_aead {
     uint8_t block_state[CC_AES_BLOCK_SIZE];
     uint8_t key[CC_AES_KEY_SIZE_MAX];
     uint8_t mac_state[CC_AES_BLOCK_SIZE]; /* MAC result */
-    uint8_t nonce[CC_AES_BLOCK_SIZE]; /* nonce buffer */
+    uint8_t nonce[CC_AES_BLOCK_SIZE]; /* nonce buffer /J0 for gcm */
+    uint8_t hkey[CC_AES_BLOCK_SIZE]; /* H key for ghash - used by gcm */
+    uint8_t gcm_len_block[CC_AES_BLOCK_SIZE]; /* gcm lenA and lenC */
     enum drv_crypto_alg alg; /* ssi_drv_crypto_alg_AES */
     enum drv_cipher_mode mode;
     enum drv_crypto_direction direction;
@@ -305,9 +313,9 @@ struct drv_ctx_aead {
     uint32_t internalMode; /* auth/encrypt/decrypt modes */
     uint32_t q; /* an element of {2, 3, 4, 5, 6, 7, 8}; */
     uint32_t headerRemainingBytes; /* associated data remaining bytes */
-    DrvAeadCcmFlow_e nextProcessingState; /* points to the next machine state */
+    DrvAeadGcmCcmFlow_e nextProcessingState; /* points to the next machine state */
     /* reserve to end of allocated context size */
-    uint32_t reserved[CC_DRV_CTX_SIZE_WORDS - 12 - 3 * (CC_AES_BLOCK_SIZE / sizeof(uint32_t)) -
+    uint32_t reserved[CC_DRV_CTX_SIZE_WORDS - 12 - 5 * (CC_AES_BLOCK_SIZE / sizeof(uint32_t)) -
     CC_AES_KEY_SIZE_MAX / sizeof(uint32_t)];
 };
 

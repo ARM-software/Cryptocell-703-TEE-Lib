@@ -1,20 +1,21 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
 /*!
  @file
- @brief This file contains the type definitions that are used by the CryptoCell SM4 APIs.
+ @brief This file contains the type definitions that are used by the CryptoCell
+ SM4 APIs.
  */
 
 
  /*!
   @addtogroup cc_sm4_defs
   @{
-	  */
+      */
 
 #ifndef CC_SM4_DEFS_H
 #define CC_SM4_DEFS_H
@@ -48,23 +49,23 @@ extern "C"
 /************************ Enums ********************************/
 /*! The SM4 operation:<ul><li>Encrypt</li><li>Decrypt</li></ul>. */
 typedef enum {
-	/*! An SM4 encrypt operation. */
+    /*! An SM4 encrypt operation. */
     CC_SM4_ENCRYPT = 0,
  /*! An SM4 decrypt operation. */
     CC_SM4_DECRYPT = 1,
-	/*! The maximal number of operations. */
+    /*! The maximal number of operations. */
     CC_SM4_NUM_OF_ENCRYPT_MODES,
-	/*! Reserved. */
+    /*! Reserved. */
     CC_SM4_ENCRYPT_MODE_LAST = 0x7FFFFFFF
 }CCSm4EncryptMode_t;
 
 /*! The SM4 operation mode. */
 typedef enum {
-	/*! ECB mode. */
+    /*! ECB mode. */
     CC_SM4_MODE_ECB          = 0,
-	/*! CBC mode. */
+    /*! CBC mode. */
     CC_SM4_MODE_CBC          = 1,
-	/*! CTR mode. */
+    /*! CTR mode. */
     CC_SM4_MODE_CTR          = 2,
     /*! OFB mode. */
     CC_SM4_MODE_OFB          = 3,
@@ -92,7 +93,7 @@ typedef uint8_t CCSm4Key_t[CC_SM4_KEY_SIZE_IN_BYTES];
  till the end of the API flow.
  */
 typedef struct CCSm4UserContext_t {
-	/*! The context buffer for internal usage. */
+    /*! The context buffer for internal usage. */
     uint32_t buff[CC_SM4_USER_CTX_SIZE_IN_WORDS] ;
 }CCSm4UserContext_t;
 

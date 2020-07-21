@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #ifndef _CC_SM3_H
@@ -16,7 +16,7 @@ that are used for the CryptoCell SM3 APIs, as well as the APIs themselves.
 /*!
  @addtogroup cc_sm3
  @{
-	 */
+     */
 
 
 
@@ -39,7 +39,7 @@ It receives a pointer to SM3 context, and initializes it with the cryptographic
 attributes that are needed for the SM3 block operation (initializes H's value
 for the SM3 algorithm).
 
-@param pContextID  Pointer to the SM3 context buffer. (allocated by the user)
+ @param pContextID  Pointer to the SM3 context buffer. (allocated by the user)
 
  @return \c CC_OK on success.
  @return  A non-zero value from cc_sm3_error.h on failure.
@@ -68,7 +68,7 @@ CIMPORT_C CCError_t CC_Sm3Update(CCSm3UserContext_t *pContextID, uint8_t *pDataI
 
 /*****************************************************************************/
 /*!
-@brief This function finalize the process of SM3 data block.
+@brief This function finalizes the process of SM3 data block.
 
 It receives a handle to the SM3 Context, which was previously initialized by
 ::CC_Sm3Init() or by ::CC_Sm3Update().
@@ -99,17 +99,17 @@ CIMPORT_C CCError_t  CC_Sm3Free(CCSm3UserContext_t *pContextID);
 
 /*****************************************************************************/
 /*!
-@brief This function provide SM3 function to process one buffer of data.
+@brief This function provides an SM3 function to process one buffer of data.
 
 The function allocates an internal SM3 Context, and initializes it with the
 cryptographic attributes that are needed for the SM3 block operation
-(initialize H's value for the SM3 algorithm).
+(initializes the value of H for the SM3 algorithm).
 Then it processes the data block, calculating the SM3 hash.
 Finally, it returns the data buffer's message digest.
 
-@param pDataIn     Pointer to the buffer that stores the data to be hashed.
+ @param pDataIn     Pointer to the buffer that stores the data to be hashed.
 
-@param DataInSize  The size of the data to be hashed in bytes.
+ @param DataInSize  The size of the data to be hashed in bytes.
 
  @retval Sm3ResultBuff Pointer to the result buffer for the the message digest.
 
@@ -123,7 +123,7 @@ CIMPORT_C CCError_t CC_Sm3(uint8_t *pDataIn, size_t DataInSize, CCSm3ResultBuf_t
 }
 #endif
 
-/*!
-@}
+ /*!
+ @}
  */
 #endif

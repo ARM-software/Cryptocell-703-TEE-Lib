@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -29,14 +29,13 @@ extern "C"
 
 
 /************************ Defines  ******************************/
-/*! The size of the AES block in words. */
-#define CC_AES_CRYPTO_BLOCK_SIZE_IN_WORDS 4
-/*! The size of the AES block in Bytes. */
-#define CC_AES_BLOCK_SIZE_IN_BYTES  (CC_AES_CRYPTO_BLOCK_SIZE_IN_WORDS * sizeof(uint32_t))
 
+#define CC_AES_CRYPTO_BLOCK_SIZE_IN_WORDS 4 /*!< The size of the AES block in words. */
+/*! The size of the AES block in bytes. */
+#define CC_AES_BLOCK_SIZE_IN_BYTES  (CC_AES_CRYPTO_BLOCK_SIZE_IN_WORDS * sizeof(uint32_t))
 /*! The size of the IV buffer in words. */
 #define CC_AES_IV_SIZE_IN_WORDS   CC_AES_CRYPTO_BLOCK_SIZE_IN_WORDS
-/*! The size of the IV buffer in Bytes. */
+/*! The size of the IV buffer in bytes. */
 #define CC_AES_IV_SIZE_IN_BYTES  (CC_AES_IV_SIZE_IN_WORDS * sizeof(uint32_t))
 
 
@@ -109,7 +108,7 @@ typedef enum {
 
 /************************ Typedefs  ****************************/
 
-/*! Defines the IV buffer. A 16-Byte array. */
+/*! Defines the IV buffer. A 16-byte array. */
 typedef uint8_t CCAesIv_t[CC_AES_IV_SIZE_IN_BYTES];
 
 /*! Defines the AES key data buffer. */
@@ -132,11 +131,11 @@ typedef struct CCAesUserContext_t {
 /*! The AES key data of the user. */
 typedef struct CCAesUserKeyData_t {
     uint8_t * pKey;     /*!< A pointer to the key. */
-    size_t    keySize;  /*!< The size of the key in Bytes. Valid values:
-                      <ul><li>For XTS mode (if supportes): 32 Bytes or 64 Bytes, indicating
+    size_t    keySize;  /*!< The size of the key in bytes. Valid values:
+                      <ul><li>For XTS mode (if supported): 32 bytes or 64 bytes, indicating
                       the full size of the double key (2x128 or 2x256 bit).</li>
-                      <li>For XCBC-MAC mode: 16 Bytes, as limited by the standard.</li>
-                      <li>For all other modes: 16 Bytes, 24 Bytes or 32 Bytes.</li></ul> */
+                      <li>For XCBC-MAC mode: 16 bytes, as limited by the standard.</li>
+                      <li>For all other modes: 16 bytes, 24 bytes or 32 bytes.</li></ul> */
 }CCAesUserKeyData_t;
 
 /*! The AES HW key Data. */

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -11,7 +11,7 @@
 #include "cc_util_pm.h"
 #include "cc_pal_pm.h"
 #include "cc_lib_common.h"
-#include "cc_pmData.h"
+#include "cc_pm_data.h"
 
 #define POWER_DOWN_EN_OFF 	0
 #define POWER_DOWN_EN_ON 	1

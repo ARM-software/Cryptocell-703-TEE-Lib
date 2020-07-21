@@ -24,7 +24,7 @@ CFLAGS_EXTRA += -DCC_SUPPORT_CH_CERT
 SOURCES_$(TARGET_LIBS) += cc_chinese_cert.c
 SOURCES_$(TARGET_LIBS) += cc_chinese_cert_local.c
 SOURCES_$(TARGET_LIBS) += cc_chinese_cert_sym.c
-SOURCES_$(TARGET_LIBS) += cc_chinese_cert_asym.c 
+SOURCES_$(TARGET_LIBS) += cc_chinese_cert_asym.c
 SOURCES_$(TARGET_LIBS) += cc_pal_cert.c
 endif
 
@@ -37,6 +37,6 @@ PUBLIC_INCLUDES += $(HOST_SRCDIR)/cc7x_teelib/slim/cc_lib.h
 
 VPATH += $(HOST_SRCDIR)/cc7x_teelib/slim
 
-CFLAGS_EXTRA += -DMEMORY_FRAGMENT_MAX_SIZE_IN_KB=$(MEMORY_FRAGMENT_MAX_SIZE_IN_KB) -DCC_SUPPORT_PKA_128_32 
+CFLAGS_EXTRA += -DMEMORY_FRAGMENT_MAX_SIZE_IN_KB=$(MEMORY_FRAGMENT_MAX_SIZE_IN_KB) -DCC_SUPPORT_PKA_128_32
 
 

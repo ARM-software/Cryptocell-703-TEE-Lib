@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -67,11 +67,15 @@ uint32_t rtlOtpMaskTable[CC_OTP_USER_DEFINED_OFFSET] = {
         0x00000000,    // 0x33
 };
 
+#define DELAY(number_of_loops)	{ \
+		volatile uint32_t ii1; \
+		for(ii1=0; ii1<number_of_loops; ii1++); \
+}
+
 /* WRITE */
 #define CC_PAL_WRITE_TEE_ENV_REG(offset, val)  { \
-        volatile uint32_t ii1; \
         (*(volatile uint32_t *)(gCcEnvBase + (offset))) = (uint32_t)(val); \
-        for(ii1=0; ii1<500; ii1++); \
+        DELAY(500); \
 }
 
 #define CC_PAL_WRITE_OTP_BY_ENV(wordOffset, val) \
@@ -127,7 +131,7 @@ uint32_t CC_PalOtpWordRead(uint32_t otpWordOffset)
  * @return error
  */
 
-uint32_t CC_PalGetRtlOtpMask(uint32_t wordOffsetInTable, uint32_t* rtlOtpMask)
+uint32_t CC_PalGetRtlOtpMask(uint32_t wordOffsetInTable, unsigned long* rtlOtpMask)
 {
     uint32_t error = CC_OK;
 

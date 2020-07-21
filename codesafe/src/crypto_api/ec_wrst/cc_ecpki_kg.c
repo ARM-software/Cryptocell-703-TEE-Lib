@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -17,6 +17,7 @@
 #include "cc_rnd_local.h"
 #include "cc_chinese_cert_defs.h"
 #include "cc_cert_ctx.h"
+#include "cc_util_int_defs.h"
 
 /***************  CC_EcpkiKeyPairGenerateBase function  **************/
 /**
@@ -64,11 +65,22 @@ CEXPORT_C CCError_t CC_EcpkiKeyPairGenerateBase(
         CCError_t err = CC_OK;
         CCEcpkiPrivKey_t *pPrivKey;
         uint32_t  orderSizeInWords;
-        CCRndContext_t rndContext; /* input to FIPS_ECC_VALIDATE*/
-
+        uint32_t regVal;
 
         CHECK_AND_RETURN_ERR_UPON_FIPS_ERROR();
         CHECK_AND_RETURN_ERR_UPON_CH_CERT_ERROR();
+
+        /* The function should refuse to operate if the secure disable bit is set */
+        CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+        if (regVal == SECURE_DISABLE_FLAG_SET) {
+            return CC_ECPKI_SD_ENABLED_ERR;
+        }
+
+        /* The function should refuse to operate if the Fatal Error bit is set */
+        CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+        if (regVal == FATAL_ERROR_FLAG_SET) {
+            return CC_ECPKI_FATAL_ERR_IS_LOCKED_ERR;
+        }
 
         /* ......... checking the validity of arguments .......... */
         /* ------------------------------------------------------- */
@@ -96,17 +108,12 @@ CEXPORT_C CCError_t CC_EcpkiKeyPairGenerateBase(
         CC_PalMemSetZero( pUserPrivKey, sizeof(CCEcpkiUserPrivKey_t) );
         CC_PalMemSetZero( pUserPublKey, sizeof(CCEcpkiUserPublKey_t) );
 
-        /* assign random function and context to structure*/
-        rndContext.rndGenerateVectFunc = f_rng;
-        rndContext.rndState = p_rng;
-
         /* the pointer to the key database */
         pPrivKey = (CCEcpkiPrivKey_t *)&pUserPrivKey->PrivKeyDbBuff;
 
         orderSizeInWords = (pDomain->ordSizeInBits+CC_BITS_IN_32BIT_WORD-1)/CC_BITS_IN_32BIT_WORD;
         /*  set EC order as max. vect. */
         CC_PalMemCopy(pTempBuff, pDomain->ecR, sizeof(uint32_t)*orderSizeInWords);
-        /* LR TBD! set right LE bytes order for pTempBuff, when BE PC is used */
 
         /* generate random private key vector in range: 1 < privKey < EcOrder *
          * Note: we exclude privKey = 1, allowed by FIPS 186-4, because the   *
@@ -123,8 +130,8 @@ CEXPORT_C CCError_t CC_EcpkiKeyPairGenerateBase(
                 goto End;
         }
 
-        err = FIPS_ECC_VALIDATE(&rndContext, pUserPrivKey, pUserPublKey, pFipsCtx);
-        err += CH_CERT_KEY_GEN_VALIDATE(&rndContext, pUserPrivKey, pUserPublKey, pFipsCtx);
+        err = FIPS_ECC_VALIDATE(f_rng, p_rng, pUserPrivKey, pUserPublKey, pFipsCtx);
+        err += CH_CERT_KEY_GEN_VALIDATE(f_rng, p_rng, pUserPrivKey, pUserPublKey, pFipsCtx);
         End:
         if (err) {
                 CC_PalMemSetZero(pUserPrivKey, sizeof(CCEcpkiUserPrivKey_t));
@@ -176,9 +183,22 @@ CEXPORT_C CCError_t CC_EcpkiKeyPairGenerate(
                                            CCEcpkiKgTempData_t    *pTempBuff,    /*in*/
                                            CCEcpkiKgCertContext_t   *pFipsCtx)   /*in*/
 {
+    uint32_t regVal;
 
     if (NULL == pDomain) {
         return CC_ECPKI_DOMAIN_PTR_ERROR;
+    }
+
+    /* The function should refuse to operate if the secure disable bit is set */
+    CC_UTIL_IS_SECURE_DISABLE_FLAG_SET(regVal);
+    if (regVal == SECURE_DISABLE_FLAG_SET) {
+        return CC_ECPKI_SD_ENABLED_ERR;
+    }
+
+    /* The function should refuse to operate if the Fatal Error bit is set */
+    CC_UTIL_IS_FATAL_ERROR_SET(regVal);
+    if (regVal == FATAL_ERROR_FLAG_SET) {
+        return CC_ECPKI_FATAL_ERR_IS_LOCKED_ERR;
     }
 
     return CC_EcpkiKeyPairGenerateBase(f_rng, p_rng, pDomain, pDomain->ecGx, pDomain->ecGy,

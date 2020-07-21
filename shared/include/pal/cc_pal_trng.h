@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -36,7 +36,7 @@ extern "C"
  */
 typedef struct
 {
-	/*! The amount of Bytes for the required entropy bits.
+	/*! The amount of bytes for the required entropy bits.
                                  It is calculated as ROUND_UP(ROUND_UP(((required entropy bits)/(entropy per bit)), 1024),
                                  (EHR width in Bytes)) / 8.
                                  The 1024 bits is the multiple of the window size. The multiple of the EHR width, which is 192 bits. */
@@ -89,7 +89,7 @@ typedef struct
 CCError_t CC_PalTrngParamGet(CC_PalTrngParams_t *pTrngParams, /*!< [out] A pointer to the TRNG user parameters. */
                              size_t *pParamsSize              /*!< [in/out] A pointer to the size of the TRNG-user-parameters structure used.
                                                                             Input: the function must verify its size is the same as
-                                                                            #CC_PalTrngParams_t. Output: the function returns the size
+                                                                            #CC_PalTrngParams_t. \n Output: the function returns the size
                                                                             of #CC_PalTrngParams_t for library-size verification. */
                              );
 

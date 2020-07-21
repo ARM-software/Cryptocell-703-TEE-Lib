@@ -1,14 +1,9 @@
-/****************************************************************************
-* The confidential and proprietary information contained in this file may   *
-* only be used by a person authorised under and to the extent permitted     *
-* by a subsisting licensing agreement from Arm Limited (or its affiliates). *
-*     (C) COPYRIGHT [2018-2019] Arm Limited (or its affiliates).            *
-*         ALL RIGHTS RESERVED                                               *
-* This entire notice must be reproduced on all copies of this file          *
-* and copies of this file may only be made by a person if such person is    *
-* permitted to do so under the terms of a subsisting license agreement      *
-* from Arm Limited (or its affiliates).                                     *
-*****************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
+ *
+ */
 
 #ifndef _TEST_UTILS_H_
 #define _TEST_UTILS_H_
@@ -53,6 +48,17 @@
                     } \
                 } while (0)
 
+/** defines the label that should be jumped to in case _cmd != true. */
+#define TEST_ASSERT_JUMP(_cmd, _err, _label) \
+                do { \
+                    TEST_LOG_TRACE("running [%.200s]\n", #_cmd); \
+                    if ((_cmd) == 0) { \
+                        TEST_LOG_CRIT("failed [%.100s]\n", #_cmd); \
+                        res = _err; \
+                        goto _label; \
+                    } \
+                } while (0)
+
 /** defines the action that should be performed in case _cmd != true. */
 #define TEST_ASSERT_EXP(_cmd, _exp, _err) \
                 do { \
@@ -75,11 +81,11 @@
                         _ptr = Test_PalDMAContigBufferAlloc(1); /* in case the size is 0 allocate 1 byte */ \
                     }\
                     if (_ptr == NULL){ \
-                        TEST_LOG_CRIT("failed to allocate [%s] of size[%zu]\n", #_ptr, _size); \
+                        TEST_LOG_CRIT("failed to allocate [%s] of size[%zu]\n", #_ptr, (size_t)(_size)); \
                         res = 1; \
                         goto bail; \
                     } \
-                    TEST_LOG_TRACE("allocated pointer[%s][%p] of size[%zu]\n", #_ptr, _ptr, _size); \
+                    TEST_LOG_TRACE("allocated pointer[%s][%p] of size[%zu]\n", #_ptr, _ptr, (size_t)(_size)); \
                 } while (0);
 
 /** allocates the memory */
@@ -91,11 +97,11 @@
                     _ptr = Test_PalMalloc(1); /* in case the size is 0 allocate 1 byte */ \
                 }\
                 if (_ptr == NULL){ \
-                    TEST_LOG_CRIT("failed to allocate [%s] of size[%zu]\n", #_ptr, _size); \
+                    TEST_LOG_CRIT("failed to allocate [%s] of size[%zu]\n", #_ptr, (size_t)(_size)); \
                     res = 1; \
                     goto bail; \
                 } \
-                TEST_LOG_TRACE("allocated pointer[%s][%p] of size[%zu]\n", #_ptr, _ptr, _size); \
+                TEST_LOG_TRACE("allocated pointer[%s][%p] of size[%zu]\n", #_ptr, _ptr, (size_t)(_size)); \
             } while (0);
 
 

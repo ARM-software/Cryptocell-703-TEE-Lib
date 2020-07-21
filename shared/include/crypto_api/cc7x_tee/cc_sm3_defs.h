@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -31,13 +31,16 @@ extern "C"
 
 /************************ Defines ******************************/
 
-/*! The size of the SM3 result in words. */
+/*! The size of the SM3 result in bits. */
 #define CC_SM3_RESULT_SIZE_IN_BITS      256
+/*! The size of the SM3 result in bytes. */
 #define CC_SM3_RESULT_SIZE_IN_BYTES     (CC_SM3_RESULT_SIZE_IN_BITS / CC_BITS_IN_BYTE)
+/*! The size of the SM3 result in words. */
 #define CC_SM3_RESULT_SIZE_IN_WORDS     (CC_SM3_RESULT_SIZE_IN_BYTES / CC_32BIT_WORD_SIZE)
 
-/*! SM3 block size */
+/*! SM3 block size in bytes. */
 #define CC_SM3_BLOCK_SIZE_IN_BYTES 64
+/*! SM3 block size in words. */
 #define CC_SM3_BLOCK_SIZE_IN_WORDS 16
 
 /*! The maximal data size for the update operation. */

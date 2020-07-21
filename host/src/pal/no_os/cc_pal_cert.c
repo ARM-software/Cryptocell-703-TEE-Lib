@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -24,18 +24,6 @@ CCChCertStateData_t   gStateData = { CC_CH_CERT_STATE_CRYPTO_APPROVED, CC_TEE_CH
 
 #ifdef CC_SUPPORT_FIPS
 CCFipsStateData_t 	gStateData = { CC_FIPS_STATE_CRYPTO_APPROVED, CC_TEE_FIPS_ERROR_OK, CC_FIPS_TRACE_NONE };
-
-
-CCError_t CC_PalCertWaitForReeStatus(void)
-{
-	FipsSetReeStatus(CC_TEE_FIPS_REE_STATUS_OK);
-	return CC_OK;
-}
-
-CCError_t CC_PalCertStopWaitingRee(void)
-{
-	return CC_OK;
-}
 #endif
 
 

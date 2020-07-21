@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -226,7 +226,6 @@ void  PkaModDivideBy2(uint32_t    lenId,  /*!< [in]  ID of entry of regsSizesTab
  */
 uint32_t   PkaGetRegEffectiveSizeInBits(uint32_t  reg) /*!< [in] Register virt. pointer. */
 {
-        // RL Do resistant and add flag to arg.
         int size = 1, i;
         uint32_t  addr;
         uint32_t  currWord = 0, mask = 1Ul << 31;
@@ -408,7 +407,7 @@ void PkaFinishAndMutexUnlock(uint32_t pkaRegCount) /*!< [in] Number of registers
 {
         // clear used registers
         if (pkaRegCount > 0) {
-                pkaRegCount = CC_MIN(PKA_MAX_COUNT_OF_PHYS_MEM_REGS-2, pkaRegCount);
+                pkaRegCount = CC_MIN(PKA_MAX_COUNT_OF_PHYS_MEM_REGS, pkaRegCount);
                 /* clear used PKA registers for security goals */
                 PkaClearBlockOfRegs(PKA_REG_N/*FirstReg*/, pkaRegCount, LEN_ID_MAX_BITS/*LenID*/);
         }

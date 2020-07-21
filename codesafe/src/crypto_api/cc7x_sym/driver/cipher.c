@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -17,6 +17,7 @@
 #include "cc_sym_error.h"
 #include "cc_hal_plat.h"
 #include "sym_crypto_driver.h"
+#include "cc_util_int_defs.h"
 
 CC_PAL_COMPILER_ASSERT(sizeof(struct drv_ctx_cipher)==CC_CTX_SIZE,"drv_ctx_cipher is larger than 128 bytes!");
 CC_PAL_COMPILER_ASSERT(sizeof(enum drv_cipher_mode)==sizeof(uint32_t), "drv_cipher_mode is not 32bit!");
@@ -373,6 +374,69 @@ static void CalcXcbcKeys(CCSramAddr_t ctxAddr, struct drv_ctx_cipher *pCipherCon
     pCipherContext->crypto_key_type = DRV_USER_KEY;
 }
 
+#ifdef CC_SUPPORT_FULL_PROJECT
+static int ValidateCipherKey(struct drv_ctx_cipher *pCipherContext)
+{
+    uint32_t error, regVal = 0;
+
+    switch (pCipherContext->crypto_key_type) {
+        case DRV_ROOT_KEY:
+            /* Check KDR error bit in LCS register */
+            CC_UTIL_IS_OTP_KEY_ERROR(error, HUK);
+            if (error != 0) {
+                return CC_RET_KDR_INVALID_ERROR;
+            }
+            break;
+        case DRV_SESSION_KEY:
+            /* Check session key validity */
+            CC_UTIL_IS_SESSION_KEY_VALID(error);
+            if (error == CC_UTIL_SESSION_KEY_IS_UNSET) {
+                return CC_RET_SESSION_KEY_ERROR;
+            }
+            break;
+        case DRV_KCP_KEY:
+            CC_UTIL_IS_OTP_KEY_LOCKED(regVal, KCP);
+            if (regVal != 0) {
+                return CC_RET_KCP_INVALID_ERROR;
+            }
+
+            CC_UTIL_IS_OTP_KEY_ERROR(regVal, PROV);
+            if (regVal != 0) {
+                return CC_RET_KCP_INVALID_ERROR;
+            }
+
+            CC_UTIL_IS_OTP_KEY_NOT_IN_USE(regVal, OTP_OEM_FLAG, KCP);
+            if (regVal != 0) {
+                return CC_RET_KCP_INVALID_ERROR;
+            }
+            break;
+        case DRV_KPICV_KEY:
+            CC_UTIL_IS_OTP_KEY_LOCKED(regVal, KPICV);
+            if (regVal != 0) {
+                return CC_RET_KPICV_INVALID_ERROR;
+            }
+
+            CC_UTIL_IS_OTP_KEY_ERROR(regVal, KPICV);
+            if (regVal != 0) {
+                return CC_RET_KPICV_INVALID_ERROR;
+            }
+
+            CC_UTIL_IS_OTP_KEY_NOT_IN_USE(regVal, OTP_FIRST_MANUFACTURE_FLAG, KPICV);
+            if (regVal != 0) {
+                return CC_RET_KPICV_INVALID_ERROR;
+            }
+            break;
+        case DRV_USER_KEY:
+        case DRV_CUSTOMER_KEY:
+            break;
+        default:
+            return CC_RET_INVALID_KEY_TYPE;
+    }
+
+    return CC_RET_OK;
+}
+#endif
+
 /******************************************************************************
  *                FUNCTIONS
  ******************************************************************************/
@@ -388,11 +452,21 @@ static void CalcXcbcKeys(CCSramAddr_t ctxAddr, struct drv_ctx_cipher *pCipherCon
  */
 int InitCipher(CCSramAddr_t ctxAddr, uint32_t *pCtx)
 {
+
     const CCSramAddr_t keyAddr = GET_CTX_FIELD_ADDR(ctxAddr, struct drv_ctx_cipher, key);
     const CCSramAddr_t blockStateAddr = GET_CTX_FIELD_ADDR(ctxAddr,
                                                            struct drv_ctx_cipher,
                                                            block_state);
     struct drv_ctx_cipher *pCipherContext = (struct drv_ctx_cipher *) pCtx;
+
+#ifdef CC_SUPPORT_FULL_PROJECT
+    int rc;
+    /* Need to validate HW keys only in full and not in slim configuration (as there are no HW keys loaded from the OTP)*/
+    rc = ValidateCipherKey(pCipherContext);
+    if (rc != CC_RET_OK) {
+        return rc;
+    }
+#endif
 
     if (pCipherContext->alg == DRV_CRYPTO_ALG_DES) {
         /*in caes of double DES k1 = K3, copy k1-> K3*/

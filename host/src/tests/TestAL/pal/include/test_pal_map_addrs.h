@@ -1,14 +1,9 @@
-/*******************************************************************************
-* The confidential and proprietary information contained in this file may      *
-* only be used by a person authorised under and to the extent permitted        *
-* by a subsisting licensing agreement from ARM Limited or its affiliates.      *
-*   (C) COPYRIGHT [2001-2017] ARM Limited or its affiliates.                   *
-*       ALL RIGHTS RESERVED                                                    *
-* This entire notice must be reproduced on all copies of this file             *
-* and copies of this file may only be made by a person if such person is       *
-* permitted to do so under the terms of a subsisting license agreement         *
-* from ARM Limited or its affiliates.                                          *
-*******************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ *
+ */
 
 #ifndef TEST_PAL_MAP_ADDRS_H_
 #define TEST_PAL_MAP_ADDRS_H_
@@ -27,17 +22,24 @@
 extern "C" {
 #endif
 
+/*! Validates mapped address. */
 #define VALID_MAPPED_ADDR(addr) ((addr != 0) && (addr != 0xFFFFFFFF))
 
 /* Bit Masks - Used by Linux */
-#define BM_READ        0x01 /*!< Pages may be read */
-#define BM_WRITE    0x02 /*!< Pages may be written */
-#define BM_EXEC        0x04 /*!< Pages may be executed */
-#define BM_NONE        0x08 /*!< Pages may not be accessed */
-#define BM_SHARED    0x10 /*!< Share this mapping */
-#define BM_PRIVATE    0x20 /*!< Create a private copy-on-write mapping */
-#define BM_FIXED    0x40 /*!< Do not interpret address as a hint:
-                place the mapping at exactly that address. */
+/*! Pages can be read. */
+#define BM_READ        0x01
+/*! Pages can be written. */
+#define BM_WRITE    0x02
+/*! Pages can be executed. */
+#define BM_EXEC        0x04
+/*! Pages cannot be accessed. */
+#define BM_NONE        0x08
+/*! Share this mapping. */
+#define BM_SHARED    0x10
+/*! Create a private copy-on-write mapping. */
+#define BM_PRIVATE    0x20
+/*! The mapping must be placed at this fixed address. */
+#define BM_FIXED    0x40
 
 /******************************************************************************/
 /*!
@@ -45,10 +47,13 @@ extern "C" {
  *
  *
  * @return A valid virtual address.
- * @return Null on case of failure.
+ * @return Null on failure.
  */
-void *Test_PalIOMap(void *physAddr, /*!< Physical address.*/
- size_t size /*!< Size in bytes.*/
+void *Test_PalIOMap(
+ /*! Physical address. */
+ void *physAddr,
+ /*! Size in bytes. */
+ size_t size
 );
 
 /******************************************************************************/
@@ -59,11 +64,17 @@ void *Test_PalIOMap(void *physAddr, /*!< Physical address.*/
  * @return A valid virtual address
  * @return Null on failure.
  */
-void *Test_PalMapAddr(void *physAddr,/*!< A physical address.*/
- void *startingAddr, /*!< Preferred static address for mapping.*/
- const char *filename, /*!< File name.*/
- size_t size, /*!< Size in bytes.*/
- uint8_t protAndFlagsBitMask /*!< Protection and update visibility bit mask.*/
+void *Test_PalMapAddr(
+ /*! A physical address. */
+ void *physAddr,
+ /*! Preferred static address for mapping. */
+ void *startingAddr,
+ /*! File name.*/
+ const char *filename,
+ /*! Size in bytes. */
+ size_t size,
+ /*! Protection and update visibility bit mask. */
+ uint8_t protAndFlagsBitMask
 );
 
 /******************************************************************************/
@@ -72,8 +83,11 @@ void *Test_PalMapAddr(void *physAddr,/*!< A physical address.*/
  *
  * @return
  */
-void Test_PalUnmapAddr(void *virtAddr, /*!< Virtual address.*/
- size_t size /*!< Size in bytes.*/
+void Test_PalUnmapAddr(
+ /*! Virtual address. */
+ void *virtAddr,
+ /*! Size in bytes. */
+ size_t size
 );
 
 #ifdef __cplusplus

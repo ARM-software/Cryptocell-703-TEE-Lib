@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -36,6 +36,21 @@ extern "C"
 /*----------------------------
       PUBLIC FUNCTIONS
 -----------------------------------*/
+/*!
+  @brief This function unmaps a specified Secure Boot image address range that was previously mapped by #CC_PalMemMapImage.
+
+  @return \c 0 on success.
+  @return A non-zero value in case of failure.
+ */
+uint32_t CC_PalMemUnMapImage(uint32_t *pVirtBuffAddr, uint32_t mapSize);
+
+/*!
+  @brief This function returns the base virtual address that maps Secure Boot images to the base physical address.
+
+  @return \c 0 on success.
+  @return A non-zero value in case of failure.
+ */
+uint32_t CC_PalMemMapImage(CCDmaAddr_t physicalAddress, uint32_t mapSize, uint32_t **ppVirtBuffAddr);
 
 /*!
   @brief This function returns the base virtual address that maps the base physical address.
@@ -61,7 +76,7 @@ uint32_t CC_PalMemMap(
 uint32_t CC_PalMemUnMap(
     /*! [in] A pointer to the base virtual address to which the physical pages were mapped. */
     uint32_t *pVirtBuffAddr,
-    /*! [in] The number of Bytes that were mapped. */
+    /*! [in] The number of bytes that were mapped. */
     uint32_t mapSize       );
 
 #ifdef __cplusplus

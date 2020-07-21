@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -17,11 +17,15 @@
  /*!
  @addtogroup cc_pal_log
  @{
-	 */
+     */
 
 
 #include "cc_pal_types.h"
 #include "cc_pal_log_plat.h"
+#include <stdio.h>
+
+/*! Print formatted. */
+#define PRINTF printf
 
 /* PAL log levels (to be used in CC_PAL_logLevel) */
 /*! PAL log level - disabled. */
@@ -67,6 +71,7 @@
 
 
 #ifdef __ARM_DS5__
+/*! Inline definition. */
 #define inline __inline
 #endif
 
@@ -142,11 +147,11 @@ static inline void CC_PalLogMaskSet(uint32_t setMask) {CC_UNUSED_PARAM(setMask);
 /*! Log message buffer.*/
 #define CC_PAL_LOG_DUMP_BUF(msg, buf, size)     \
     do {                        \
-    int i;                      \
+    uint32_t i;                      \
     uint8_t *pData = (uint8_t*)buf;         \
                             \
-    PRINTF("%s (%d):\n", msg, size);        \
-    for (i = 0; i < size; i++) {            \
+    PRINTF("%s [%p] (%d):\n", msg, buf, size);        \
+    for (i = 0; i < (uint32_t)size; i++) {            \
         PRINTF("0x%02X ", pData[i]);        \
         if ((i & 0xF) == 0xF) {         \
             PRINTF("\n");           \

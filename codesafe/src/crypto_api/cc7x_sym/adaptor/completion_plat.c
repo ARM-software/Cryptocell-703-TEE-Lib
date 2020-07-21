@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 #define CC_PAL_LOG_CUR_COMPONENT CC_LOG_MASK_COMPLETION
@@ -15,6 +15,7 @@
 #include "completion.h"
 #include "hw_queue.h"
 #include "cc_hal.h"
+#include "cc_pal_interrupt_ctrl.h"
 #include "cc_pal_perf.h"
 #include "cc_registers.h"
 
@@ -36,7 +37,7 @@ static DmaBuffAddress_t gCompletionDummyBuffer;
 /******************************************************************************
  *            FUNCTIONS PROTOTYPES
  ******************************************************************************/
-static void AddLastCompletionDesc(void);
+static void AddLastCompletionDesc(CCBool isPreempt);
 
 /******************************************************************************
  *                STATIC FUNCTIONS
@@ -48,9 +49,9 @@ static void AddLastCompletionDesc(void);
  * The dummy HW completion descriptor is created by using the DMA bypass
  * mode with zero size DIN and DOUT data. A counter ID is always
  * used to setup the "Ack required" field in the HW descriptor.
- *
+ * \param isPreempt - enable descriptor preemption indication
  */
-static void AddLastCompletionDesc(void)
+static void AddLastCompletionDesc(CCBool isPreempt)
 {
     HwDesc_s desc;
 
@@ -66,8 +67,13 @@ static void AddLastCompletionDesc(void)
 
     HW_DESC_SET_FLOW_MODE(&desc, BYPASS);
 
-    /* set the QUEUE_LAST_IND bit  */
-    HW_DESC_SET_QUEUE_LAST_IND(&desc);
+    if (isPreempt == CC_TRUE) {
+        /* set the QUEUE_LAST_IND & DOUT_LAST_IND bits  */
+        HW_DESC_SET_QUEUE_LAST_IND(&desc);
+    } else {
+        /* set only the DOUT_LAST_IND bit  */
+        HW_DESC_SET_LAST_IND(&desc);
+    }
 
     HW_QUEUE_POLL_QUEUE_UNTIL_FREE_SLOTS(1);
 
@@ -80,22 +86,23 @@ static void AddLastCompletionDesc(void)
  ******************************************************************************/
 /*!
  * This function waits for current descriptor sequence completion.
+ * \param isPreempt - enable descriptor preemption indication
  */
-void WaitForSequenceCompletionPlat(void)
+void WaitForSequenceCompletionPlat(CCBool isPreempt)
 {
     CCPalPerfData_t perfIdx = 0;
 
     InitCompletionPlat();
 
     /* Acknowledge completion to host */
-    AddLastCompletionDesc();
+    AddLastCompletionDesc(isPreempt);
 
 
     CC_PAL_PERF_OPEN_NEW_ENTRY(perfIdx, PERF_TEST_TYPE_HW_CMPLT);
 
     /* wait for interrupt */
     /* wait only for AXIM completion interrupt */
-    CC_HalWaitInterrupt(CC_HAL_IRQ_AXIM_COMPLETE, NULL);
+    CC_PalWaitInterruptComp(CC_HAL_IRQ_AXIM_COMPLETE, NULL);
 
     CC_PAL_PERF_CLOSE_ENTRY(perfIdx, PERF_TEST_TYPE_HW_CMPLT);
 

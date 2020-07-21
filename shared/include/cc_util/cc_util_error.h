@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -24,6 +24,8 @@
 extern "C"
 {
 #endif
+
+#include "cc_pal_types.h"
 
 /*! Util Error type. */
 typedef uint32_t CCUtilError_t;
@@ -75,12 +77,17 @@ typedef uint32_t CCUtilError_t;
 #define CC_UTIL_INVALID_HASH_MODE                       (CC_UTIL_MODULE_ERROR_BASE + 0x12UL)
 /*! Unsupported hash mode. */
 #define CC_UTIL_UNSUPPORTED_HASH_MODE                   (CC_UTIL_MODULE_ERROR_BASE + 0x13UL)
-/*! Key is unusable */
+/*! Key is unusable. */
 #define CC_UTIL_KEY_UNUSABLE_ERROR                      (CC_UTIL_MODULE_ERROR_BASE + 0x14UL)
-/*! Power Management error */
+/*! Power Management error. */
 #define CC_UTIL_PM_ERROR                                (CC_UTIL_MODULE_ERROR_BASE + 0x15UL)
-/*! Security disable bit is asserted , API should not be used */
+/*! Security disable bit is asserted , API should not be used. */
 #define CC_UTIL_SD_IS_SET_ERROR                         (CC_UTIL_MODULE_ERROR_BASE + 0x16UL)
+/*! Setting fatal error failed. */
+#define CC_UTIL_FATAL_ERROR_SET_FAILED                  (CC_UTIL_MODULE_ERROR_BASE + 0x17UL)
+/*! Device is locked in fatal error state. */
+#define CC_UTIL_FATAL_ERR_IS_LOCKED_ERR                 (CC_UTIL_MODULE_ERROR_BASE + 0x18UL)
+
 #ifdef __cplusplus
 }
 #endif

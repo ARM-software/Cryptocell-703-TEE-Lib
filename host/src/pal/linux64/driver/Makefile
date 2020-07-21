@@ -15,6 +15,6 @@ EXTRA_CFLAGS += -DDEBUG -O1
 endif
 
 
-EXTRA_CFLAGS += -Wall 
+EXTRA_CFLAGS += -Wall
 
 $(info $(if $(DEBUG),DEBUG=$(DEBUG)))

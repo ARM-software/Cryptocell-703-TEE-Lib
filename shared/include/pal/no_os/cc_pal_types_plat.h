@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -10,7 +10,7 @@
 */
 
 /*!
- @addtogroup cc_pal_types
+ @ingroup pal_types
  @{
  */
 
@@ -30,18 +30,16 @@ typedef uint32_t        CCBool_t;
 typedef uint32_t        CCStatus;
 
 /*! Defines error return. */
-#define CCError_t       CCStatus
+#define CCError_t   		CCStatus
 /*! Defines an unlimited (infinite) time frame. */
-#define CC_INFINITE     0xFFFFFFFF
+#define CC_INFINITE		0xFFFFFFFFUL
 
 /*! Defines for C export. */
 #define CEXPORT_C
 /*! Defines for C import. */
 #define CIMPORT_C
 
-
 #endif /*CC_PAL_TYPES_PLAT_H*/
-
 /*!
-@}
+ @}
  */

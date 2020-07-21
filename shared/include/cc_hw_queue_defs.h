@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
+
 
 #ifndef __CC_HW_QUEUE_DEFS_H__
 #define __CC_HW_QUEUE_DEFS_H__
@@ -207,6 +208,16 @@ void descriptor_log(HwDesc_s *desc);
 #define HW_DESC_DUMP(pDesc) do {} while (0)
 #endif
 
+/*!
+ * This macro set DOUT_LAST_IND.
+ *
+ * \param pDesc pointer HW descriptor struct
+ */
+#define HW_DESC_SET_LAST_IND(pDesc)                               \
+    do {                                                \
+        CC_REG_FLD_SET(CRY_KERNEL, DSCRPTR_QUEUE_WORD3, DOUT_LAST_IND, (pDesc)->word[3], 1);    \
+    } while (0)
+
 
 /*!
  * This macro indicates the end of current HW descriptors flow and release the HW engines.
@@ -246,7 +257,6 @@ void descriptor_log(HwDesc_s *desc);
 		CC_REG_FLD_SET(CRY_KERNEL, DSCRPTR_QUEUE_WORD1, DIN_SIZE, (pDesc)->word[1], (dinSize));				\
 		CC_REG_FLD_SET(CRY_KERNEL, DSCRPTR_QUEUE_WORD1, NS_BIT, (pDesc)->word[1], (axiNs));				\
 	} while (0)
-
 
 /*!
  * This macro sets the DIN field of a HW descriptors to NO DMA mode. Used for NOP descriptor, register patches and

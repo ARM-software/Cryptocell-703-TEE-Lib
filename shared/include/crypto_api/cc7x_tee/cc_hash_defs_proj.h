@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -16,7 +16,7 @@
 /*!
  @addtogroup cc_hash_defs
   @{
-	  */
+      */
 
 #ifdef __cplusplus
 extern "C"
@@ -25,7 +25,7 @@ extern "C"
 
 /************************ Defines ******************************/
 
-/*! The size of user's context prototype (see CCHashUserContext_t) in words. */
+/*! The size of the context prototype of the user in words. */
 /* In order to allow contiguous context the user context is doubled + 3 words for management */
 /*
 CC_HASH_USER_CTX_SIZE_IN_WORDS = (2 * (<sizeof drv_ctx_hash in words> + <sizeof CCHashPrivateContext_t in words>)) + 3 (management) = 197

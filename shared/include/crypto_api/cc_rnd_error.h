@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -98,7 +98,10 @@ extern "C"
 #define CC_RND_AES_ERROR                                (CC_RND_MODULE_ERROR_BASE + 0x36UL)
 /*! TRNG mode mismatch between PAL and lib */
 #define CC_RND_MODE_MISMATCH_ERROR                      (CC_RND_MODULE_ERROR_BASE + 0x37UL)
-
+/*! Device is locked in fatal error state. */
+#define CC_RND_FATAL_ERR_IS_LOCKED_ERROR                (CC_RND_MODULE_ERROR_BASE + 0x38UL)
+/*! Device has security disable feature enabled. */
+#define CC_RND_SECURE_DISABLE_ERROR                     (CC_RND_MODULE_ERROR_BASE + 0x39UL)
 
 /************************ Enums ********************************/
 

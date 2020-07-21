@@ -7,8 +7,8 @@
 
 /*!
 @file
-@brief This file contains all the enums and definitions that are used for the
-        CryptoCell Lib init and finish APIs, as well as the APIs themselves.
+@brief This file contains all of the CryptoCell library initiation and finish
+       APIs, enums, and definitions.
 */
 
 #ifndef __CC_LIB_H__
@@ -19,53 +19,64 @@
 #include "cc_cert_ctx.h"
 #include "cc_axi_ctrl.h"
 
-typedef enum {
-	CC_LIB_RET_OK = 0,
-	SA_SILIB_RET_ENODEV,      /* Device not opened or does not exist */
-	SA_SILIB_RET_EINTERNAL,   /* Internal driver error (check system log)*/
-	SA_SILIB_RET_ENOTSUP,     /* Unsupported function/option */
-	SA_SILIB_RET_ENOPERM,     /* Not enough permissions for request */
-	SA_SILIB_RET_EINVAL,      /* Invalid parameters */
-	SA_SILIB_RET_HW_Q_INIT,
-	SA_SILIB_RET_COMPLETION,
-	CC_LIB_RET_HAL,
-	CC_LIB_RET_EINVAL_PIDR,
-	CC_LIB_RET_EINVAL_CIDR,
-	SA_SILIB_RET_ASYM_ERR,
-	CC_LIB_RET_RND_INST_ERR,
-	CC_LIB_RET_EINVAL_HW_VERSION,    /* Invalid HW version */
-	CC_LIB_RET_EINVAL_HW_SIGNATURE,  /* Invalid HW signature */
-	CC_LIB_RET_PAL,
-	CC_LIB_INCORRECT_HW_VERSION_SLIM_VS_FULL,       /* Mismatched HW/SW flavor - SW flavor is SLIM, but HW isn't */
-	CC_LIB_RET_CACHE_PARAMS_ERROR,
-    SA_SILIB_RET_ECHCERT,		/* Chinese certification tests error */
+/*! CryptoCell library return codes. */
+typedef enum
+{
+    /*! A success indication. */
+    CC_LIB_RET_OK = 0,
+    /*! Invalid parameters. */
+    CC_LIB_RET_EINVAL,
+    /*! Error in adapter modules initialization. */
+    CC_LIB_RET_COMPLETION,
+    /*! Error in Hardware Adaption Layer initialization. */
+    CC_LIB_RET_HAL,
+    /*! Invalid peripheral ID. */
+    CC_LIB_RET_EINVAL_PIDR,
+    /*! Invalid component ID. */
+    CC_LIB_RET_EINVAL_CIDR,
+    /*! Reserved. */
+    CC_LIB_RET_RND_INST_ERR,
+    /*! Invalid HW version. */
+    CC_LIB_RET_EINVAL_HW_VERSION,
+    /*! Invalid HW signature. */
+    CC_LIB_RET_EINVAL_HW_SIGNATURE,
+    /*! Error in Platform Adaption Layer initialization. */
+    CC_LIB_RET_PAL,
+    /*! Mismatched HW and SW products - SW is CryptoCell-703, but HW is not. */
+    CC_LIB_INCORRECT_HW_VERSION_SLIM_VS_FULL,
+    /*! Error setting the cache parameters due to invalid input parameter. */
+    CC_LIB_RET_CACHE_PARAMS_ERROR,
+    /*! Chinese certification tests error. */
+    CC_LIB_RET_ECHCERT,
+    /*! Reserved. */
     CC_LIB_RESERVE32B = 0x7FFFFFFFL
-} CClibRetCode_t;
+}CClibRetCode_t  ;
 
 
 /*!
-@brief This function Perform global initialization of the ARM TrustZone
+@brief This function performs global initialization of the Arm
 CryptoCell TEE runtime library;
 it must be called once per cold boot cycle. As part of the global initialization
 the function verifies that
-all the cryptographic engines are working as expected by running known answer
+all of the cryptographic engines are working as expected by running known answer
 tests. If a test fails (the function
-returns an error), it signifies that there is a fatal error, and it should be
+returns an error), it signifies that there is a fatal error, which must be
 handled accordingly.
 \note Unlike the other APIs in the library, this API is not thread-safe. \par
-@return CC_LIB_RET_OK on success.
+@return \c CC_LIB_RET_OK on success.
 @return A non-zero value in case of failure.
 */
 
 CClibRetCode_t CC_LibInit(bool isChCertSupport, CCCertKatContext_t  *pCertCtx, CCAxiFields_t  *pAxiFields);
 
 /*!
-@brief This function finalizes the library operations. It calls hal and pal
+@brief This function finalizes the library operations. It calls HAL and PAL
 terminate functions.
-@return CC_LIB_RET_OK on success.
+@return \c CC_LIB_RET_OK on success.
 @return A non-zero value in case of failure.
 */
 void CC_LibFini(void);
 
 #endif /*__CC_LIB_H__*/
+
 

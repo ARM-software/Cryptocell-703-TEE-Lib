@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -31,8 +31,10 @@ void InitCompletionPlat(void);
 
 /*!
  * This function waits for current descriptor sequence completion.
+ * \param isPreempt - enable descriptor preemption indication
+ *
  */
-void WaitForSequenceCompletionPlat(void);
+void WaitForSequenceCompletionPlat(CCBool isPreempt);
 
 /*!
  * This function allocates a reserved word for dummy completion descriptor.

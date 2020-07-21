@@ -164,7 +164,7 @@ PRINT_VAR_%:
 define release_file_rule
 $(RELEASE_$(2)DIR)/$(notdir $(1)): $(1) $(call DEPENDENCY_ON_EXISTENCE_OF,$(RELEASE_$(2)DIR))
 	@$(ECHO) [CP] $$< --\> $(RELEASE_$(2)DIR)
-	@$(call exec_logged_evaled,$(CP) $$< $(RELEASE_$(2)DIR) )
+	@$(call exec_logged_evaled,flock -x -w60 $(RELEASE_$(2)DIR) $(CP) -f $$< $(RELEASE_$(2)DIR) )
 
 release: $(RELEASE_$(2)DIR)/$(notdir $(1))
 

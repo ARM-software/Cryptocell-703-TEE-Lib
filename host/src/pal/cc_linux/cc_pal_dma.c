@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -16,6 +16,7 @@
 #include "cc_registers.h"
 #include "dx_reg_base_host.h"
 #include "cc_lli_defs.h"
+#include "cc_lli_defs_int.h"
 #include "cc_address_defs.h"
 #include <assert.h>
 
@@ -31,7 +32,6 @@ typedef enum {
 	PAL_DMA_BUFF_TYPE_RESERVE32 = 0x7FFFFFFF
 }PAL_DmaBufType_t;
 
-/* TODO EUGENE replace with a define value */
 #define PAL_MAX_COOKIES_NUM	 260  // 2*LLI_MAX_NUM_OF_ENTRIES + 10 reserved
 
 #define PAL_RPMB_MAP_HANDLE  LLI_MAX_NUM_OF_ENTRIES	// in case of CC_UtilSignRPMBFrames process up to max mlli entries

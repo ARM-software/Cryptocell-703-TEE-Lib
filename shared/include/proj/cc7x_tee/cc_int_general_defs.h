@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -20,14 +20,16 @@ extern "C"
 
 /************************ Macros ******************************/
 
-/* check if fatal error bit is set to ON - NA for CC7X */
+/* check if fatal error bit is set to ON */
 #define CC_IS_FATAL_ERR_ON(rc)\
 do {\
-       rc = CC_FALSE;\
+        uint32_t regVal = 0;\
+        regVal = CC_HAL_READ_REGISTER(CC_REG_OFFSET(HOST_RGF, HOST_AO_LOCK_BITS));\
+        rc = CC_REG_FLD_GET(0, HOST_AO_LOCK_BITS, HOST_FATAL_ERR, regVal);\
+        rc = (rc == 1)?CC_TRUE:CC_FALSE;\
 }while(0)
 
 /* The DCU word that holds the virtual DCU bits used for reset over-ride and SDER */
-    // IG - move to another place in bsv
 #define CC_DCU_VIRTUAL_WORD_OFFSET                              3
 
 /*

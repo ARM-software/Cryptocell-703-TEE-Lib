@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm's non-OSI source license
  *
  */
 
@@ -29,7 +29,7 @@ extern "C"
 {
 #endif
 
-/*! The definitions of the error number-space used for the different modules */
+/* The definitions of the error number-space used for the different modules */
 
 /* ........... Error base numeric mapping definitions ................... */
 /* ----------------------------------------------------------------------- */
@@ -111,7 +111,7 @@ extern "C"
 /*! The FFC domain error index. */
 #define FFC_DOMAIN_ERROR_IDX     0x2CUL
 
-/*! Don't change! Error definition, reserved for Sec.Boot ECDSA */
+/*! The ECC driver error index. */ 
 #define SB_ECC_ERROR_IDX_        0x2DUL
 /*! External DMA error index. */
 #define EXT_DMA_ERROR_IDX        0x2EUL
@@ -130,6 +130,9 @@ extern "C"
 
 /*! The AXI CTRL error index.*/
 #define AXI_CTRL_ERROR_IDX       0x33UL
+
+/*! The Secure Boot runtime error index.*/
+#define SBRT_ERROR_IDX           0x34UL
 
 /* .......... defining the error spaces for each module on each layer ........... */
 /* ------------------------------------------------------------------------------ */
@@ -297,10 +300,15 @@ extern "C"
                                          (CC_ERROR_LAYER_RANGE * CC_LAYER_ERROR_IDX) + \
                                          (CC_ERROR_MODULE_RANGE * CPP_ERROR_IDX ) )
 
-/*! The error base address of the AXI_CTRL  module - 0x00F03200. */
+/*! The error base address of the AXI_CTRL  module - 0x00F03300. */
 #define CC_AXI_CTRL_MODULE_ERROR_BASE  (CC_ERROR_BASE + \
                                          (CC_ERROR_LAYER_RANGE * CC_LAYER_ERROR_IDX) + \
                                          (CC_ERROR_MODULE_RANGE * AXI_CTRL_ERROR_IDX ) )
+
+/*! The error base address of the Secure boot module - 0x00F03400. */
+#define CC_SBRT_MODULE_ERROR_BASE        (CC_ERROR_BASE + \
+                                         (CC_ERROR_LAYER_RANGE * CC_LAYER_ERROR_IDX) + \
+                                         (CC_ERROR_MODULE_RANGE * SBRT_ERROR_IDX ) )
 
 
 /*! The generic error base address of the user - 0x00F50000 */
